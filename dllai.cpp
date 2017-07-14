@@ -1,34 +1,13 @@
-// dllai.cpp : Defines the exported functions for the DLL application.
-//
-
 #define _CRT_SECURE_NO_WARNINGS
-#include "ai.h"
-#include <vector>
-#include <map>
-#include <string>
-#include <cstring>
-#include "windows.h"
-
-#define DLLEXPORT extern "C" __declspec(dllexport)
+#include "dllai.h"
 
 char g_result[8][1024];
 AI::MovingSimple last_best[8];
 
-char* result(int player, std::string r)
-{
+char* result(int player, std::string r) {
     return strcpy( g_result[player], r.c_str() );
 }
 
-// very important value
-#define AI_DLL_VERSION 2
-
-DLLEXPORT
-int AIDllVersion()
-{
-    return AI_DLL_VERSION;
-}
-
-DLLEXPORT
 char* AIName( int level ) {
     char name[200];
     if ( level > AI_MAX_DEPTH ) level = AI_MAX_DEPTH;
@@ -55,7 +34,6 @@ curCanHold: indicates whether you can use hold on current move.
 canhold: false if hold is completely disabled.
 comboTable: -1 is the end of the table.
 */
-DLLEXPORT
 char* TetrisAI(int overfield[], int field[], int field_w, int field_h, int b2b, int combo,
                char next[], char hold, bool curCanHold, char active, int x, int y, int spin,
                bool canhold, bool can180spin, int upcomeAtt, int comboTable[], int maxDepth, int level, int player)
@@ -73,8 +51,8 @@ char* TetrisAI(int overfield[], int field[], int field_w, int field_h, int b2b, 
     gemMap['S'] = AI::GEMTYPE_S;
     gemMap['O'] = AI::GEMTYPE_O;
     // gamefield
-    for ( int iy = 0; iy <= field_h; ++iy ) {
-        gamefield.row[iy] = field[iy];
+    for ( int y = 0; y <= field_h; ++y ) {
+        gamefield.row[y] = field[y];
     }
     for ( int iy = 0; iy < 8; ++iy ) {
         gamefield.row[-iy-1] = overfield[iy];
@@ -125,14 +103,34 @@ char* TetrisAI(int overfield[], int field[], int field_w, int field_h, int b2b, 
             }
         }
     }
+    
+    std::stringstream out;
+    
     if ( mov.movs.empty() ) {
+        out<<"-1";
         mov.movs.clear();
         mov.movs.push_back( AI::Moving::MOV_NULL );
         mov.movs.push_back( AI::Moving::MOV_DROP );
     } else {
         last_best[player] = best;
+        out<< best.m_clearedLines;
     }
-
+    
+    out<<"|"<< ((best.wallkick_spin) ? '1' : '0') << "|"; //was spin
+    for(int i=1;i<21;i++){
+        unsigned long r=best.m_finalField.row[i];
+        unsigned long mask=512u; //(2^WIDTH-1)
+        //std::cout << i <<": ";
+        for(;mask!=0;mask=mask>>1){
+            out<<( ((r & mask) == mask)? 2 : 0 );
+            if(mask!=1)out<<',';
+            //std::cout<<  ( ((r & mask) == mask)? 1 : 0 );
+        }
+        if(i!=20)out<<';';
+        //std::cout<<std::endl;
+    }
+    std::cout<<out.str()<<std::endl;
+    
     // return
     std::map<int, char> outMap;
     outMap[AI::Moving::MOV_NULL] = ' ';
@@ -147,9 +145,9 @@ char* TetrisAI(int overfield[], int field[], int field_w, int field_h, int b2b, 
     outMap[AI::Moving::MOV_RSPIN] = 'c';
     outMap[AI::Moving::MOV_HOLD] = 'v';
     outMap[AI::Moving::MOV_DROP] = 'V';
-    std::string out;
+    std::string outt;
     for ( size_t i = 0; i < mov.movs.size(); ++i ) {
-        out.push_back(outMap[mov.movs[i]]);
+        outt.push_back(outMap[mov.movs[i]]);
     }
-    return result(player, out);
+    return result(player, outt);
 }

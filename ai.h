@@ -1,7 +1,6 @@
-#pragma once
-
 #include "gamefield.h"
 #include <vector>
+#include <cmath>
 
 #define AI_MAX_DEPTH    2
 
@@ -75,6 +74,15 @@ namespace AI {
         signed char spin;
         signed char wallkick_spin;
         bool hold;
+        
+        GameField m_finalField;
+        int m_clearedLines;
+        
+        void saveBestData(const GameField & f, int linesCleared){
+            m_finalField=f; //copy
+            m_clearedLines=linesCleared;
+        }
+        
         MovingSimple () { x = INVALID_POS; wallkick_spin = 0; lastmove = MovingSimple::MOV_NULL; }
         MovingSimple ( const Moving & m ) {
             x = m.x;
@@ -93,11 +101,15 @@ namespace AI {
             wallkick_spin = m.wallkick_spin;
             hold = m.hold;
             lastmove = m.lastmove;
+            m_finalField=m.m_finalField;
+            m_clearedLines=m.m_clearedLines;
         }
         MovingSimple ( const MovingSimple & m, int _spin ) {
             lastmove = m.lastmove;
             hold = m.hold;
             spin = (signed char)_spin;
+            m_finalField=m.m_finalField;
+            m_clearedLines=m.m_clearedLines;
         }
         bool operator == (const MovingSimple& _m) const {
             if ( x != _m.x || y != _m.y ) return false;

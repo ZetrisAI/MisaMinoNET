@@ -47,7 +47,7 @@ namespace AI {
             int last = min_y[1];
             for ( int x = 0; x <= field_w; last = min_y[x], ++x) {
                 int v = min_y[x] - last;
-                int absv = abs(v);
+                int absv = std::abs(v);
                 score += absv * ai_factor.h_change;
             }
         }
@@ -67,7 +67,7 @@ namespace AI {
                 }
                 for ( int x = 0; x < field_w; ++x) {
                     int t = avg - min_y[x] * field_w;
-                    if ( abs(t) > field_h * field_w / 4 ) {
+                    if ( std::abs(t) > field_h * field_w / 4 ) {
                         if ( t > 0 ) t = field_h * field_w / 4;
                         else t = -(field_h * field_w / 4);
                     }
@@ -129,6 +129,7 @@ namespace AI {
             if ( score > maxScore ) {
                 maxScore = score;
                 best = movs[i];
+                best.saveBestData(newfield,clear);
             }
         }
         int hold_num = field.m_hold;
@@ -158,6 +159,7 @@ namespace AI {
                     if ( score > maxScore ) {
                         maxScore = score;
                         best = movs[i];
+                        best.saveBestData(newfield,clear);
                     }
                 }
             }

@@ -8,7 +8,7 @@
     nm.x = nx; \
     nm.y = ny; \
     nm.spin = ns; \
-    nm.lastmove = Moving::##arg_action_name##; \
+    nm.lastmove = Moving::arg_action_name; \
     nm.wallkick_spin = arg_wkspin
 
 #define _MACRO_CREATE_MOVING(arg_action_name,arg_wkspin) \
@@ -16,10 +16,10 @@
     nm.x = nx; \
     nm.y = ny; \
     nm.spin = ns; \
-    nm.movs.push_back(Moving::##arg_action_name##); \
+    nm.movs.push_back(Moving::arg_action_name); \
     nm.wallkick_spin = arg_wkspin
 #define _MACRO_HASH_POS(arg_hash_table,arg_prefix) \
-    arg_hash_table[##arg_prefix##y][##arg_prefix##s][##arg_prefix##x & GENMOV_W_MASK]
+    arg_hash_table[arg_prefix##y][arg_prefix##s][arg_prefix##x & GENMOV_W_MASK]
 
 namespace AI {
     bool g_spin180 = false;
@@ -113,7 +113,7 @@ namespace AI {
                 int nx = m.x, ny = m.y, ns = m.spin;
                 int wallkick_spin = m.wallkick_spin;
 #ifndef SWITCH_USING_HEIGHT_OPT
-                while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) { // 非空气行才能使用的优化
+                while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) {
                     ++ny; wallkick_spin = 0;
                 }
                 while ( ! field.isCollide(nx, ny + 1, getGem(cur.num, ns) ) ) {
@@ -341,7 +341,7 @@ namespace AI {
             {
                 int nx = m.x, ny = m.y, ns = m.spin;
                 int wallkick_spin = m.wallkick_spin;
-                //while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) { // 非空气行才能使用的优化
+                //while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) {
                 //    ++ny; wallkick_spin = 0;
                 //}
                 while ( ! field.isCollide(nx, ny + 1, getGem(cur.num, ns) ) ) {

@@ -1,9 +1,7 @@
-#pragma once
 #define _ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH
 
 #if _MSC_VER <= 1200
 #define for if (0); else for
-#pragma warning(disable : 4786)
 #endif
 
 namespace AI {
