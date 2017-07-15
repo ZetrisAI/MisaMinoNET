@@ -1,5 +1,7 @@
-# MisaMinoBot
-Command line version of the MisaMino bot.
+# BakaBot
+Command line version of the Baka bot. Baka (馬鹿, ばか, or バカ) means "fool; idiot". This is the dllai bot in the MisaMino repository.
+
+This bot is only able to use 2 preview pieces. With more pieces the result takes forever to be returned.
 
 ## Example
 
