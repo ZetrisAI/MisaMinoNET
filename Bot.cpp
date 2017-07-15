@@ -85,7 +85,7 @@ void Bot::updateState(const std::string& p1, const std::string& p2, const std::s
 
 void Bot::outputAction() {
     int overfield[10]={0,0,0,0,0,0,0,0,0,0};
-    int comboTable[14]={0,0,1,1,1,2,2,3,3,4,4,4,5,0};
+    int comboTable[14]={0,0,1,1,1,2,2,3,3,4,4,4,5,-1};
     char * res=TetrisAI(overfield,m_field,10,20,0,m_combo,m_queue,m_hold,true,m_currentPiece,3,0,0,true,true,0,comboTable,m_queueLen,5,0);
     int i=0;
     while(res[i]){
