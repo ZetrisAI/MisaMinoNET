@@ -235,7 +235,8 @@ namespace AI {
             for ( int x = 0; x < pool_w; ++x) {
                 int last = 0, next;
                 first_hole_y[x] = pool_h + 1;
-                for ( int y = std::min(min_y[x] + 1, std::max(min_y[x-1] + 6, min_y[x+1] + 6)); y <= pool_h; ++y, last = next) {
+                int y = (x>0) ? std::min(min_y[x] + 1, std::max(min_y[x-1] + 6, min_y[x+1] + 6)) : min_y[x] + 1;
+                for ( ; y <= pool_h; ++y, last = next) {
                     if ( ( _pool.row[y] & ( 1 << x ) ) == 0 ) { //_pool.row[y] && 
                         double factor = ( y < 20 ? ( 1 + (20 - y) / 20.0 * 2 ) : 1.0);
                         y_holes[x]++;
