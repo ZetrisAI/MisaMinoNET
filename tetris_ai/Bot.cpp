@@ -52,6 +52,7 @@ void Bot::updateField(const std::string& s) {
         if(c==',')continue;
         if(c==';'){
             tetris.addRow(r);
+            //tetris.m_pool.m_row[ AI::gem_add_y + y ]=r;
             y++;
             r=0;
             x=9;
@@ -62,15 +63,19 @@ void Bot::updateField(const std::string& s) {
         }
         x--;
     }
+    //tetris.m_pool.m_row[ AI::gem_add_y + y ]=r;
+    tetris.addRow(r);
+    //cerr << "[debug] pool:" << tetris.m_pool << endl;
 }
 
 void Bot::updateQueue(const std::string& s) {
-    int i=0;
+    int i=1;
     for(const auto &c : s){
         if(c==',')continue;
         tetris.m_next[i++] = AI::getGem(m_gemMap[c], 0);
     }
     m_queueLen=i;
+    tetris.newpiece();
 }
 
 void Bot::updateState(const std::string& p1, const std::string& p2, const std::string& p3) {
@@ -81,7 +86,9 @@ void Bot::updateState(const std::string& p1, const std::string& p2, const std::s
     else if(p2=="field")
         updateField(p3);
     else if(p2=="this_piece_type")
-        tetris.m_cur=AI::getGem(m_gemMap[p3[0]], 0);
+        tetris.m_next[0]=AI::getGem(m_gemMap[p3[0]], 0);
+    else if(p2=="round" && p3=="1")
+        tetris.reset(0);
 }
 
 //todo: hold
@@ -276,9 +283,6 @@ void Bot::processMoves() {
     tetris.m_state = AI::Tetris::STATE_MOVING;
     while ( tetris.ai_movs_flag == -1 && !tetris.ai_movs.movs.empty() ){
         int mov = tetris.ai_movs.movs[0];
-        if ( tetris.ai_movs.movs.size() > 1 ) {
-            int next_mov = tetris.ai_movs.movs[1];
-        }
         tetris.ai_movs.movs.erase( tetris.ai_movs.movs.begin() );
         if (0) ;
         else if (mov == AI::Moving::MOV_L) tetris.tryXMove(-1);
@@ -318,24 +322,25 @@ void Bot::outputAction() {
             deep, tetris.ai_last_deep, level, 0);
     
     processMoves();
-    cerr << "[debug] pool:" << tetris.m_pool << endl;   
+    cerr << "[debug] pool:" << tetris.m_pool << endl;
     
     std::stringstream out;
     
     if(tetris.alive()){
         out << tetris.m_clearLines << "|0|";
+        tetris.m_state = AI::Tetris::STATE_READY;
     }else{
         out << "-1|0|";
     }
-    
-    for(int i=1;i<21;i++){
-        unsigned long r=tetris.m_pool.row[i];
+   
+    int bottom=AI_POOL_MAX_H-5;
+    for(int i=AI::gem_add_y + 1;i<bottom;i++){
         unsigned long mask=512u; //(2^WIDTH-1)
         for(;mask!=0;mask=mask>>1){
-            out<<( ((r & mask) == mask)? 2 : 0 );
+            out<<( ((tetris.m_pool.m_row[i] & mask) == mask)? 2 : 0 );
             if(mask!=1)out<<',';
         }
-        if(i!=20)out<<';';
+        if(i!=bottom-1)out<<';';
     }
     std::cout<<out.str()<<std::endl;    
 
