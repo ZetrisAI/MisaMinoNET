@@ -12,7 +12,7 @@ Bot::Bot(const Bot& orig) {
 }
 
 Bot::~Bot() {
-    delete m_field;
+    delete [] m_field;
 }
 
 void Bot::startParser() {
