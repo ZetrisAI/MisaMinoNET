@@ -1,6 +1,5 @@
 #pragma once
 #include "gamepool.h"
-#include "random.h"
 #include "tetris_ai.h"
 
 namespace AI {
@@ -56,30 +55,10 @@ namespace AI {
             m_state = STATE_INIT;
             reset ( 0, 10, 20 );
         }
-        void genNext() {
-            int m[] = {1,2,3,4,5,6,7};
-            int s[7];
-            int v = m_rand.randint(5040);
-            int mod = 5040 / 7;
-            for ( int i = 6; i > 0; --i ) {
-                s[6-i] = m[v / mod];
-                for ( int j = v / mod; j < 6; ++j) {
-                    m[j] = m[j+1];
-                }
-                v %= mod;
-                mod /= i;
-            }
-            s[6] = m[0];
-            for ( int i = 0; i < 7; ++i ) {
-                m_next[ m_next_num + i] = AI::getGem( s[i], 0);
-            }
-            m_next_num += 7;
-        }
+
         void reset (unsigned seed, signed char w, signed char h) {
             m_pool.reset( w, h );
-            m_rand.seed( seed );
             m_next_num = 0;
-            while ( m_next_num < 100 ) genNext();
             //for ( int i = 0; i < 32; ++i ) {
             //    m_next[i] = AI::getGem( m_rand.randint(7) + 1, 0);
             //}
@@ -318,7 +297,6 @@ namespace AI {
                 m_next[i - 1] = m_next[i];
             }
             --m_next_num;
-            while ( m_next_num < 100 ) genNext();
             //m_next[15] = AI::getGem( m_rand.randint(7) + 1, 0);
         }
         bool newpiece() {
@@ -390,7 +368,6 @@ namespace AI {
     public:
         int m_state;
     public:
-        Random m_rand;
         AI::GameField m_pool;
         AI::Gem m_cur;
         int m_color_pool[64][32];

@@ -1,5 +1,5 @@
 #include "gamepool.h"
-#include "random.h"
+#include <random>
 
 namespace AI {
     uint64 hashmap[AI_POOL_MAX_H][32];
@@ -12,10 +12,12 @@ namespace AI {
         }
     } _init_obj;
     void InitHashTable() {
-        Random rnd;
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<uint32_t> dis(0, 0xffffffff);
         for ( int y = 0; y < AI_POOL_MAX_H; ++y) {
             for ( int x = 0; x < 32; ++x) {
-                hashmap[y][x] = ((AI::uint64)rnd.rand() << 32) | rnd.rand();
+                hashmap[y][x] = ((AI::uint64)dis(gen) << 32) | dis(gen);
             }
             for ( int x = 0; x < 2; ++x) {
                 for ( int i = 0; i < 32; ++i) {

@@ -7,9 +7,6 @@
 
 #include "tetris.h"
 #include "tetris_ai.h"
-#include "random.h"
-
-#include "sound.h"
 
 #include "tetris_setting.h"
 
@@ -26,7 +23,6 @@ public:
         env_change = 0;
         n_win = 0;
         last_max_combo = 0;
-        mSFXon = false;
         m_lr = 0;
         pAIName = NULL;
         pTetrisAI = NULL;
@@ -114,9 +110,6 @@ public:
     void reset ( unsigned seed, unsigned pass = 0 ) {
         last_max_combo = m_max_combo;
         AI::Tetris::reset(seed, 10, 22);
-        m_randatt.seed( seed );
-        for ( unsigned i = 0; i < pass; ++i ) m_randatt.rand();
-        ai_delay = 0;
         mov_llrr = 0;
         env_change = 0;
         ai_movs.movs.clear();
@@ -134,9 +127,6 @@ public:
     }
     bool tryXMove(int dx) {
         bool ret = Tetris::tryXMove( dx );
-        if ( mSFXon && ret ) {
-            GameSound::ins().mSFX_move.play( m_lr );
-        }
         return ret;
     }
     bool tryXXMove(int dx) {
@@ -169,60 +159,6 @@ public:
         bool ret = Tetris::drop( );
         return ret;
     }
-    void clearSFX( ) {
-        if ( m_clear_info.clears <= 0 || ! mSFXon ) return ;
-        int att = m_clear_info.attack;
-        int b2b = m_clear_info.b2b > 1;
-        int combo = m_clear_info.combo;
-        att -= b2b;
-        att -= AI::getComboAttack( combo );
-        if ( m_clear_info.pc ) {
-            att -= 6;
-            if ( GameSound::ins().mSFX_pc.isOpen() )
-                GameSound::ins().mSFX_pc.play( m_lr );
-        }
-        if ( combo > 1 ) {
-            int i = 0;
-            for ( ; i < combo - 1 && i < 20; ++i) {
-                if ( ! GameSound::ins().mSFX_combo[i].isOpen() ) break;
-            }
-            if ( --i >= 0 ) {
-                if ( GameSound::ins().mSFX_combo[i].isOpen() ) GameSound::ins().mSFX_combo[i].play( m_lr );
-            }
-        }
-        if ( m_clear_info.wallkick_spin && att > 0 ) {
-            if ( m_clear_info.wallkick_spin == 2 && (AI::isEnableAllSpin() || m_clear_info.clears == 1) ) {
-                if ( b2b ) {
-                    GameSound::sound& m = GameSound::ins().mSFX_b2b_tspin[0];
-                    if (m.isOpen()) m.play( m_lr );
-                } else {
-                    GameSound::sound& m = GameSound::ins().mSFX_tspin[0];
-                    if (m.isOpen()) m.play( m_lr );
-                }
-            } else {
-                if ( b2b ) {
-                    GameSound::sound& m = GameSound::ins().mSFX_b2b_tspin[m_clear_info.clears];
-                    if (m.isOpen()) m.play( m_lr );
-                } else {
-                    GameSound::sound& m = GameSound::ins().mSFX_tspin[m_clear_info.clears];
-                    if (m.isOpen()) m.play( m_lr );
-                }
-           }
-        } else if ( m_clear_info.clears > 0 ) {
-            if ( b2b ) {
-                GameSound::sound& m = GameSound::ins().mSFX_b2b_tetris;
-                if (m.isOpen()) m.play( m_lr );
-            } else {
-                GameSound::sound& m = GameSound::ins().mSFX_clears[m_clear_info.clears - 1];
-                if (m.isOpen()) m.play( m_lr );
-            }
-        }
-    }
-    bool ko () {
-        return false;
-    }
-    void acceptAttackSFX() {
-    }
     void acceptAttack(int n) {
         int att[2] = {0};
         for ( int i = 0; i < 32; i += 2) {
@@ -231,9 +167,9 @@ public:
         att[0] &= m_pool.m_w_mask;
         att[1] = ~att[0] & m_pool.m_w_mask;
 
-        int rowdata = m_randatt.randint( m_pool.m_w );
+        int rowdata = 5;
         while ( m_last_hole_x == rowdata ) {
-            rowdata = m_randatt.randint( m_pool.m_w );
+            rowdata = 5;
         }
         m_last_hole_x = rowdata;
         rowdata = ~( 1 << rowdata ) & m_pool.m_w_mask;
@@ -264,9 +200,7 @@ public:
         }
         return ret;
     }
-    void soundon( bool on ) {
-        mSFXon = on;
-    }
+
 public:
     bool hold;
     AI::Moving ai_movs;
@@ -289,9 +223,7 @@ public:
     int m_ko;
     int m_lr; // 3d��Ч����
     int m_piecedelay;
-    AI::Random m_randatt;
     AI::AI_Param m_ai_param;
     std::string m_name;
-    bool mSFXon;
     mutable std::string m_att_info;
 };
