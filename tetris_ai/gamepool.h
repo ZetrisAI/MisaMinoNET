@@ -53,7 +53,7 @@ namespace AI {
         }
         friend std::ostream& operator<<(std::ostream &os, const GameField &obj){
             os<<"\n";
-            for (int i = AI::gem_add_y + 1 + 2; i < AI_POOL_MAX_H-3; ++i) {
+            for (int i = AI::gem_add_y + 1; i < AI_POOL_MAX_H-5; ++i) {
                 os<<i<<"|";
                 for (int k = obj.width(); k >=0; --k) {
                     if((obj.m_row[i] & (1<<k)) == 1<<k){

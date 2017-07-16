@@ -109,7 +109,7 @@ public:
     }
     void reset ( unsigned seed, unsigned pass = 0 ) {
         last_max_combo = m_max_combo;
-        AI::Tetris::reset(seed, 10, 22);
+        AI::Tetris::reset(seed, 10, 20);
         mov_llrr = 0;
         env_change = 0;
         ai_movs.movs.clear();

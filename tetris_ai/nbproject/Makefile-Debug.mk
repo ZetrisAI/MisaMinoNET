@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/Bot.o \
 	${OBJECTDIR}/gamepool.o \
 	${OBJECTDIR}/genmove.o \
 	${OBJECTDIR}/main.o \
@@ -65,6 +66,11 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tetris_ai: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tetris_ai ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/Bot.o: Bot.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Bot.o Bot.cpp
 
 ${OBJECTDIR}/gamepool.o: gamepool.cpp
 	${MKDIR} -p ${OBJECTDIR}

@@ -4,6 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>Bot.h</itemPath>
       <itemPath>gamemode.h</itemPath>
       <itemPath>gamepool.h</itemPath>
       <itemPath>tetris.h</itemPath>
@@ -19,6 +20,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>Bot.cpp</itemPath>
       <itemPath>gamepool.cpp</itemPath>
       <itemPath>genmove.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
@@ -51,6 +53,10 @@
           <commandLine>-fsanitize=address</commandLine>
         </ccTool>
       </compileType>
+      <item path="Bot.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Bot.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="gamemode.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="gamepool.cpp" ex="false" tool="1" flavor2="0">
@@ -96,6 +102,10 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="Bot.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Bot.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="gamemode.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="gamepool.cpp" ex="false" tool="1" flavor2="0">
