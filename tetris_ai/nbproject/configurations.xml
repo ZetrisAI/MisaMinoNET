@@ -6,8 +6,6 @@
                    projectFiles="true">
       <itemPath>gamemode.h</itemPath>
       <itemPath>gamepool.h</itemPath>
-      <itemPath>random.h</itemPath>
-      <itemPath>sound.h</itemPath>
       <itemPath>tetris.h</itemPath>
       <itemPath>tetris_ai.h</itemPath>
       <itemPath>tetris_gem.h</itemPath>
@@ -63,10 +61,6 @@
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="random.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="sound.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="tetris.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tetris_ai.cpp" ex="false" tool="1" flavor2="0">
@@ -111,10 +105,6 @@
       <item path="genmove.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="random.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="sound.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tetris.h" ex="false" tool="3" flavor2="0">
       </item>
