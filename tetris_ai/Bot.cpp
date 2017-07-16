@@ -304,6 +304,7 @@ void Bot::processMoves() {
             tetris.env_change = 1;
         }
     }
+    tetris.clearLines();
 }
 
 void Bot::outputAction() {
