@@ -1,5 +1,4 @@
 #pragma once
-#include "windows.h"
 #include <string>
 
 class CProfile
@@ -14,7 +13,7 @@ public:
         m_section = section;
     }
     int WriteString( std::string key, std::string value ) {
-        return WritePrivateProfileStringA( m_section.c_str(), key.c_str(), value.c_str(), (m_path + m_filename).c_str() );
+        //return WritePrivateProfileStringA( m_section.c_str(), key.c_str(), value.c_str(), (m_path + m_filename).c_str() );
     }
     int WriteInteger( std::string key, int value ) {
         char buff[1024];
@@ -23,9 +22,10 @@ public:
     }
     int ReadString( std::string key, std::string& value ) {
         char buff[1024];
-        int ret =  GetPrivateProfileStringA( m_section.c_str(), key.c_str(), "", buff, 1024, (m_path + m_filename).c_str() );
-        if ( ret > 0 ) value = buff;
-        return ret;
+        //int ret =  GetPrivateProfileStringA( m_section.c_str(), key.c_str(), "", buff, 1024, (m_path + m_filename).c_str() );
+        //if ( ret > 0 ) value = buff;
+        //return ret;
+        return 1;
     }
     bool IsInteger( std::string key ) {
         ReadInteger( key );

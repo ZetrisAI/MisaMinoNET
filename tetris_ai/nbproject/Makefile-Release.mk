@@ -35,11 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/Bot.o \
-	${OBJECTDIR}/ai.o \
-	${OBJECTDIR}/dllai.o \
+	${OBJECTDIR}/gamepool.o \
 	${OBJECTDIR}/genmove.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/tetris_ai.o \
 	${OBJECTDIR}/tetris_gem.o
 
 
@@ -61,26 +60,16 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/bakabot
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tetris_ai
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/bakabot: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tetris_ai: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/bakabot ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tetris_ai ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/Bot.o: Bot.cpp
+${OBJECTDIR}/gamepool.o: gamepool.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Bot.o Bot.cpp
-
-${OBJECTDIR}/ai.o: ai.cpp
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ai.o ai.cpp
-
-${OBJECTDIR}/dllai.o: dllai.cpp
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/dllai.o dllai.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gamepool.o gamepool.cpp
 
 ${OBJECTDIR}/genmove.o: genmove.cpp
 	${MKDIR} -p ${OBJECTDIR}
@@ -91,6 +80,11 @@ ${OBJECTDIR}/main.o: main.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/tetris_ai.o: tetris_ai.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/tetris_ai.o tetris_ai.cpp
 
 ${OBJECTDIR}/tetris_gem.o: tetris_gem.cpp
 	${MKDIR} -p ${OBJECTDIR}

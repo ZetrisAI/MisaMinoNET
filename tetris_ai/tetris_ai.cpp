@@ -1,5 +1,4 @@
 #include "tetris_ai.h"
-#include <process.h>
 #include <deque>
 #include <map>
 #include <set>
@@ -48,12 +47,12 @@ namespace AI {
         int lastCombo, int t_dis, int upcomeAtt
         ) {
         int score = 0;
-        // ²â¸ß¶È
+        // ï¿½ï¿½ß¶ï¿½
         //int last_min_y[32] = {0};
         int min_y[32] = {0};
         int emptys[32] = {0};
         int maxy_index = 31, maxy_cnt = 0;
-        int maxy_flat_cnt = 0; // ×î³¤Æ½Ì¨
+        int maxy_flat_cnt = 0; // ï¿½î³¤Æ½Ì¨
         int miny_val = 31;
         int total_hole = 0;
         int beg_y = -5;
@@ -63,7 +62,7 @@ namespace AI {
         {
             //while ( last_pool.row[beg_y] == 0 ) ++beg_y;
             //for ( int x = 0; x < pool_w; ++x) {
-            //    for ( int y = beg_y, ey = pool_h + 1; y <= ey; ++y) { // ÒªÓÐµ×ÐÐ±£»¤£¨pool.h£©£¬·ñÔò»á¹Ò
+            //    for ( int y = beg_y, ey = pool_h + 1; y <= ey; ++y) { // Òªï¿½Ðµï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½pool.hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             //        if ( last_pool.row[y] & ( 1 << x ) ) {
             //            last_min_y[x] = y;
             //            break;
@@ -73,7 +72,7 @@ namespace AI {
             beg_y = -5;
             while ( pool.row[beg_y] == 0 ) ++beg_y;
             for ( int x = 0; x < pool_w; ++x) {
-                for ( int y = beg_y, ey = pool_h + 1; y <= ey; ++y) { // ÒªÓÐµ×ÐÐ±£»¤£¨pool.h£©£¬·ñÔò»á¹Ò
+                for ( int y = beg_y, ey = pool_h + 1; y <= ey; ++y) { // Òªï¿½Ðµï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½pool.hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     if ( pool.row[y] & ( 1 << x ) ) {
                         min_y[x] = y;
                         miny_val = std::min(miny_val, y);
@@ -131,17 +130,17 @@ namespace AI {
                 }
             }
         }
-        // ¶´µÄÊýÁ¿
-        int x_holes[32] = {0}; // Ë®Æ½·½Ïò¶´µÄÊýÁ¿
-        int y_holes[32] = {0}; // ´¹Ö±·½Ïò¶´µÄÊýÁ¿
-        int x_op_holes[32] = {0}; // Ë®Æ½·½Ïò¶´µÄÊýÁ¿
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        int x_holes[32] = {0}; // Ë®Æ½ï¿½ï¿½ï¿½ò¶´µï¿½ï¿½ï¿½ï¿½ï¿½
+        int y_holes[32] = {0}; // ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ò¶´µï¿½ï¿½ï¿½ï¿½ï¿½
+        int x_op_holes[32] = {0}; // Ë®Æ½ï¿½ï¿½ï¿½ò¶´µï¿½ï¿½ï¿½ï¿½ï¿½
         //int last_pool_hole_score;
         int pool_hole_score;
         int pool_total_cell = 0;
         //{   // last_pool
-        //    int x_holes[32] = {0}; // Ë®Æ½·½Ïò¶´µÄÊýÁ¿
-        //    int x_op_holes[32] = {0}; // Ë®Æ½·½Ïò¶´µÄÊýÁ¿
-        //    int first_hole_y[32] = {0}; // ´¹Ö±·½Ïò×î½üµÄ¶´µÄy
+        //    int x_holes[32] = {0}; // Ë®Æ½ï¿½ï¿½ï¿½ò¶´µï¿½ï¿½ï¿½ï¿½ï¿½
+        //    int x_op_holes[32] = {0}; // Ë®Æ½ï¿½ï¿½ï¿½ò¶´µï¿½ï¿½ï¿½ï¿½ï¿½
+        //    int first_hole_y[32] = {0}; // ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½y
         //    int hole_score = 0;
         //    const GameField& _pool = last_pool;
         //    for ( int x = 0; x < pool_w; ++x) {
@@ -222,8 +221,8 @@ namespace AI {
         //    last_pool_hole_score = hole_score;
         //}
         {   // pool
-            int first_hole_y[32] = {0}; // ´¹Ö±·½Ïò×î½üµÄ¶´µÄy
-            int x_renholes[32] = {0}; // ´¹Ö±Á¬Ðø¶´µÄÊýÁ¿
+            int first_hole_y[32] = {0}; // ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½y
+            int x_renholes[32] = {0}; // ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             double hole_score = 0;
             const GameField& _pool = pool;
             for ( int x = 0; x < pool_w; ++x) {
@@ -367,7 +366,7 @@ namespace AI {
         }
         score += pool_hole_score;
 #ifdef XP_RELEASE
-        // È«Ïû
+        // È«ï¿½ï¿½
         if ( 0 ) //&& pool.getPCAttack() > 8 )
         {
             if ( beg_y > pool_h )
@@ -431,7 +430,7 @@ namespace AI {
             }
         }
 #endif
-        // ¸ß¶È²î
+        // ï¿½ß¶È²ï¿½
         {
             //int n_maxy_index = maxy_index;
             //if ( maxy_cnt != 0 ) n_maxy_index = -9;
@@ -448,7 +447,7 @@ namespace AI {
                 else score += absv * ai_param.h_factor;
             }
         }
-        // Æ½µØ
+        // Æ½ï¿½ï¿½
         /*
         {
             int last = -1, len = 0;
@@ -468,10 +467,10 @@ namespace AI {
             }
         }
         */
-        int center = 10; // °ÚÂ¥¾¯½äÏß
+        int center = 10; // ï¿½ï¿½Â¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         double warning_factor = 1;
         int h_variance_score = 0;
-        // Ëã·½²î
+        // ï¿½ã·½ï¿½ï¿½
         {
             int avg = 0;
             {
@@ -499,7 +498,7 @@ namespace AI {
                         warning_factor = 0.0 + (double)avg / pool_w / center / 1;
                     }
                 }
-                // Æ«²îÖµ
+                // Æ«ï¿½ï¿½Öµ
                 {
                     int dif_sum = 0;
                     for ( int x = 0; x < pool_w; ++x) {
@@ -508,7 +507,7 @@ namespace AI {
                     score += ai_param.dif_factor * dif_sum / pool_w / pool_w;
                 }
             }
-            // ¹¥»÷¼ÆËã
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             {
                 int s = 0;
                 int t_att = total_clear_att;
@@ -524,7 +523,7 @@ namespace AI {
                     //}
                 }
                 int cs = 0;
-                if ( cur_num == GEMTYPE_T && wallkick_spin && clears > 0 && ai_param.tspin > 0 ) { // TÏû¸½¼Ó·Ö£¬Òª±ÈT1/T2ÐÎ×´»ù±¾·Ö´óÒ»
+                if ( cur_num == GEMTYPE_T && wallkick_spin && clears > 0 && ai_param.tspin > 0 ) { // Tï¿½ï¿½ï¿½ï¿½ï¿½Ó·Ö£ï¿½Òªï¿½ï¿½T1/T2ï¿½ï¿½×´ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ò»
                     s -= ai_param.hold_T;
                     if ( clears >= 3 ) {
                         if ( clear_att >= clears * 2 ) { // T3
@@ -559,7 +558,7 @@ namespace AI {
                 score += s;
             }
             //if ( clears ) {
-            //    int center = 10; // °ÚÂ¥¾¯½äÏß
+            //    int center = 10; // ï¿½ï¿½Â¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             //    double factor = 1;
             //    if ( avg < pool_w * center ) {
             //        factor = (double)avg / pool_w / center;
@@ -625,9 +624,9 @@ namespace AI {
             //}
         }
 
-        // ÌØÊâÐÎ×´ÅÐ¶¨
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´ï¿½Ð¶ï¿½
 
-        // ¼ÆËã¿É¹¥»÷£¨TetrisºÍT2£©
+        // ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½Tetrisï¿½ï¿½T2ï¿½ï¿½
         //int t2_x[32] = {0};
         if ( maxy_cnt == 0 )
         {
@@ -635,45 +634,45 @@ namespace AI {
             //    score += ai_param.att_col_sel_side;
             //}
             int ybeg = 0;
-            if ( softdropEnable() && maxy_index > 0 && maxy_index < pool_w - 1 && ai_param.tspin > 0 ) { // T1/T2»ù±¾ÐÎ×´·Ö
+            if ( softdropEnable() && maxy_index > 0 && maxy_index < pool_w - 1 && ai_param.tspin > 0 ) { // T1/T2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´ï¿½ï¿½
                 ybeg = std::max( min_y[maxy_index - 1], min_y[maxy_index + 1] );
                 if ( min_y[maxy_index - 1] == min_y[maxy_index + 1]
                     && x_holes[ybeg] == 0 && x_holes[ybeg-1] == 0
                     && x_op_holes[ybeg] == 0 && x_op_holes[ybeg-1] == 0
                     )
-                { // T×¼±¸
+                { // T×¼ï¿½ï¿½
                     int cnt = 0;
                     if ( maxy_index > 1 && min_y[maxy_index - 2] >= min_y[maxy_index - 1] - 2 ) ++cnt;
                     if ( maxy_index < pool_w - 2 && min_y[maxy_index + 2] >= min_y[maxy_index + 1] - 2 ) ++cnt;
                     if ( cnt > 0 )
                     {
                         score -= int(warning_factor * ai_param.tspin);
-                        if ( (~pool.row[ybeg] & pool.m_w_mask) == (1 << maxy_index) ) { // T1»ù´¡
+                        if ( (~pool.row[ybeg] & pool.m_w_mask) == (1 << maxy_index) ) { // T1ï¿½ï¿½ï¿½ï¿½
                             score -= int(warning_factor * ai_param.tspin);
-                            if ( (~pool.row[ybeg - 1] & pool.m_w_mask) == (7 << (maxy_index-1) ) ) { // ¿ÉT2ÍêÃÀ¿Ó
+                            if ( (~pool.row[ybeg - 1] & pool.m_w_mask) == (7 << (maxy_index-1) ) ) { // ï¿½ï¿½T2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                                 score -= int( warning_factor * (ai_param.tspin * cnt) );
                             }
                         }
                     }
                 } else if ( ybeg <= 6 && ybeg - t_dis > 1 || ybeg > 6 ) {
                     int row_data = pool.row[ybeg - 1];
-                    if ( (row_data & ( 1 << (maxy_index-1) ) ) == 0 && (row_data & ( 1 << (maxy_index+1) ) ) == 0 // ¿ÓµÄ×óÓÒÎª¿Õ
-                         && x_holes[ybeg] == 0 && x_holes[ybeg-1] == 0 // ÆäËüÎ»ÖÃÎÞ¶´
+                    if ( (row_data & ( 1 << (maxy_index-1) ) ) == 0 && (row_data & ( 1 << (maxy_index+1) ) ) == 0 // ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
+                         && x_holes[ybeg] == 0 && x_holes[ybeg-1] == 0 // ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Þ¶ï¿½
                          && x_op_holes[ybeg] == 0 && x_op_holes[ybeg-1] <= 1
                          )
                     {
-                        // T¿ÓÐÎ×´
-                        if ( ( pool.row[ybeg] & (1 << (maxy_index-1)) ) && ( pool.row[ybeg] & (1 << (maxy_index+1)) ) ) { // ¿ÓµÄÏÂÃæÁ½¿é´æÔÚ
-                            if ( !!( pool.row[ybeg-2] & (1 << (maxy_index-1)) ) + !!( pool.row[ybeg-2] & (1 << (maxy_index+1)) ) == 1 ) { // ¿ÓµÄÉÏÃæµÄ¿é´æÔÚ
+                        // Tï¿½ï¿½ï¿½ï¿½×´
+                        if ( ( pool.row[ybeg] & (1 << (maxy_index-1)) ) && ( pool.row[ybeg] & (1 << (maxy_index+1)) ) ) { // ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                            if ( !!( pool.row[ybeg-2] & (1 << (maxy_index-1)) ) + !!( pool.row[ybeg-2] & (1 << (maxy_index+1)) ) == 1 ) { // ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½
                                 double s = 0;
                                 //t2_x[maxy_index] = ybeg;
                                 double factor = ybeg > 6 ? 0.5 : 1 - t_dis / 6.0 * 0.5;
                                 if ( warning_factor < 1 )
                                     factor = ybeg > 6 ? 1.0 / 5 : 1 / (1 + t_dis / 3.0);
                                 s += ai_param.open_hole;
-                                if ( (~pool.row[ybeg] & pool.m_w_mask) == (1 << maxy_index) ) { // ¿ÉT1
+                                if ( (~pool.row[ybeg] & pool.m_w_mask) == (1 << maxy_index) ) { // ï¿½ï¿½T1
                                     s += ai_param.tspin + ai_param.tspin * 1 * factor;
-                                    if ( (~row_data & pool.m_w_mask) == (7 << (maxy_index-1) ) ) { // ¿ÉT2ÍêÃÀ¿Ó
+                                    if ( (~row_data & pool.m_w_mask) == (7 << (maxy_index-1) ) ) { // ï¿½ï¿½T2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                                         s += ai_param.tspin * 3 * factor;
                                         // s -= ai_param.tspin * 3 / factor / 1;
                                     }
@@ -704,7 +703,7 @@ namespace AI {
             //score -= readatt * ai_param.readyatt;
 
         }
-        // T3 ÐÎ×´ÅÐ¶¨
+        // T3 ï¿½ï¿½×´ï¿½Ð¶ï¿½
         //3001
         //2000
         // 1101
@@ -722,16 +721,16 @@ namespace AI {
                 if ( x_holes[y] == 0 ) continue;
                 for ( int x = 1; x < pool_w - 1; ++x ) {
                     if ( ( pool.row[y + 1] & ( 1 << x ) ) == 0 || ( pool.row[y + 1] & ( 1 << x ) ) == 0  ) {
-                        continue; // ÉÏÏÂÎÞ¶´
+                        continue; // ï¿½ï¿½ï¿½ï¿½ï¿½Þ¶ï¿½
                     }
                     int row_y[5];
                     for ( int i = 0; i < 5; ++i ) {
                         row_y[i] = ( (pool.row[y - 3 + i] | (3 << pool_w)) << 2 ) | 3;
                     }
-                    if ( ( (row_y[3] >> (x + 1)) & ( 7 ) ) == 1 /*100*/ ) { // ÉÏÍ¼Çé¿ö
+                    if ( ( (row_y[3] >> (x + 1)) & ( 7 ) ) == 1 /*100*/ ) { // ï¿½ï¿½Í¼ï¿½ï¿½ï¿½
                         if ( x == pool_w - 2 ) continue;
-                        //if ( t2_x[x+1] == y ) continue; // ÅÅ³ýT2¿Ó
-                        // ËùÓÐ¿ÕµÄµØ·½ÏÈÆ¥Åä
+                        //if ( t2_x[x+1] == y ) continue; // ï¿½Å³ï¿½T2ï¿½ï¿½
+                        // ï¿½ï¿½ï¿½Ð¿ÕµÄµØ·ï¿½ï¿½ï¿½Æ¥ï¿½ï¿½
                         if (   ( (row_y[2] >> (x + 1)) & ( 7 ) ) != 3 /*110*/
                             //|| ( (row_y[4] >> (x + 1)) & ( 15 ) ) != 11 /*1101*/
                             || ( (row_y[4] >> (x + 1)) & ( 13 ) ) != 9 /*1011mask=1001*/
@@ -744,9 +743,9 @@ namespace AI {
                             continue;
                         }
                         if ( ( row_y[0] & ( 1 << (x) ) ) == 0 && ( row_y[1] & ( 1 << (x) ) ) ) {
-                            continue; // ¸ß´¦×ª½Ç
+                            continue; // ï¿½ß´ï¿½×ªï¿½ï¿½
                         }
-                        if ( min_y[x + 1] > y ) { // ¶´ÅÐ¶¨
+                        if ( min_y[x + 1] > y ) { // ï¿½ï¿½ï¿½Ð¶ï¿½
                             if ( x_holes[y - 1] > 0 || x_holes[y + 1] > 0 || x_holes[y] > 1
                                 || x_op_holes[y - 1] > 0 || x_op_holes[y + 1] > 0 || x_op_holes[y] > 0)
                             {
@@ -774,7 +773,7 @@ namespace AI {
                         {
                             int e = ~(pool.row[y + 1] | (1<<x) ) & pool.m_w_mask;
                             e &= ( e-1);
-                            if ( e == 0 ) { // ×îµ×Ö»Ê£Ò»¿Õ
+                            if ( e == 0 ) { // ï¿½ï¿½ï¿½Ö»Ê£Ò»ï¿½ï¿½
                                 //++full;
                             } else {
                                 score -= s;
@@ -784,7 +783,7 @@ namespace AI {
                         {
                             int e = ~(pool.row[y] | (1<<(x+2))) & pool.m_w_mask;
                             e &= ( e-1 );
-                            if ( (e & ( e-1)) == 0 ) { // µ×¶þÖ»Ê£Á½¿Õ
+                            if ( (e & ( e-1)) == 0 ) { // ï¿½×¶ï¿½Ö»Ê£ï¿½ï¿½ï¿½ï¿½
                                 //++full;
                             } else {
                                 if ( (pool.row[y] & (1<<(x+2))) == 0 ) {
@@ -798,7 +797,7 @@ namespace AI {
                         {
                             int e = ~pool.row[y - 1] & pool.m_w_mask;
                             e &= ( e-1 );
-                            if ( e == 0 ) { // µ×ÈýÖ»Ê£Ò»¿Õ
+                            if ( e == 0 ) { // ï¿½ï¿½ï¿½ï¿½Ö»Ê£Ò»ï¿½ï¿½
                                 //++full;
                             } else {
                                 score -= s;
@@ -813,10 +812,10 @@ namespace AI {
                                 score -= int( warning_factor * ai_param.tspin3 * 3 / ( t_dis + 1 ) );
                             }
                         }
-                    } else if ( ( (row_y[3] >> (x+1) ) & ( 7 ) ) == 4 /*001*/ ) { // ¾µÏñÇé¿ö
+                    } else if ( ( (row_y[3] >> (x+1) ) & ( 7 ) ) == 4 /*001*/ ) { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         if ( x == 1 ) continue;
-                        //if ( t2_x[x-1] == y ) continue; // ÅÅ³ýT2¿Ó
-                        // ËùÓÐ¿ÕµÄµØ·½ÏÈÆ¥Åä
+                        //if ( t2_x[x-1] == y ) continue; // ï¿½Å³ï¿½T2ï¿½ï¿½
+                        // ï¿½ï¿½ï¿½Ð¿ÕµÄµØ·ï¿½ï¿½ï¿½Æ¥ï¿½ï¿½
                         if (   ( (row_y[2] >> (x+1)) & ( 7 ) ) != 6 /*011*/
                             //|| ( (row_y[4] >> (x)) & ( 15 ) ) != 13 /*1011*/
                             || ( (row_y[4] >> (x)) & ( 11 ) ) != 9 /*1101mask=1001*/
@@ -829,9 +828,9 @@ namespace AI {
                             continue;
                         }
                         if ( ( row_y[0] & ( 1 << (x + 4) ) ) == 0 && ( row_y[1] & ( 1 << (x + 4) ) ) ) {
-                            continue; // ¸ß´¦×ª½Ç
+                            continue; // ï¿½ß´ï¿½×ªï¿½ï¿½
                         }
-                        if ( min_y[x - 1] > y ) { // ¶´ÅÐ¶¨
+                        if ( min_y[x - 1] > y ) { // ï¿½ï¿½ï¿½Ð¶ï¿½
                             if ( x_holes[y - 1] > 0 || x_holes[y + 1] > 0 || x_holes[y] > 1
                                 || x_op_holes[y - 1] > 0 || x_op_holes[y + 1] > 0 || x_op_holes[y] > 0)
                             {
@@ -859,7 +858,7 @@ namespace AI {
                         {
                             int e = ~(pool.row[y + 1] | (1<<x) ) & pool.m_w_mask;
                             e &= ( e-1);
-                            if ( e == 0 ) { // ×îµ×Ö»Ê£Ò»¿Õ
+                            if ( e == 0 ) { // ï¿½ï¿½ï¿½Ö»Ê£Ò»ï¿½ï¿½
                                 //++full;
                             } else {
                                 score -= s;
@@ -869,7 +868,7 @@ namespace AI {
                         {
                             int e = ~(pool.row[y] | (1<<x-2)) & pool.m_w_mask;
                             e &= ( e-1);
-                            if ( (e & ( e-1)) == 0 ) { // µ×¶þÖ»Ê£Á½¿Õ
+                            if ( (e & ( e-1)) == 0 ) { // ï¿½×¶ï¿½Ö»Ê£ï¿½ï¿½ï¿½ï¿½
                                 //++full;
                             } else {
                                 if ( (pool.row[y] & (1<<(x-2))) == 0 ) {
@@ -883,7 +882,7 @@ namespace AI {
                         {
                             int e = ~pool.row[y - 1] & pool.m_w_mask;
                             e &= ( e-1);
-                            if ( e == 0 ) { // µ×ÈýÖ»Ê£Ò»¿Õ
+                            if ( e == 0 ) { // ï¿½ï¿½ï¿½ï¿½Ö»Ê£Ò»ï¿½ï¿½
                                 //++full;
                             } else {
                                 score -= s;
@@ -902,7 +901,7 @@ namespace AI {
                 }
             }
         }
-        // 4WÐÎ×´ÅÐ¶¨
+        // 4Wï¿½ï¿½×´ï¿½Ð¶ï¿½
         if ( USE4W )
         if ( ai_param.strategy_4w > 0 && total_clears < 1 ) //&& lastCombo < 1 && pool.combo < 1 )
         {
@@ -940,10 +939,10 @@ namespace AI {
                 }
                 break;
             }
-            if ( maxy_4w <= pool_h - 4 ) { // Èç¹ûÓÐ³¬¹ý4¹¥»÷ÐÐ¾Í²»´î
+            if ( maxy_4w <= pool_h - 4 ) { // ï¿½ï¿½ï¿½ï¿½Ð³ï¿½ï¿½ï¿½4ï¿½ï¿½ï¿½ï¿½ï¿½Ð¾Í²ï¿½ï¿½ï¿½
                 maxy_4w = -10;
             }
-            //if ( maxy_4w - maxy_4w_combo > 15 ) { // Èç¹ûÓÐ³¬¹ý10Ô¤±¸ÐÐ¾Í²»´î
+            //if ( maxy_4w - maxy_4w_combo > 15 ) { // ï¿½ï¿½ï¿½ï¿½Ð³ï¿½ï¿½ï¿½10Ô¤ï¿½ï¿½ï¿½Ð¾Í²ï¿½ï¿½ï¿½
             //    maxy_4w = -10;
             //}
             if ( maxy_4w - maxy_4w_combo < 9 && pool_hole_score > ai_param.hole * (maxy_4w - maxy_4w_combo) / 2 ) {
@@ -990,7 +989,7 @@ namespace AI {
                 }
             }
         }
-        // ÀÛ»ý·Ö
+        // ï¿½Û»ï¿½ï¿½ï¿½
         score += clearScore; 
         return score;
     }
@@ -1387,7 +1386,7 @@ namespace AI {
                 if ( pq_size > 1 ) pq_last->pop_back();
 
                 const MovsState &ms_last = pq_last->back();
-                if ( pq_size != pqmax_size && ms_last.first.score > 50000000 ) { // ³¬¸ß·Ö¼ôÖ¦
+                if ( pq_size != pqmax_size && ms_last.first.score > 50000000 ) { // ï¿½ï¿½ï¿½ß·Ö¼ï¿½Ö¦
                     break;
                 }
                 if ( search_nodes >= max_search_nodes ) {
@@ -1397,7 +1396,7 @@ namespace AI {
                 }
                 max_combo = std::max( max_combo, (int)ms_last.pool_last.combo );
                 if (0)
-                if ( pq_size != pqmax_size ) { // ³¬¸ßcomboºóµÄÎÞcombo¼ôÖ¦
+                if ( pq_size != pqmax_size ) { // ï¿½ï¿½ï¿½ï¿½comboï¿½ï¿½ï¿½ï¿½ï¿½comboï¿½ï¿½Ö¦
                     if ( ms_last.pool_last.combo > 0 && max_combo > 5 && ms_last.pool_last.combo < max_combo - 1 ) {
                         break;
                     }
@@ -1451,7 +1450,7 @@ namespace AI {
                     MovsState ms = ms_last;
                     ms.first.score += 100000000;
                     pq->push(ms);
-                    continue; // ³öÏÖ¾Í¹ÒµÄ»°Ê¹ÓÃholdµÄÇé¿ö²»ÄÜÅÜ
+                    continue; // ï¿½ï¿½ï¿½Ö¾Í¹ÒµÄ»ï¿½Ê¹ï¿½ï¿½holdï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 } else {
                     MovQueue<MovsState> p(movs.size());
                     for (size_t i = 0; i < movs.size() ; ++i) {
@@ -1619,7 +1618,7 @@ namespace AI {
                 if ( pq_size > 1 ) pq_last->pop_back();
 
                 const MovsState &ms_last = pq_last->back();
-                if ( pq_size != pqmax_size && ms_last.first.score > 50000000 ) { // ³¬¸ß·Ö¼ôÖ¦
+                if ( pq_size != pqmax_size && ms_last.first.score > 50000000 ) { // ï¿½ï¿½ï¿½ß·Ö¼ï¿½Ö¦
                     break;
                 }
                 pq->push(ms_last);
@@ -1829,70 +1828,12 @@ namespace AI {
         *p->searchDeep = searchDeep;
         *p->flag = -1;
         delete p;
-        _endthread();
+        //_endthread();
     }
     int RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, int level, int player) {
         flag = 0;
-        _beginthread(AI_Thread, 0, new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, level, player) );
+        AI_Thread(new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, level, player));
+        //_beginthread(AI_Thread, 0, new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, level, player) );
         return 0;
     }
-    void AI_Thread_Dll( void* lpParam ) {
-        AI_THREAD_PARAM* p = (AI_THREAD_PARAM*)lpParam;
-        *p->flag = 1;
-        {
-            extern std::vector<int> g_combo_attack;
-            const GameField& gamefield = p->pool;
-            int overfield[32];
-            int field[32];
-            char next[32];
-            int comboTable[32];
-            char gemMap[] = " ITLJZSO";
-            for ( int iy = 0; iy <= gamefield.height(); ++iy ) {
-                field[iy] = gamefield.row[iy];
-            }
-            for ( int iy = 0; iy < 16; ++iy ) {
-                overfield[iy] = gamefield.row[-iy-1];
-            }
-            if ( p->maxDeep > 6 ) p->maxDeep = 6;
-            for ( int i = 0; i < p->maxDeep; ++i ) {
-                next[i] = gemMap[p->next[i].num];
-            }
-            for ( int i = 0; i < g_combo_attack.size(); ++i ) {
-                comboTable[i] = g_combo_attack[i];
-                if ( i + 1 == g_combo_attack.size() ) comboTable[i+1] = -1;
-            }
-
-            char* pOutStr = p->func(overfield, field, gamefield.width(), gamefield.height(), gamefield.b2b, gamefield.combo,
-                next, gemMap[gamefield.m_hold], !p->hold, gemMap[p->cur.num], p->x, p->y, p->cur.spin,
-                true, spin180Enable(), p->upcomeAtt, comboTable, p->maxDeep, p->level, p->player);
-            
-            std::map<char, int> outMap;
-            outMap[' '] = AI::Moving::MOV_NULL;
-            outMap['l'] = AI::Moving::MOV_L;
-            outMap['r'] = AI::Moving::MOV_R;
-            outMap['L'] = AI::Moving::MOV_LL;
-            outMap['R'] = AI::Moving::MOV_RR;
-            outMap['d'] = AI::Moving::MOV_D;
-            outMap['D'] = AI::Moving::MOV_DD;
-            outMap['z'] = AI::Moving::MOV_LSPIN;
-            outMap['x'] = AI::Moving::MOV_SPIN2;
-            outMap['c'] = AI::Moving::MOV_RSPIN;
-            outMap['v'] = AI::Moving::MOV_HOLD;
-            outMap['V'] = AI::Moving::MOV_DROP;
-            AI::Moving mov;
-            for ( ; *pOutStr; ++pOutStr ) {
-                mov.movs.push_back( outMap[*pOutStr] );
-            }
-            *p->ret_mov = mov;
-        }
-        *p->flag = -1;
-        delete p;
-        _endthread();
-    }
-    int RunAIDll(TetrisAI_t func, Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, int level, int player) {
-        flag = 0;
-        _beginthread(AI_Thread_Dll, 0, new AI_THREAD_PARAM(func, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, level, player) );
-        return 0;
-    }
-
 }

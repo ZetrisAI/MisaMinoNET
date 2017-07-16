@@ -26,13 +26,13 @@
 // This is a faster version by taking Shawn Cokus's optimization,
 // Matthe Bellew's simplification, Isaku Wada's real version.
 // C++ version by Lyell Haynes (Equamen)
-
+#include <cstdint>
 namespace AI {
 
 const int N = 624;
 const int M = 397;
 
-typedef unsigned __int32 uint32;
+typedef uint32_t uint32;
 
 class mtrandom {
 public:

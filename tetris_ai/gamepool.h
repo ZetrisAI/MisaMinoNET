@@ -2,6 +2,8 @@
 #define _ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH
 
 #include <string.h>
+#include <cstdint>
+#include <iostream>
 #include "tetris_gem.h"
 #ifdef XP_RELEASE
 #define AI_POOL_MAX_H 50
@@ -17,7 +19,7 @@ namespace AI {
     bool isEnableAllSpin();
     void setSoftdrop( bool softdrop );
     bool softdropEnable();
-    typedef __int64 uint64;
+    typedef uint64_t uint64;
     void InitHashTable();
     uint64 hash(const GameField & pool);
 #ifdef XP_RELEASE
@@ -49,6 +51,20 @@ namespace AI {
             row = &m_row[gem_add_y];
             reset(w, h);
         }
+        friend std::ostream& operator<<(std::ostream &os, const GameField &obj){
+            os<<"\n";
+            for (int i = AI::gem_add_y + 1 + 2; i < AI_POOL_MAX_H-3; ++i) {
+                os<<i<<"|";
+                for (int k = obj.width(); k >=0; --k) {
+                    if((obj.m_row[i] & (1<<k)) == 1<<k){
+                        os<<"1";
+                    }else{
+                        os<<"0";
+                    }
+                }
+                os<<"\n";
+            }
+        }
         int width() const { return m_w; }
         int height() const { return m_h; }
         void reset (signed char w, signed char h) {
@@ -57,11 +73,7 @@ namespace AI {
             combo = 0;
             b2b = 0;
             m_hold = 0;
-#ifdef XP_RELEASE
-            m_pc_att = 6;
-#else
             m_pc_att = 10;
-#endif
             m_w_mask = ( 1 << w ) - 1;
             for (int i = 0; i < AI_POOL_MAX_H; ++i) {
                 m_row[i] = 0;
@@ -86,7 +98,7 @@ namespace AI {
             }
             return true;
         }
-        //__forceinline
+
         inline
         bool isCollide(int y, const Gem & gem) const {
             for ( int h = 3; h >= 0; --h ) {
@@ -95,7 +107,7 @@ namespace AI {
             }
             return false;
         }
-        //__forceinline
+
         inline
         bool isCollide(int x, int y, const Gem & gem) const {
             Gem _gem = gem;

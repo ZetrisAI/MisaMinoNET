@@ -6,7 +6,7 @@
 std::vector<int> genNext(std::vector<int> val, AI::Random& rnd) {
     for ( size_t i = 0; i < val.size(); ++i) {
     //int i = rnd.randint(val.size()); {
-        int a = max(2, abs(val[i]) / 2);
+        int a = std::max(2, abs(val[i]) / 2);
         a = rnd.randint(a + 1);
         if ( rnd.randint(2) ) {
             val[i] += a;
@@ -95,7 +95,7 @@ public:
         param1.score = -1;
         return param1;
     }
-    bool loadResult(char filename[] = "param.txt") {
+/*    bool loadResult(char filename[] = "param.txt") {
         FILE * fp = fopen(filename, "r");
         if ( fp ) {
             int n = sizeof(AI::AI_Param) / sizeof(int);
@@ -123,8 +123,8 @@ public:
         } else {
             return false;
         }
-    }
-    void saveResult(char filename[] = "param.txt", bool append = false) {
+    }*/
+    /*void saveResult(char filename[] = "param.txt", bool append = false) {
         FILE * fp = fopen(filename, (append ? "a": "w") );
         if ( fp ) {
             int n = sizeof(AI::AI_Param) / sizeof(int);
@@ -138,7 +138,7 @@ public:
             fprintf(fp, "\n");
             fclose(fp);
         }
-    }
+    }*/
     void newgame(AI::AI_Param& p1, AI::AI_Param& p2, AI::Random& rnd) {
         if ( --nround < 0 ) {
             nround = ai.size() / 2;
@@ -203,13 +203,13 @@ public:
                 ai_size = ai.size();
             }
             if ( find_best && best_ai.empty() ) {
-                saveResult("good.txt", true);
+                //saveResult("good.txt", true);
                 state_find_best = true;
                 best_ai = ai;
             }
             if ( !find_best || ai.size() == 1 )
             {
-                saveResult("best.txt", true);
+                //saveResult("best.txt", true);
                 state_find_best = false;
                 ai = best_ai;
                 ai_size = best_ai.size();
@@ -264,7 +264,7 @@ public:
         for ( int i = 0; i < round; ++i) {
             m_p2_seed.push_back(rnd.rand());
         }
-        saveResult();
+        //saveResult();
     }
     void result(int p1_win, int p1_score, int p2_win, int p2_score) {
         ai[0].score = p1_score;
@@ -364,7 +364,7 @@ public:
                     || m_p1 >= 10 && (m_p1 + 1) / (m_p2 + 1) > 1
                     || m_p2 >= 10 && (m_p2 + 1) / (m_p1 + 1) > 1
                     || abs(m_p1 - m_p2) > round / 3
-                    || min(m_p1, m_p2) > round - round / 3
+                    || std::min(m_p1, m_p2) > round - round / 3
                     ) {
                         result(m_p1, m_p1_score / (m_p1 + m_p2), m_p2, m_p2_score / (m_p1 + m_p2));
                         newgame(p1.m_ai_param, p2.m_ai_param, rnd);

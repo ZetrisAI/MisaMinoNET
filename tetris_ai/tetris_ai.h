@@ -209,27 +209,27 @@ namespace AI {
         }
     };
     struct AI_Param {
-        int miny_factor; // ×î¸ß¸ß¶È·Ö
-        int hole; // -¶´·Ö
-        int open_hole; // -¿ª·Å¶´£¬¿ÉÄÜ²å¿é
-        int v_transitions; // -Ë®Æ½×ª»»ÏµÊý
-        int tspin3; // T3»ù±¾·Ö
+        int miny_factor; // ï¿½ï¿½ß¸ß¶È·ï¿½
+        int hole; // -ï¿½ï¿½ï¿½ï¿½
+        int open_hole; // -ï¿½ï¿½ï¿½Å¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü²ï¿½ï¿½
+        int v_transitions; // -Ë®Æ½×ªï¿½ï¿½Ïµï¿½ï¿½
+        int tspin3; // T3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-        int clear_efficient; // ÏûÐÐÐ§ÂÊÏµÊý
-        int upcomeAtt; // -Ô¤±¸¹¥»÷»ù±¾ÏµÊý
-        int h_factor; // -¸ß¶È²îÏµÊý
-        int hole_dis_factor2; // -¶´¾àÀëÏµÊý
-        int hole_dis; // -¶´µÄ¾àÀë·Ö
-        //int flat_factor; // Æ½Ö±ÏµÊý
+        int clear_efficient; // ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½Ïµï¿½ï¿½
+        int upcomeAtt; // -Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
+        int h_factor; // -ï¿½ß¶È²ï¿½Ïµï¿½ï¿½
+        int hole_dis_factor2; // -ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
+        int hole_dis; // -ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½ï¿½
+        //int flat_factor; // Æ½Ö±Ïµï¿½ï¿½
 
-        int hole_dis_factor; // -¶´¾àÀëÏµÊý
-        int tspin; // tspinÏµÊý
-        int hold_T; // hold TºÍIÏµÊý
-        int hold_I; // hold TºÍIÏµÊý
-        int clear_useless_factor; // ÎÞÐ§ÐÐÏµÊý
-        //int ready_combo; // Á¬»÷Ô¤±¸·Öx
+        int hole_dis_factor; // -ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
+        int tspin; // tspinÏµï¿½ï¿½
+        int hold_T; // hold Tï¿½ï¿½IÏµï¿½ï¿½
+        int hold_I; // hold Tï¿½ï¿½IÏµï¿½ï¿½
+        int clear_useless_factor; // ï¿½ï¿½Ð§ï¿½ï¿½Ïµï¿½ï¿½
+        //int ready_combo; // ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½x
 
-        int dif_factor; //Æ«²îÖµ
+        int dif_factor; //Æ«ï¿½ï¿½Öµ
         int strategy_4w;
     };
     typedef char* (*AIName_t)( int level );
@@ -246,5 +246,4 @@ namespace AI {
     void FindPathMoving(const GameField& field, std::vector<Moving> & movs, Gem cur, int x, int y, bool hold);
     MovingSimple AISearch(AI_Param ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, int level);
     int RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, int level, int player);
-    int RunAIDll(TetrisAI_t func, Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, int level, int player);
 }

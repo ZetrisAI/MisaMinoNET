@@ -53,7 +53,7 @@ public:
 //  17,  26,  18,   1,   9,  12,  16,   4,  16,  -4,  11,   7,  11,  14
 //  19,  25,  20,   6,  23,  13,  12,   3,  14,   5,  13,  10,  13,  26
 //  11,  27,  21,   3,  28,  10,  17,   5,  20,  -2,  11,  15,  31,  11
-//   8,  26,  16,   5,  23,  12,   7,   5,   8,  -8,  14,  15,   9,  18 // APL ¸ß
+//   8,  26,  16,   5,  23,  12,   7,   5,   8,  -8,  14,  15,   9,  18 // APL ï¿½ï¿½
 //   8,  26,  21,   7,  21,  12,   5,   5,   1,  -3,  13,  11,  11,   4
 //  13,  28,  21,  14,  25,  11,  21,   6,   8,  -3,  13,  24,  31,  1
 //   8,  26,  21,   7,  21,  12,   5,   5,   1,  -3,  13,  11,  11,   4
@@ -64,7 +64,7 @@ public:
 //  8,  26,  21,   7,  21,  12,   5,   5,  20,  -3,  13,  21,  11,   4
 //   8,  38,  18,  13, -14,  19,   7,   4,  14, -15,   9,  19,  16,  -3
 //   5,  38,  20,   5,   8,  39,   7,   8, -13,  -5,   4,  24,   7, -20
-//  36,  34,  50,   8,  12,  12,   7,  10,   2,   6,  11,   10,   9,   6 // ÍÚÍÚ»ú
+//  36,  34,  50,   8,  12,  12,   7,  10,   2,   6,  11,   10,   9,   6 // ï¿½ï¿½ï¿½Ú»ï¿½
 //  22,  36,  56,  17,  17,  29,   6,   6,   6,   7,  18,  13,   8,  21
 //   3,  34,  38,  12,  20,  16,  10,   7,  10,  10,  14,  35,  12,   0
 //  26,  35,  45,  14,  -2,  10,   6,   7,   4,   8,  13,  14,   8,  1
@@ -112,7 +112,6 @@ public:
         m_ai_param = param;
     }
     void reset ( unsigned seed, unsigned pass = 0 ) {
-        while ( ai_movs_flag != -1 ) ::Sleep(1);
         last_max_combo = m_max_combo;
         AI::Tetris::reset(seed, 10, 22);
         m_randatt.seed( seed );
@@ -143,52 +142,31 @@ public:
     bool tryXXMove(int dx) {
         bool ret = Tetris::tryXMove( dx );
         while ( Tetris::tryXMove(dx) ) ;
-        if ( mSFXon && ret ) {
-            GameSound::ins().mSFX_move.play( m_lr );
-        }
         return ret;
     }
     bool tryYMove(int dy) {
         bool ret = Tetris::tryYMove( dy );
-        if ( mSFXon && ret ) {
-            GameSound::ins().mSFX_softdrop.play( m_lr );
-        }
         return ret;
     }
     bool tryYYMove(int dy) {
         bool ret = Tetris::tryYMove( dy );
         while ( Tetris::tryYMove(dy) ) ;
-        if ( mSFXon && ret ) {
-            GameSound::ins().mSFX_softdrop.play( m_lr );
-        }
         return ret;
     }
     bool trySpin(int dSpin) {
         bool ret = Tetris::trySpin( dSpin );
-        if ( mSFXon && ret ) {
-            GameSound::ins().mSFX_rotate.play( m_lr );
-        }
         return ret;
     }
     bool trySpin180() {
         bool ret = Tetris::trySpin180( );
-        if ( mSFXon && ret ) {
-            GameSound::ins().mSFX_rotate.play( m_lr );
-        }
         return ret;
     }
     bool tryHold() {
         bool ret = Tetris::tryHold( );
-        if ( mSFXon && ret ) {
-            GameSound::ins().mSFX_hold.play( m_lr );
-        }
         return ret;
     }
     bool drop() {
         bool ret = Tetris::drop( );
-        if ( mSFXon && ret ) {
-            GameSound::ins().mSFX_lockdown.play( m_lr );
-        }
         return ret;
     }
     void clearSFX( ) {
@@ -241,25 +219,9 @@ public:
         }
     }
     bool ko () {
-        if ( mSFXon ) {
-            if ( m_ko ) {
-                if ( GameSound::ins().mSFX_ko.isOpen() ) {
-                    GameSound::ins().mSFX_ko.play();
-                    return true;
-                }
-            } else {
-                if ( GameSound::ins().mSFX_gameover.isOpen() ) {
-                    GameSound::ins().mSFX_gameover.play();
-                    return true;
-                }
-            }
-        }
         return false;
     }
     void acceptAttackSFX() {
-        if ( mSFXon && GameSound::ins().mSFX_lineattack.isOpen() ) {
-            GameSound::ins().mSFX_lineattack.play( m_lr );
-        }
     }
     void acceptAttack(int n) {
         int att[2] = {0};
@@ -276,9 +238,9 @@ public:
         m_last_hole_x = rowdata;
         rowdata = ~( 1 << rowdata ) & m_pool.m_w_mask;
         for ( ; n > 0; --n ) {
-            if ( ATTACK_MODE == 0 ) addRow( 0 ); // ¿ÕÆøÐÐ
-            if ( ATTACK_MODE == 1 ) addRow( rowdata ); // TOPÐÐ
-            if ( ATTACK_MODE == 2 ) addRow( att[n&1] ); // »ðÆ´ÐÐ
+            if ( ATTACK_MODE == 0 ) addRow( 0 ); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            if ( ATTACK_MODE == 1 ) addRow( rowdata ); // TOPï¿½ï¿½
+            if ( ATTACK_MODE == 2 ) addRow( att[n&1] ); // ï¿½ï¿½Æ´ï¿½ï¿½
             ++total_accept_atts;
         }
         if ( alive() ) {
@@ -325,7 +287,7 @@ public:
     int total_accept_atts;
     int last_max_combo;
     int m_ko;
-    int m_lr; // 3dÒôÐ§¿ªÆô
+    int m_lr; // 3dï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½
     int m_piecedelay;
     AI::Random m_randatt;
     AI::AI_Param m_ai_param;
