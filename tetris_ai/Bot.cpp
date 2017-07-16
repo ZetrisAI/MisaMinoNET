@@ -3,8 +3,6 @@
 using namespace std;
 
 Bot::Bot():m_hold(' '){
-    m_field=new int[21];
-    
     m_gemMap[' '] = AI::GEMTYPE_NULL;
     m_gemMap['I'] = AI::GEMTYPE_I;
     m_gemMap['T'] = AI::GEMTYPE_T;
@@ -18,9 +16,7 @@ Bot::Bot():m_hold(' '){
 Bot::Bot(const Bot& orig) {
 }
 
-Bot::~Bot() {
-    delete m_field;
-}
+Bot::~Bot() {}
 
 void Bot::startParser() {
     while (true) {
