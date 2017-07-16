@@ -114,47 +114,24 @@ struct tetris_rule {
     }
 };
 
-struct tetris_player {
-    int tojsoftdrop;
-    int das;
-    int softdropdelay;
-    int softdropdas;
-    int sound_p1;
-    int sound_p2;
-    int sound_bgm;
-
-    tetris_player() {
-        tojsoftdrop = 1;
-        das = 8;
-        softdropdelay = 10;
-        softdropdas = 10;
-        sound_p1 = 1;
-        sound_p2 = 0;
-        sound_bgm = 1;
-    }
-};
-
-void loadAI(tetris_ai ai[]) {
-    for (int i = 0; i < 2; ++i) {
-        ai[i].style = 2;
-        ai[i].level = 10;
-        ai[i].PieceMul = 1;
-        ai[i].plugin = "";
-    }
+void loadAI(tetris_ai ai) {
+    ai.style = 2;
+    ai.level = 10;
+    ai.PieceMul = 1;
+    ai.plugin = "";
 }
 
 void mainscene() {
     tetris_rule rule;
-    tetris_ai ai[2];
+    tetris_ai ai;
     int ai_4w = 1;
 
     loadAI(ai);
 
-    int players_num = 1;
-    std::vector<TetrisGame> tetris(players_num);
-    onGameStart(tetris[0]);
+    TetrisGame tetris;
+    onGameStart(tetris);
     EvE eve;
-    eve.ai.push_back(tetris[0].m_ai_param);
+    eve.ai.push_back(tetris.m_ai_param);
 
     int ai_eve = 1;
     int ai_search_height_deep = AI_TRAINING_DEEP;
@@ -232,87 +209,82 @@ void mainscene() {
         13, 9, 17, 10, 29, 25, 39, 2, 12, 19, 7, 24, 21, 16, 14, 19, 200
 
     };
-    tetris[0].m_ai_param = param;
+    tetris.m_ai_param = param;
 
-    for (int i = 0; i < players_num; ++i) {
-        if (ai[i].level <= 0) {
-            AI::AI_Param param[2] = {
-                {
+    if (ai.level <= 0) {
+        AI::AI_Param param[2] = {
+            {
 
-                    //  43,  47,  84,  62,  60,  47,  53,  21,   2,  98,  85,  13,  21,  37,  38,  0
-                    //  47,  66,  86,  66, -79,  42,  38,  23,  -3,  95,  74,  13,  27,  36,  37,  0
-                    //  45,  61,  99,  49,  63,  40,  42,  31, -27,  88,  80,  28,  28,  41,  33,  0
-                    //  58,  61,  90,  82,  19,  27,  44,  17,  -4,  75,  47,  20,  38,  32,  41,  0
-                    47, 62, 94, 90, 11, 35, 48, 19, -21, 78, 64, 20, 42, 42, 39, 300
-                    //  48,  65,  84,  59, -75,  39,  43,  23, -17,  92,  64,  20,  29,  37,  36,  0
+                //  43,  47,  84,  62,  60,  47,  53,  21,   2,  98,  85,  13,  21,  37,  38,  0
+                //  47,  66,  86,  66, -79,  42,  38,  23,  -3,  95,  74,  13,  27,  36,  37,  0
+                //  45,  61,  99,  49,  63,  40,  42,  31, -27,  88,  80,  28,  28,  41,  33,  0
+                //  58,  61,  90,  82,  19,  27,  44,  17,  -4,  75,  47,  20,  38,  32,  41,  0
+                47, 62, 94, 90, 11, 35, 48, 19, -21, 78, 64, 20, 42, 42, 39, 300
+                //  48,  65,  84,  59, -75,  39,  43,  23, -17,  92,  64,  20,  29,  37,  36,  0
 
-                },
-                {
+            },
+            {
 
-                    //  43,  47,  84,  62,  60,  47,  53,  21,   2,  98,  85,  13,  21,  37,  38,  0
-                    //  47,  66,  86,  66, -79,  42,  38,  23,  -3,  95,  74,  13,  27,  36,  37,  0
-                    //  45,  61,  99,  49,  63,  40,  42,  31, -27,  88,  80,  28,  28,  41,  33,  0 // a
-                    //  58,  61,  90,  82,  19,  27,  44,  17,  -4,  75,  47,  20,  38,  32,  41,  0 // b
-                    //  47,  62,  94,  90,  11,  35,  48,  19, -21,  78,  64,  20,  42,  42,  39,  0 // s
-                    //  48,  65,  84,  59, -75,  39,  43,  23, -17,  92,  64,  20,  29,  37,  36,  0 // s
-                    71, 12, 78, 52, 96, 37, 14, 24, 40, 99, 44, 49, 93, 25, 44, 380
-                }
-            };
-            tetris[i].m_ai_param = param[i];
-        }
+                //  43,  47,  84,  62,  60,  47,  53,  21,   2,  98,  85,  13,  21,  37,  38,  0
+                //  47,  66,  86,  66, -79,  42,  38,  23,  -3,  95,  74,  13,  27,  36,  37,  0
+                //  45,  61,  99,  49,  63,  40,  42,  31, -27,  88,  80,  28,  28,  41,  33,  0 // a
+                //  58,  61,  90,  82,  19,  27,  44,  17,  -4,  75,  47,  20,  38,  32,  41,  0 // b
+                //  47,  62,  94,  90,  11,  35,  48,  19, -21,  78,  64,  20,  42,  42,  39,  0 // s
+                //  48,  65,  84,  59, -75,  39,  43,  23, -17,  92,  64,  20,  29,  37,  36,  0 // s
+                71, 12, 78, 52, 96, 37, 14, 24, 40, 99, 44, 49, 93, 25, 44, 380
+            }
+        };
+        tetris.m_ai_param = param[0];
     }
-    std::string ai_name[2] = {"T-spin AI", "T-spin AI"};
-    for (int i = 0; i < players_num; ++i) {
-        if (ai[i].style == 1) {
-            ai_name[i] = "T-spin+ AI";
-        } else if (ai[i].style == 2) {
-            AI::setAIsettings(i, "hash", 0);
-            //
-        } else if (ai[i].style == 3) {
-            tetris[i].m_ai_param.tspin = tetris[i].m_ai_param.tspin3 = -300;
-            tetris[i].m_ai_param.clear_useless_factor *= 0.8;
-            ai_name[i] = "Ren AI";
-        } else if (ai[i].style == 4) {
-            tetris[i].hold = false;
-            tetris[i].m_ai_param.clear_useless_factor *= 0.7;
-            ai_name[i] = "non-Hold";
-            // no 4w
-            tetris[i].m_ai_param.strategy_4w = 0;
-            AI::setAIsettings(i, "4w", 0);
-        } else if (ai[i].style != -1) { //if ( ai[i].style == 5 ) {
-            AI::AI_Param param[2] = {
-                {49, 918, 176, 33, -300, -0, 0, 25, 22, 99, 41, -300, 0, 14, 290, 0}, // defence AI
-                {21, 920, 66, 40, -300, -2, 0, 26, 8, 71, 13, -300, 0, 7, 269, 0},
-            };
-            AI::setAIsettings(i, "combo", 0);
-            tetris[i].m_ai_param = param[i];
-            ai_name[i] = "Downstack";
-        }
+
+    std::string ai_name = "T-spin AI";
+    if (ai.style == 1) {
+        ai_name = "T-spin+ AI";
+    } else if (ai.style == 2) {
+        AI::setAIsettings(0, "hash", 0);
+        //
+    } else if (ai.style == 3) {
+        tetris.m_ai_param.tspin = tetris.m_ai_param.tspin3 = -300;
+        tetris.m_ai_param.clear_useless_factor *= 0.8;
+        ai_name = "Ren AI";
+    } else if (ai.style == 4) {
+        tetris.hold = false;
+        tetris.m_ai_param.clear_useless_factor *= 0.7;
+        ai_name = "non-Hold";
+        // no 4w
+        tetris.m_ai_param.strategy_4w = 0;
+        AI::setAIsettings(0, "4w", 0);
+    } else if (ai.style != -1) { //if ( ai.style == 5 ) {
+        AI::AI_Param param[2] = {
+            {49, 918, 176, 33, -300, -0, 0, 25, 22, 99, 41, -300, 0, 14, 290, 0}, // defence AI
+            {21, 920, 66, 40, -300, -2, 0, 26, 8, 71, 13, -300, 0, 7, 269, 0},
+        };
+        AI::setAIsettings(0, "combo", 0);
+        tetris.m_ai_param = param[0];
+        ai_name = "Downstack";
     }
-    for (int i = 0; i < players_num; ++i) {
-        if (ai[i].style || i > 0) {
-            char name[200];
-            sprintf(name, "%s LV%d", ai_name[i].c_str(), ai[i].level);
-            tetris[i].m_name = name;
-            std::cout << tetris[i].m_name << std::endl;
-        }
-        if (tetris[i].pAIName) {
-            tetris[i].m_name = tetris[i].pAIName(ai[i].level);
-        }
-        if (!ai_4w || ai_eve || ai[i].level < 6) {
-            tetris[i].m_ai_param.strategy_4w = 0;
-        }
-        if (tetris[i].m_ai_param.strategy_4w > 0) {
-            AI::setAIsettings(i, "4w", 1);
-        }
+
+    if (ai.style) {
+        char name[200];
+        sprintf(name, "%s LV%d", ai_name.c_str(), ai.level);
+        tetris.m_name = name;
+        std::cout << tetris.m_name << std::endl;
     }
+    if (tetris.pAIName) {
+        tetris.m_name = tetris.pAIName(ai.level);
+    }
+    if (!ai_4w || ai_eve || ai.level < 6) {
+        tetris.m_ai_param.strategy_4w = 0;
+    }
+    if (tetris.m_ai_param.strategy_4w > 0) {
+        AI::setAIsettings(0, "4w", 1);
+    }
+
     if (rule.combo_table_style == 0) {
         int a[] = {0, 0, 0, 1, 1, 2};
         AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
-        for (int i = 0; i < players_num; ++i) {
-            tetris[i].m_ai_param.strategy_4w = 0;
-            AI::setAIsettings(i, "4w", 0);
-        }
+        tetris.m_ai_param.strategy_4w = 0;
+        AI::setAIsettings(0, "4w", 0);
     } else if (rule.combo_table_style == 1) {
         int a[] = {0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5};
         AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
@@ -324,71 +296,65 @@ void mainscene() {
         AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
     }
     if (rule.GarbageBlocking == 0 || rule.GarbageBuffer == 0 || rule.GarbageCancel == 0) {
-        for (int i = 0; i < players_num; ++i) {
-            tetris[i].m_ai_param.strategy_4w = 0;
-            AI::setAIsettings(i, "4w", 0);
+        tetris.m_ai_param.strategy_4w = 0;
+        AI::setAIsettings(0, "4w", 0);
+    }
+
+    tetris.m_base = AI::point(0, 30);
+    tetris.env_change = 1;
+    tetris.n_pieces += 1;
+    tetris.total_clears += tetris.m_clearLines; //tetris.m_attack;
+    tetris.m_clearLines = 0;
+    tetris.m_attack = 0;
+
+    std::vector<AI::Gem> next;
+    for (int j = 0; j < 32; ++j)
+        next.push_back(tetris.m_next[j]);
+    int deep = ai_search_height_deep;
+    int upcomeAtt = 0;
+    int level = ai.level;
+    bool canhold = tetris.hold;
+
+    cout << "flag:" << tetris.ai_movs_flag << endl;
+    cout << "pool:" << tetris.m_pool << endl;
+
+    AI::RunAI(tetris.ai_movs, tetris.ai_movs_flag, tetris.m_ai_param, tetris.m_pool, tetris.m_hold,
+            tetris.m_cur,
+            tetris.m_cur_x, tetris.m_cur_y, next, canhold, upcomeAtt,
+            deep, tetris.ai_last_deep, level, 0);
+    cout << "movs:" <<  tetris.ai_movs.movs.size() << endl;
+    tetris.m_state = AI::Tetris::STATE_MOVING;
+    while ( tetris.ai_movs_flag == -1 && !tetris.ai_movs.movs.empty() ){
+        int mov = tetris.ai_movs.movs[0];
+        if ( tetris.ai_movs.movs.size() > 1 ) {
+            int next_mov = tetris.ai_movs.movs[1];
+        }
+        tetris.ai_movs.movs.erase( tetris.ai_movs.movs.begin() );
+        if (0) ;
+        else if (mov == AI::Moving::MOV_L) tetris.tryXMove(-1);
+        else if (mov == AI::Moving::MOV_R) tetris.tryXMove( 1);
+        else if (mov == AI::Moving::MOV_D) tetris.tryYMove( 1);
+        else if (mov == AI::Moving::MOV_LSPIN) tetris.trySpin(1);
+        else if (mov == AI::Moving::MOV_RSPIN) tetris.trySpin(3);
+        else if (mov == AI::Moving::MOV_LL) { tetris.tryXXMove(-1); } //{ tetris.mov_llrr = AI::Moving::MOV_LL; }
+        else if (mov == AI::Moving::MOV_RR) { tetris.tryXXMove( 1); } //{ tetris.mov_llrr = AI::Moving::MOV_RR; }
+        else if (mov == AI::Moving::MOV_DD) tetris.tryYYMove( 1) ;
+        else if (mov == AI::Moving::MOV_DROP) tetris.drop();
+        else if (mov == AI::Moving::MOV_HOLD) {
+            tetris.tryHold();
+        } else if (mov == AI::Moving::MOV_SPIN2) {
+            if ( AI::spin180Enable() ) {
+                tetris.trySpin180();
+            }
+        } else if (mov == AI::Moving::MOV_REFRESH) {
+            tetris.env_change = 1;
         }
     }
 
-    for (int i = 0; i < players_num; ++i) {
-        tetris[i].m_base = AI::point(i * 400, 30);
-    }
+    cout << "pool:" << tetris.m_pool << endl;
+    cout << "movs:" <<  tetris.ai_movs.movs.size() << endl;
+    cout << "flag:" << tetris.ai_movs_flag << endl;
 
-    for (int i = 0; i < players_num; ++i) {
-        tetris[i].env_change = 1;
-        tetris[i].n_pieces += 1;
-        tetris[i].total_clears += tetris[i].m_clearLines; //tetris[i].m_attack;
-        tetris[i].m_clearLines = 0;
-        tetris[i].m_attack = 0;
-
-        std::vector<AI::Gem> next;
-        for (int j = 0; j < 32; ++j)
-            next.push_back(tetris[i].m_next[j]);
-        int deep = ai_search_height_deep;
-        int upcomeAtt = 0;
-        int level = ai[i].level;
-        bool canhold = tetris[i].hold;
-
-        cout << "flag:" << tetris[i].ai_movs_flag << endl;
-        cout << "pool:" << tetris[i].m_pool << endl;
-        
-        AI::RunAI(tetris[i].ai_movs, tetris[i].ai_movs_flag, tetris[i].m_ai_param, tetris[i].m_pool, tetris[i].m_hold,
-                tetris[i].m_cur,
-                tetris[i].m_cur_x, tetris[i].m_cur_y, next, canhold, upcomeAtt,
-                deep, tetris[i].ai_last_deep, level, i);
-        cout << "movs:" <<  tetris[i].ai_movs.movs.size() << endl;
-        tetris[i].m_state = AI::Tetris::STATE_MOVING;
-        while ( tetris[i].ai_movs_flag == -1 && !tetris[i].ai_movs.movs.empty() ){
-            int mov = tetris[i].ai_movs.movs[0];
-            if ( tetris[i].ai_movs.movs.size() > 1 ) {
-                int next_mov = tetris[i].ai_movs.movs[1];
-            }
-            tetris[i].ai_movs.movs.erase( tetris[i].ai_movs.movs.begin() );
-            if (0) ;
-            else if (mov == AI::Moving::MOV_L) tetris[i].tryXMove(-1);
-            else if (mov == AI::Moving::MOV_R) tetris[i].tryXMove( 1);
-            else if (mov == AI::Moving::MOV_D) tetris[i].tryYMove( 1);
-            else if (mov == AI::Moving::MOV_LSPIN) tetris[i].trySpin(1);
-            else if (mov == AI::Moving::MOV_RSPIN) tetris[i].trySpin(3);
-            else if (mov == AI::Moving::MOV_LL) { tetris[i].tryXXMove(-1); } //{ tetris[i].mov_llrr = AI::Moving::MOV_LL; }
-            else if (mov == AI::Moving::MOV_RR) { tetris[i].tryXXMove( 1); } //{ tetris[i].mov_llrr = AI::Moving::MOV_RR; }
-            else if (mov == AI::Moving::MOV_DD) tetris[i].tryYYMove( 1) ;
-            else if (mov == AI::Moving::MOV_DROP) tetris[i].drop();
-            else if (mov == AI::Moving::MOV_HOLD) {
-                tetris[i].tryHold();
-            } else if (mov == AI::Moving::MOV_SPIN2) {
-                if ( AI::spin180Enable() ) {
-                    tetris[i].trySpin180();
-                }
-            } else if (mov == AI::Moving::MOV_REFRESH) {
-                tetris[i].env_change = 1;
-            }
-        }
-        
-        cout << "pool:" << tetris[i].m_pool << endl;
-        cout << "movs:" <<  tetris[i].ai_movs.movs.size() << endl;
-        cout << "flag:" << tetris[i].ai_movs_flag << endl;
-    }
 }
 
 int main() {
