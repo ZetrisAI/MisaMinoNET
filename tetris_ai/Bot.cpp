@@ -70,7 +70,6 @@ void Bot::updateQueue(const std::string& s) {
         if(c==',')continue;
         tetris.m_next[i++] = AI::getGem(m_gemMap[c], 0);
     }
-    tetris.m_cur=tetris.m_next[0];
     m_queueLen=i;
 }
 
@@ -81,8 +80,8 @@ void Bot::updateState(const std::string& p1, const std::string& p2, const std::s
         m_combo=std::atoi(p3.c_str());
     else if(p2=="field")
         updateField(p3);
-    //else if(p2=="this_piece_type")
-    //    cerr << "Deprecated command, use next_pieces[0]" << endl;
+    else if(p2=="this_piece_type")
+        tetris.m_cur=AI::getGem(m_gemMap[p3[0]], 0);
 }
 
 //todo: hold
@@ -305,7 +304,7 @@ void Bot::processMoves() {
 
 void Bot::outputAction() {
     std::vector<AI::Gem> next;
-    for (int j = 0; j < 32; ++j)
+    for (int j = 0; j < 5; ++j) //NEXT size
         next.push_back(tetris.m_next[j]);
     int deep = AI_TRAINING_DEEP;
     int upcomeAtt = 0;
@@ -319,7 +318,7 @@ void Bot::outputAction() {
             deep, tetris.ai_last_deep, level, 0);
     
     processMoves();
-    //cout << "pool:" << tetris.m_pool << endl;   
+    cerr << "[debug] pool:" << tetris.m_pool << endl;   
     
     std::stringstream out;
     
