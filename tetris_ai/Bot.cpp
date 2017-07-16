@@ -85,8 +85,8 @@ void Bot::updateState(const std::string& p1, const std::string& p2, const std::s
         m_combo=std::atoi(p3.c_str());
     else if(p2=="field")
         updateField(p3);
-    else if(p2=="this_piece_type")
-        cout << "Deprecated command, use next_pieces[0]" << endl;
+    //else if(p2=="this_piece_type")
+    //    cerr << "Deprecated command, use next_pieces[0]" << endl;
 }
 
 //todo: hold
@@ -236,7 +236,7 @@ void Bot::setup() {
         char name[200];
         sprintf(name, "%s LV%d", ai_name.c_str(), ai.level);
         tetris.m_name = name;
-        std::cout << tetris.m_name << std::endl;
+        cerr << "[debug] Name:" << tetris.m_name << std::endl;
     }
     if (tetris.pAIName) {
         tetris.m_name = tetris.pAIName(ai.level);
@@ -277,7 +277,7 @@ void Bot::setup() {
 }
 
 void Bot::processMoves() {
-    cout << "movs:" <<  tetris.ai_movs.movs.size() << endl;
+    cerr << "[debug] movs:" <<  tetris.ai_movs.movs.size() << endl;
     tetris.m_state = AI::Tetris::STATE_MOVING;
     while ( tetris.ai_movs_flag == -1 && !tetris.ai_movs.movs.empty() ){
         int mov = tetris.ai_movs.movs[0];
@@ -315,9 +315,7 @@ void Bot::outputAction() {
     int upcomeAtt = 0;
     int level = ai.level;
     bool canhold = tetris.hold;
-    
-    cout << "flag:" << tetris.ai_movs_flag << endl;
-    cout << "pool:" << tetris.m_pool << endl;
+
     
     AI::RunAI(tetris.ai_movs, tetris.ai_movs_flag, tetris.m_ai_param, tetris.m_pool, tetris.m_hold,
             tetris.m_cur,
@@ -325,8 +323,25 @@ void Bot::outputAction() {
             deep, tetris.ai_last_deep, level, 0);
     
     processMoves();
+    //cout << "pool:" << tetris.m_pool << endl;   
     
-    cout << "pool:" << tetris.m_pool << endl;
-    cout << "movs:" <<  tetris.ai_movs.movs.size() << endl;
-    cout << "flag:" << tetris.ai_movs_flag << endl;
+    std::stringstream out;
+    
+    if(tetris.alive()){
+        out << tetris.m_clearLines << "|0|";
+    }else{
+        out << "-1|0|";
+    }
+    
+    for(int i=1;i<21;i++){
+        unsigned long r=tetris.m_pool.row[i];
+        unsigned long mask=512u; //(2^WIDTH-1)
+        for(;mask!=0;mask=mask>>1){
+            out<<( ((r & mask) == mask)? 2 : 0 );
+            if(mask!=1)out<<',';
+        }
+        if(i!=20)out<<';';
+    }
+    std::cout<<out.str()<<std::endl;    
+
 }
