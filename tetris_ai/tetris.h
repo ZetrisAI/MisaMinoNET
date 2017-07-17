@@ -58,6 +58,9 @@ namespace AI {
 
         void reset (unsigned seed, signed char w, signed char h) {
             m_pool.reset( w, h );
+            m_pool.combo = 0;
+            m_pool.b2b = 0;
+            m_pool.m_hold = 0;
             m_next_num = 0;
             //for ( int i = 0; i < 32; ++i ) {
             //    m_next[i] = AI::getGem( m_rand.randint(7) + 1, 0);

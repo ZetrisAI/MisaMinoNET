@@ -71,9 +71,6 @@ namespace AI {
         void reset (signed char w, signed char h) {
             m_w = w;
             m_h = h;
-            combo = 0;
-            b2b = 0;
-            m_hold = 0;
             m_pc_att = 10;
             m_w_mask = ( 1 << w ) - 1;
             for (int i = 0; i < AI_POOL_MAX_H; ++i) {
