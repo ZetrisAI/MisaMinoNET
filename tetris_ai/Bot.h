@@ -61,7 +61,6 @@ private:
     char m_queue[8];
     int *m_field;
     int m_queueLen;
-    int m_combo;
     std::map<char, int> m_gemMap;
     
     TetrisGame tetris;

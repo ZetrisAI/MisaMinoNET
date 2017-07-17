@@ -105,7 +105,7 @@ void Bot::updateState(const std::string& p1, const std::string& p2, const std::s
     if(p2=="next_pieces")
         updateQueue(p3);
     else if(p2=="combo")
-        m_combo=std::atoi(p3.c_str());
+        tetris.m_pool.combo=std::stoi(p3);
     else if(p2=="field")
         updateField(p3);
     else if(p2=="this_piece_type")
@@ -329,7 +329,7 @@ void Bot::outputAction() {
     bool canhold = tetris.hold;
 
     #if DEBUG_LEVEL>=5
-    cerr << "[debug] RunAI: movs:" << tetris.ai_movs.movs.size() << ", flag:" << tetris.ai_movs_flag << " " <<endl;
+    cerr << "[debug] RunAI: movs:" << tetris.ai_movs.movs.size() << ", flag:" << tetris.ai_movs_flag << ", combo:" <<tetris.m_pool.combo <<endl;
     cerr << "hold:" << tetris.m_pool.m_hold << ", cur:"<< tetris.m_cur.getLetter() << " x:"<< tetris.m_cur_x<< " y:"<<tetris.m_cur_y << endl << "Next:";
     for(auto &n : next){
         cerr << " " << n.getLetter();
