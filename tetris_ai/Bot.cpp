@@ -92,20 +92,12 @@ void Bot::updateState(const std::string& p1, const std::string& p2, const std::s
         tetris.reset(0);
 }
 
-//todo: hold
-//tetris.m_pool.m_hold = gemMap['L'];
-
 void Bot::setup() {
     int ai_4w = 1;
 
     ai.style = 2;
     ai.level = 10;
     ai.PieceMul = 1;
-    
-    EvE eve;
-    eve.ai.push_back(tetris.m_ai_param);
-
-    int ai_eve = 1;
 
     AI::AI_Param param = {
         //  47,  26,  70,   4,  46,  16,  26,  21,   7,  31,  14,  17,  69,  11,  53, 300
@@ -244,7 +236,7 @@ void Bot::setup() {
     if (tetris.pAIName) {
         tetris.m_name = tetris.pAIName(ai.level);
     }
-    if (!ai_4w || ai_eve || ai.level < 6) {
+    if (!ai_4w || ai.level < 6) {
         tetris.m_ai_param.strategy_4w = 0;
     }
     if (tetris.m_ai_param.strategy_4w > 0) {
@@ -274,7 +266,7 @@ void Bot::setup() {
     tetris.m_base = AI::point(0, 30);
     tetris.env_change = 1;
     tetris.n_pieces += 1;
-    tetris.total_clears += tetris.m_clearLines; //tetris.m_attack;
+    tetris.total_clears += tetris.m_clearLines;
     tetris.m_clearLines = 0;
     tetris.m_attack = 0;
 }
