@@ -1,4 +1,5 @@
 #include "Bot.h"
+#include <cassert>
 
 using namespace std;
 
@@ -74,8 +75,8 @@ void Bot::updateQueue(const std::string& s) {
         if(c==',')continue;
         tetris.m_next[i++] = AI::getGem(m_gemMap[c], 0);
     }
-    m_queueLen=i;
-    tetris.newpiece();
+    tetris.m_next_num=i;
+    assert(tetris.newpiece());
 }
 
 void Bot::updateState(const std::string& p1, const std::string& p2, const std::string& p3) {
