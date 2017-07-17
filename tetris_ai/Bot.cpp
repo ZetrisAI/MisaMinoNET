@@ -110,8 +110,12 @@ void Bot::updateState(const std::string& p1, const std::string& p2, const std::s
         updateField(p3);
     else if(p2=="this_piece_type")
         tetris.m_next[0]=AI::getGem(m_gemMap[p3[0]], 0);
-    else if(p2=="round" && p3=="1")
-        tetris.reset(0);
+    else if(p2=="inAtt")
+        m_upcomeAtt=std::stoi(p3);
+    else if(p2=="round"){
+        if(p3=="1")tetris.reset(0);
+        m_upcomeAtt=0;
+    }
 }
 
 void Bot::setup() {
@@ -324,8 +328,6 @@ void Bot::outputAction() {
     for (int j = 0; j < 5; ++j) //NEXT size
         next.push_back(tetris.m_next[j]);
     int deep = AI_TRAINING_DEEP;
-    int upcomeAtt = 0;
-    int level = ai.level;
     bool canhold = tetris.hold;
 
     #if DEBUG_LEVEL>=5
@@ -334,13 +336,13 @@ void Bot::outputAction() {
     for(auto &n : next){
         cerr << " " << n.getLetter();
     }
-    cerr<< " " <<((canhold)?"canhold":"NOThold")<<", Deep:"<<deep<<",last:"<<tetris.ai_last_deep<<",level:"<<level<<endl;
+    cerr<< " " <<((canhold)?"canhold":"NOThold")<<", Deep:"<<deep<<",last:"<<tetris.ai_last_deep<<",level:"<<ai.level<<endl;
     #endif
     
     AI::RunAI(tetris.ai_movs, tetris.ai_movs_flag, tetris.m_ai_param, tetris.m_pool, tetris.m_hold,
             tetris.m_cur,
-            tetris.m_cur_x, tetris.m_cur_y, next, canhold, upcomeAtt,
-            deep, tetris.ai_last_deep, level, 0);
+            tetris.m_cur_x, tetris.m_cur_y, next, canhold, m_upcomeAtt,
+            deep, tetris.ai_last_deep, ai.level, 0);
 
     std::stringstream out;
     
