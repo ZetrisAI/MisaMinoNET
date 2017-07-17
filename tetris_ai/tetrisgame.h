@@ -186,20 +186,6 @@ public:
             }
         }
     }
-    bool game() {
-        bool ret = AI::Tetris::game();
-        if ( ret ) m_piecedelay = 0;
-        else ++m_piecedelay;
-        if ( GAMEMODE_4W && AI_SHOW ) {
-            if ( m_clearLines > 0 ) {
-                for ( int i = 1; i <= m_clearLines; ++i) {
-                    setRow( poolh() - 40 + i,
-                        ~(15 << 3) & m_pool.m_w_mask );
-                }
-            }
-        }
-        return ret;
-    }
 
 public:
     bool hold;

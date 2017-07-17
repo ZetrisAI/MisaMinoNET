@@ -316,27 +316,6 @@ namespace AI {
             m_state = STATE_MOVING;
             return true;
         }
-        bool game() {
-            ++m_frames;
-            switch (m_state) {
-            case STATE_MOVING:
-                {
-                }
-                break;
-            case STATE_PASTED:
-                {
-                    clearLines();
-                }
-            case STATE_READY:
-                {
-                    return newpiece();
-                }
-                break;
-            default:
-                break;
-            }
-            return false;
-        }
         int poolw() const {
             return m_pool.width();
         }
