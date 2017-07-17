@@ -10,3 +10,4 @@
 #define TRAINING_ROUND      20
 #define AI_TRAINING_0       9
 #define AI_TRAINING_2       6
+#define DEBUG_LEVEL         0

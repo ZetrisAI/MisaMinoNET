@@ -31,6 +31,9 @@ void Bot::startParser() {
             string part1, part2, part3;
             cin >> part1 >> part2 >> part3;
             updateState(part1, part2, part3);
+            #if DEBUG_LEVEL>=4
+            cerr << command <<" "<< part1 <<" "<< part2 <<" "<< part3<<endl;
+            #endif
         } else if (command == "action2") {
             string part1, part2;
             cin >> part1 >> part2;
@@ -231,7 +234,9 @@ void Bot::setup() {
         char name[200];
         sprintf(name, "%s LV%d", ai_name.c_str(), ai.level);
         tetris.m_name = name;
+        #if DEBUG_LEVEL>=1
         cerr << "[debug] Name:" << tetris.m_name << std::endl;
+        #endif
     }
     if (tetris.pAIName) {
         tetris.m_name = tetris.pAIName(ai.level);
@@ -272,7 +277,6 @@ void Bot::setup() {
 }
 
 void Bot::processMoves() {
-    cerr << "[debug] movs:" <<  tetris.ai_movs.movs.size() << endl;
     tetris.m_state = AI::Tetris::STATE_MOVING;
     while ( tetris.ai_movs_flag == -1 && !tetris.ai_movs.movs.empty() ){
         int mov = tetris.ai_movs.movs[0];
@@ -309,14 +313,20 @@ void Bot::outputAction() {
     int level = ai.level;
     bool canhold = tetris.hold;
 
+    #if DEBUG_LEVEL>=5
+    cerr << "[debug] RunAI: movs:" << tetris.ai_movs.movs.size() << ", flag:" << tetris.ai_movs_flag << " " <<endl;
+    cerr << "hold:" << tetris.m_pool.m_hold << ", cur:"<< tetris.m_cur.getLetter() << " x:"<< tetris.m_cur_x<< " y:"<<tetris.m_cur_y << endl << "Next:";
+    for(auto &n : next){
+        cerr << " " << n.getLetter();
+    }
+    cerr<< " " <<((canhold)?"canhold":"NOThold")<<", Deep:"<<deep<<",last:"<<tetris.ai_last_deep<<",level:"<<level<<endl;
+    #endif
     
     AI::RunAI(tetris.ai_movs, tetris.ai_movs_flag, tetris.m_ai_param, tetris.m_pool, tetris.m_hold,
             tetris.m_cur,
             tetris.m_cur_x, tetris.m_cur_y, next, canhold, upcomeAtt,
             deep, tetris.ai_last_deep, level, 0);
-    
-    cerr << "[debug] pool:" << tetris.m_pool << endl;
-    
+
     std::stringstream out;
     
     if(tetris.alive()){
