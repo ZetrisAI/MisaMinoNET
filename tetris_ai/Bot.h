@@ -6,7 +6,6 @@
 #include <string>
 #include <sstream>
 #include "tetrisgame.h"
-#include "gamemode.h"
 
 class Bot {
 public:

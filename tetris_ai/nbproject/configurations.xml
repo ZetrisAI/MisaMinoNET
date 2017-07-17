@@ -5,7 +5,6 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>Bot.h</itemPath>
-      <itemPath>gamemode.h</itemPath>
       <itemPath>gamepool.h</itemPath>
       <itemPath>tetris.h</itemPath>
       <itemPath>tetris_ai.h</itemPath>
@@ -57,8 +56,6 @@
       </item>
       <item path="Bot.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="gamemode.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="gamepool.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="gamepool.h" ex="false" tool="3" flavor2="0">
@@ -105,8 +102,6 @@
       <item path="Bot.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Bot.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="gamemode.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="gamepool.cpp" ex="false" tool="1" flavor2="0">
       </item>
