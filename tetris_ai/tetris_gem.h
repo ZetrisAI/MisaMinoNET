@@ -16,6 +16,10 @@ namespace AI {
         unsigned long bitmap[4];
         int num, spin, mod;
         int geth() const { return 4; }
+        char getLetter() const {
+            char map[]="NITLJZSO";
+            return map[num];
+        }
     };
     inline Gem& getGem( int number, int spin ) {
         extern Gem gems[8][4];
