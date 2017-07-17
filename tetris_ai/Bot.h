@@ -20,11 +20,9 @@ public:
     struct tetris_ai {
         int style;
         int level;
-        int PieceMul;
         tetris_ai() {
             style = 2;
             level = 4;
-            PieceMul = 0;
         }
     };
 
