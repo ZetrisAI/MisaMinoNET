@@ -322,13 +322,13 @@ void Bot::outputAction() {
             tetris.m_cur_x, tetris.m_cur_y, next, canhold, upcomeAtt,
             deep, tetris.ai_last_deep, level, 0);
     
-    processMoves();
     cerr << "[debug] pool:" << tetris.m_pool << endl;
     
     std::stringstream out;
     
     if(tetris.alive()){
-        out << tetris.m_clearLines << "|0|";
+        processMoves();
+        out << tetris.m_clearLines << "|"<<((int)tetris.wallkick_spin)<<"|";
         tetris.m_state = AI::Tetris::STATE_READY;
     }else{
         out << "-1|0|";
