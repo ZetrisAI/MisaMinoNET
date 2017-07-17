@@ -26,7 +26,7 @@ void Bot::startParser() {
         if (command == "settings") {
             string part1, part2;
             cin >> part1 >> part2;
-            //those are ignored
+            changeSettings(part1,part2);
         } else if (command == "update") {
             string part1, part2, part3;
             cin >> part1 >> part2 >> part3;
@@ -82,6 +82,25 @@ void Bot::updateQueue(const std::string& s) {
     assert(tetris.newpiece());
 }
 
+void Bot::changeSettings(const std::string& p1, const std::string& p2){
+    bool changed=false;
+    if(p1=="level"){
+        ai.level = std::stoi(p2);
+        if(ai.level>10)ai.level=10;
+        if(ai.level<-2)ai.level=-2;
+        changed=true;
+    }else if(p1=="style"){
+        ai.style = std::stoi(p2);
+        if(ai.style==-1)ai.style=2;
+        changed=true;
+    }
+    
+    if(changed){
+        setup();
+        cout << "{\"name\":\"" << tetris.m_name << "\"}" << endl;
+    }
+}
+
 void Bot::updateState(const std::string& p1, const std::string& p2, const std::string& p3) {
     if(p2=="next_pieces")
         updateQueue(p3);
@@ -97,10 +116,6 @@ void Bot::updateState(const std::string& p1, const std::string& p2, const std::s
 
 void Bot::setup() {
     int ai_4w = 1;
-
-    ai.style = 2;
-    ai.level = 10;
-    ai.PieceMul = 1;
 
     AI::AI_Param param = {
         //  47,  26,  70,   4,  46,  16,  26,  21,   7,  31,  14,  17,  69,  11,  53, 300
