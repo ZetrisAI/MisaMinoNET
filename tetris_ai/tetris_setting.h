@@ -1,26 +1,12 @@
-#ifdef XP_RELEASE
-#define PUBLIC_VERSION      1 // ·¢²¼Ä£Ê½
-#define GAMEMODE_4W         0 // 4wÄ£Ê½
-#define PLAYER_WAIT         0 // Íæ¼ÒµÈ´ýAIË¼¿¼£¬Èç¹ûÐèÒªµÄ»°
-#define AI_TRAINING_SLOW    1
-#define USE4W               1
-#else
 #define PUBLIC_VERSION      0
 #define GAMEMODE_4W         0
 #define PLAYER_WAIT         0
-#define AI_TRAINING_SLOW    1 // ÑµÁ·Ä£Ê½ÂýËÙÑÝÊ¾
+#define AI_TRAINING_SLOW    1 // Ñµï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
 #define USE4W               0
-#endif
-#define ATTACK_MODE         1 // À¬»øÐÐ£º0¿ÕÆø 1TOP 2»ðÆ´
-#define AI_SHOW             0 // ²»Ïà»¥¹¥»÷£¬Î§¹ÛAI
-#define DISPLAY_NEXT_NUM    6 // ÏÔÊ¾next¸öÊý
-#if AI_TRAINING_SLOW
-#define AI_TRAINING_DEEP    16
-#else
-#define AI_TRAINING_DEEP    6 // ÑµÁ·AIË¼¿¼Éî¶È
-#endif
+#define ATTACK_MODE         1 // ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½0ï¿½ï¿½ï¿½ï¿½ 1TOP 2ï¿½ï¿½Æ´
+#define AI_SHOW             0 // ï¿½ï¿½ï¿½à»¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î§ï¿½ï¿½AI
+#define DISPLAY_NEXT_NUM    6 // ï¿½ï¿½Ê¾nextï¿½ï¿½ï¿½ï¿½
+#define AI_TRAINING_DEEP    6 // Ñµï¿½ï¿½AIË¼ï¿½ï¿½ï¿½ï¿½ï¿½
 #define TRAINING_ROUND      20
 #define AI_TRAINING_0       9
 #define AI_TRAINING_2       6
-
-#define AI_DLL_VERSION      2 // dll°æ±¾
