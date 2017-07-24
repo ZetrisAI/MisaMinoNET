@@ -119,8 +119,6 @@ void Bot::updateState(const std::string& p1, const std::string& p2, const std::s
 }
 
 void Bot::setup() {
-    int ai_4w = 1;
-
     AI::AI_Param param = {
         //  47,  26,  70,   4,  46,  16,  26,  21,   7,  31,  14,  17,  69,  11,  53, 300
 
@@ -239,6 +237,11 @@ void Bot::setup() {
         // no 4w
         tetris.m_ai_param.strategy_4w = 0;
         AI::setAIsettings(0, "4w", 0);
+    } else if (ai.style == 5) {
+        tetris.m_ai_param.tspin = tetris.m_ai_param.tspin3 = -300;
+        tetris.m_ai_param.clear_useless_factor *= 0.8;
+        tetris.m_ai_param.strategy_4w = 500;
+        ai_name = "4W Ren AI";
     } else if (ai.style != -1) { //if ( ai.style == 5 ) {
         AI::AI_Param param[2] = {
             {49, 918, 176, 33, -300, -0, 0, 25, 22, 99, 41, -300, 0, 14, 290, 0}, // defence AI
@@ -260,7 +263,7 @@ void Bot::setup() {
     if (tetris.pAIName) {
         tetris.m_name = tetris.pAIName(ai.level);
     }
-    if (!ai_4w || ai.level < 6) {
+    if (ai.level < 6) {
         tetris.m_ai_param.strategy_4w = 0;
     }
     if (tetris.m_ai_param.strategy_4w > 0) {
@@ -281,10 +284,6 @@ void Bot::setup() {
     } else {
         int a[] = {0, 0, 0, 1, 1, 2};
         AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
-    }
-    if (rule.GarbageBlocking == 0 || rule.GarbageBuffer == 0 || rule.GarbageCancel == 0) {
-        tetris.m_ai_param.strategy_4w = 0;
-        AI::setAIsettings(0, "4w", 0);
     }
 
     tetris.m_base = AI::point(0, 30);
