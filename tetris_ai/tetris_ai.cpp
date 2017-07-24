@@ -638,8 +638,8 @@ namespace AI {
             if ( softdropEnable() && maxy_index > 0 && maxy_index < pool_w - 1 && ai_param.tspin > 0 ) { // T1/T2������״��
                 ybeg = std::max( min_y[maxy_index - 1], min_y[maxy_index + 1] );
                 if ( min_y[maxy_index - 1] == min_y[maxy_index + 1]
-                    && x_holes[ybeg] == 0 && x_holes[ybeg-1] == 0
-                    && x_op_holes[ybeg] == 0 && x_op_holes[ybeg-1] == 0
+                    && x_holes[ybeg] == 0 && (!ybeg || x_holes[ybeg-1] == 0)
+                    && x_op_holes[ybeg] == 0 && (!ybeg || x_op_holes[ybeg-1] == 0)
                     )
                 { // T׼��
                     int cnt = 0;
@@ -658,8 +658,8 @@ namespace AI {
                 } else if ( ybeg <= 6 && ybeg - t_dis > 1 || ybeg > 6 ) {
                     int row_data = pool.row[ybeg - 1];
                     if ( (row_data & ( 1 << (maxy_index-1) ) ) == 0 && (row_data & ( 1 << (maxy_index+1) ) ) == 0 // �ӵ�����Ϊ��
-                         && x_holes[ybeg] == 0 && x_holes[ybeg-1] == 0 // ����λ���޶�
-                         && x_op_holes[ybeg] == 0 && x_op_holes[ybeg-1] <= 1
+                         && x_holes[ybeg] == 0 && (!ybeg || x_holes[ybeg-1] == 0) // ����λ���޶�
+                         && x_op_holes[ybeg] == 0 && (!ybeg || x_op_holes[ybeg-1] <= 1)
                          )
                     {
                         // T����״
