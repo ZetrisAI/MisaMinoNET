@@ -27,25 +27,17 @@ public:
     };
 
     struct tetris_rule {
-        int turnbase;
-        int garbage;
         int spin180;
         int GarbageCancel;
         int GarbageBuffer;
         int GarbageBlocking;
         int combo_table_style;
-        int samesequence;
-        int turn;
         tetris_rule() {
-            turnbase = 1;
-            garbage = 0;
-            spin180 = 0;
+            spin180 = 1;
             GarbageCancel = 1;
             GarbageBuffer = 1;
             GarbageBlocking = 1;
-            combo_table_style = 0;
-            samesequence = 1;
-            turn = 1;
+            combo_table_style = 2; //1=TOJ, 2=TF
         }
     };
     
