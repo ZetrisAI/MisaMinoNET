@@ -1,5 +1,6 @@
 #include "Bot.h"
 #include <cassert>
+#include <vector>
 
 using namespace std;
 
@@ -48,28 +49,39 @@ void Bot::startParser() {
 }
 
 void Bot::updateField(const std::string& s) {
-    tetris.m_pool.reset(10,20);
-    int y=1;
-    int x=9;
-    int r=0;
-    for(const auto &c : s){
-        if(c==',')continue;
-        if(c==';'){
-            tetris.addRow(r);
-            //tetris.m_pool.m_row[ AI::gem_add_y + y ]=r;
-            y++;
-            r=0;
-            x=9;
-            continue;
+    vector<int> rows;
+    bool solidGarbage = false;
+    int row = 0;
+    int col = 0;
+    for (const auto &c : s) {
+        switch (c) {
+        case '0':
+        case '1':
+            ++col;
+            break;
+        case '2':
+            ++col;
+            row |= (1 << (10 - col));
+            break;
+        case '3':
+            solidGarbage = true;
+            break;
+        default:
+            break;
         }
-        if(c=='2'){
-            r|=(1<<x);
+        if (solidGarbage) {
+            break;
         }
-        x--;
+        if (col == 10) {
+            rows.push_back(row);
+            row = 0;
+            col = 0;
+        }
     }
-    //tetris.m_pool.m_row[ AI::gem_add_y + y ]=r;
-    tetris.addRow(r);
-    //cerr << "[debug] pool:" << tetris.m_pool << endl;
+    tetris.m_pool.reset(10, rows.size());
+    for (auto &row : rows) {
+        tetris.addRow(row);
+    }
 }
 
 void Bot::updateQueue(const std::string& s) {
@@ -353,13 +365,18 @@ void Bot::outputAction() {
         out << "-1|0|";
     }
    
-    int bottom=AI_POOL_MAX_H-5;
-    for(int i=AI::gem_add_y + 1;i<bottom;i++){
+    int i,bottom=AI_POOL_MAX_H-5,
+        solid_h=20-tetris.m_pool.m_h;
+    for(i=AI::gem_add_y + 1; i<bottom-solid_h; i++){
         unsigned long mask=512u; //(2^WIDTH-1)
         for(;mask!=0;mask=mask>>1){
             out<<( ((tetris.m_pool.m_row[i] & mask) == mask)? 2 : 0 );
             if(mask!=1)out<<',';
         }
+        if(i!=bottom-1)out<<';';
+    }
+    for(; i<bottom; i++){
+        out<<"3,3,3,3,3,3,3,3,3,3";
         if(i!=bottom-1)out<<';';
     }
     std::cout<<out.str()<<std::endl;    
