@@ -51,7 +51,8 @@ Bot::~Bot() {}
     }
 }*/
 
-void Bot::updateField(const std::string& s) {
+void Bot::updateField(const char* q) {
+    std::string s = q;
     vector<int> rows;
     bool solidGarbage = false;
     int row = 0;
@@ -88,7 +89,8 @@ void Bot::updateField(const std::string& s) {
     }
 }
 
-void Bot::updateQueue(const std::string& s) {
+void Bot::updateQueue(const char* q) {
+    std::string s = q;
     int i=1;
     for(const auto &c : s){
         if(c==',')continue;
@@ -145,8 +147,8 @@ void Bot::updateStyle(int style) {
     }
 }*/
 
-void Bot::updateCurrent(const std::string& piece) {
-    tetris.m_next[0] = AI::getGem(m_gemMap[piece[0]], 0);
+void Bot::updateCurrent(const char* piece) {
+    tetris.m_next[0] = AI::getGem(m_gemMap[*piece], 0);
 }
 
 void Bot::updateIncoming(int attack) {

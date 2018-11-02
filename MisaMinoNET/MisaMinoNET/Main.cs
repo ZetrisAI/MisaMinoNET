@@ -13,12 +13,30 @@ namespace MisaMinoNET {
 
         [DllImport("libtetris_ai.dll")]
         public static extern void settings_style(int style);
+
+        [DllImport("libtetris_ai.dll")]
+        public static extern void update_next(string queue);
+
+        [DllImport("libtetris_ai.dll")]
+        public static extern void update_current(string piece);
+
+        [DllImport("libtetris_ai.dll")]
+        public static extern void update_incoming(int attack);
+
+        [DllImport("libtetris_ai.dll")]
+        public static extern void update_combo(int combo);
+
+        [DllImport("libtetris_ai.dll")]
+        public static extern void update_field(string field);
+
+        [DllImport("libtetris_ai.dll")]
+        public static extern void update_reset();
     }
 
     public class MisaMino {
         public static void Test() {
-            Interface.settings_level(10);
-            Interface.settings_style(1);
+            Interface.update_next("T,L,I,O,Z");
+            Interface.update_current("J");
         }
     }
 }
