@@ -5,9 +5,7 @@ using namespace std;
 
 Bot MisaBot;
 
-DLL int test();
 
-int test() { return 123; }
 
 BOOL WINAPI DllMain(HANDLE handle, DWORD reason, LPVOID reserved) {
     switch (reason) {

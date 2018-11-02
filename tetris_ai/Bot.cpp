@@ -24,24 +24,29 @@ void Bot::startParser() {
     while (true) {
         string command;
         cin >> command;
+        
         if (command == "settings") {
             string part1, part2;
             cin >> part1 >> part2;
             changeSettings(part1,part2);
+            
         } else if (command == "update") {
-            string part1, part2, part3;
-            cin >> part1 >> part2 >> part3;
-            updateState(part1, part2, part3);
+            string part1, part2;
+            cin >> part1 >> part2;
+            updateState(part1, part2);
             #if DEBUG_LEVEL>=4
-            cerr << command <<" "<< part1 <<" "<< part2 <<" "<< part3<<endl;
+            cerr << command <<" "<< part1 <<" "<< part2 <<" "<< endl;
             #endif
-        } else if (command == "action2") {
+
+        } else if (command == "action") {
             string part1, part2;
             cin >> part1 >> part2;
             outputAction();
+            
         } else if (command.size() == 0) {
             // no more commands, exit.
             break;
+            
         } else {
             cerr << "Unable to parse command: " << command << endl;
         }
@@ -54,6 +59,7 @@ void Bot::updateField(const std::string& s) {
     int row = 0;
     int col = 0;
     for (const auto &c : s) {
+        /* Read comma separated into integer, bitwise. 2 = filled. 1 is useless...? */
         switch (c) {
         case '0':
         case '1':
@@ -113,19 +119,19 @@ void Bot::changeSettings(const std::string& p1, const std::string& p2){
     }
 }
 
-void Bot::updateState(const std::string& p1, const std::string& p2, const std::string& p3) {
-    if(p2=="next_pieces")
-        updateQueue(p3);
-    else if(p2=="combo")
-        tetris.m_pool.combo=std::stoi(p3);
-    else if(p2=="field")
-        updateField(p3);
-    else if(p2=="this_piece_type")
-        tetris.m_next[0]=AI::getGem(m_gemMap[p3[0]], 0);
-    else if(p2=="inAtt")
-        m_upcomeAtt=std::stoi(p3);
-    else if(p2=="round"){
-        if(p3=="1")tetris.reset(0);
+void Bot::updateState(const std::string& p1, const std::string& p2) {
+    if(p1=="next_pieces")
+        updateQueue(p2);
+    else if(p1=="combo")
+        tetris.m_pool.combo=std::stoi(p2);
+    else if(p1=="field")
+        updateField(p2);
+    else if(p1=="this_piece_type")
+        tetris.m_next[0]=AI::getGem(m_gemMap[p2[0]], 0);
+    else if(p1=="inAtt")
+        m_upcomeAtt=std::stoi(p2);
+    else if(p1=="round"){
+        if(p2=="1")tetris.reset(0);
         m_upcomeAtt=0;
     }
 }
