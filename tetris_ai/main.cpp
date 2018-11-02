@@ -1,45 +1,30 @@
 #include "Bot.h"
 #include "Windows.h"
-
+#define DLL extern "C" __declspec(dllexport)
 using namespace std;
 
-extern "C" __declspec(dllexport) int test();
+Bot MisaBot;
 
-__declspec(dllexport) int test() {
-    return 123;
-}
+DLL int test();
 
-BOOL WINAPI DllMain(  
-         HANDLE handle,  // handle to DLL module
-         DWORD reason,     // reason for calling function
-         LPVOID reserved )  // reserved
-{
-    // Perform actions based on the reason for calling.
-    switch( reason )
-    {
-    case DLL_PROCESS_ATTACH:
-        // Initialize once for each new process.
-        // Return FALSE to fail DLL load.            
-        break;
+int test() { return 123; }
 
-    case DLL_THREAD_ATTACH:        
-        // Do thread-specific initialization.
-        break;        
-   
-    case DLL_THREAD_DETACH:
-        // Do thread-specific cleanup.            
-        break;
-   
-    case DLL_PROCESS_DETACH:        
-        // Perform any necessary cleanup.
-        break;    
+BOOL WINAPI DllMain(HANDLE handle, DWORD reason, LPVOID reserved) {
+    switch (reason) {
+        case DLL_PROCESS_ATTACH:
+            MisaBot.setup();     
+            // MisaBot.startParser();
+            break;
+
+        case DLL_THREAD_ATTACH:
+            break;        
+
+        case DLL_THREAD_DETACH:       
+            break;
+
+        case DLL_PROCESS_DETACH:
+            break;    
     }
-        return TRUE;
-}
-
-int main() {
-    Bot MisaBot;
-    MisaBot.setup();
-    MisaBot.startParser();
-    return 0;
+    
+    return TRUE;
 }
