@@ -21,7 +21,7 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=MinGW-Windows
+CND_PLATFORM=MinGW_64-Windows
 CND_DLIB_EXT=dll
 CND_CONF=Release
 CND_DISTDIR=dist
@@ -47,8 +47,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=
-CXXFLAGS=
+CCFLAGS=-m64
+CXXFLAGS=-m64
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -67,32 +67,32 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libtetris_ai.${CND_DLIB_EXT}: ${OBJEC
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libtetris_ai.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -shared
 
-${OBJECTDIR}/Bot.o: Bot.cpp
+${OBJECTDIR}/Bot.o: Bot.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -std=c++11  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Bot.o Bot.cpp
 
-${OBJECTDIR}/gamepool.o: gamepool.cpp
+${OBJECTDIR}/gamepool.o: gamepool.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -std=c++11  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gamepool.o gamepool.cpp
 
-${OBJECTDIR}/genmove.o: genmove.cpp
+${OBJECTDIR}/genmove.o: genmove.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -std=c++11  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/genmove.o genmove.cpp
 
-${OBJECTDIR}/main.o: main.cpp
+${OBJECTDIR}/main.o: main.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -std=c++11  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
 
-${OBJECTDIR}/tetris_ai.o: tetris_ai.cpp
+${OBJECTDIR}/tetris_ai.o: tetris_ai.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -std=c++11  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/tetris_ai.o tetris_ai.cpp
 
-${OBJECTDIR}/tetris_gem.o: tetris_gem.cpp
+${OBJECTDIR}/tetris_gem.o: tetris_gem.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -std=c++11  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/tetris_gem.o tetris_gem.cpp
