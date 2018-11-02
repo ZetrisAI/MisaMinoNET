@@ -18,6 +18,12 @@ public:
     void outputAction();
     void updateLevel(int level);
     void updateStyle(int style);
+    void updateQueue(const std::string & s);
+    void updateCurrent(const std::string & s);
+    void updateIncoming(int attack);
+    void updateCombo(int combo);
+    void updateField(const std::string & s);
+    void updateReset();
     
     struct tetris_ai {
         int style;
@@ -44,10 +50,6 @@ public:
     };
     
 private:
-    void updateState(const std::string & p1, const std::string & p2);
-    void updateQueue(const std::string & s);
-    void updateField(const std::string & s);
-    
     void processMoves();
     
     char m_hold;

@@ -128,7 +128,7 @@ void Bot::updateStyle(int style) {
     if (ai.style == -1) ai.style = 2;
 }
 
-void Bot::updateState(const std::string& p1, const std::string& p2) {
+/*void Bot::updateState(const std::string& p1, const std::string& p2) {
     if(p1=="next_pieces")
         updateQueue(p2);
     else if(p1=="combo")
@@ -143,6 +143,23 @@ void Bot::updateState(const std::string& p1, const std::string& p2) {
         if(p2=="1")tetris.reset(0);
         m_upcomeAtt=0;
     }
+}*/
+
+void Bot::updateCurrent(const std::string& piece) {
+    tetris.m_next[0] = AI::getGem(m_gemMap[piece[0]], 0);
+}
+
+void Bot::updateIncoming(int attack) {
+    m_upcomeAtt = attack;
+}
+
+void Bot::updateCombo(int combo) {
+    tetris.m_pool.combo = combo;
+}
+
+void Bot::updateReset() {
+    tetris.reset(0);
+    m_upcomeAtt = 0;
 }
 
 void Bot::setup() {
