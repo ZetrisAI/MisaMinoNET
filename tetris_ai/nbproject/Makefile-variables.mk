@@ -7,21 +7,21 @@ CND_BASEDIR=`pwd`
 CND_BUILDDIR=build
 CND_DISTDIR=dist
 # Debug configuration
-CND_PLATFORM_Debug=GNU-Linux
-CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux
+CND_PLATFORM_Debug=MinGW-Windows
+CND_ARTIFACT_DIR_Debug=dist/Debug/MinGW-Windows
 CND_ARTIFACT_NAME_Debug=tetris_ai
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux/tetris_ai
-CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux/package
+CND_ARTIFACT_PATH_Debug=dist/Debug/MinGW-Windows/tetris_ai
+CND_PACKAGE_DIR_Debug=dist/Debug/MinGW-Windows/package
 CND_PACKAGE_NAME_Debug=tetrisai.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux/package/tetrisai.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/MinGW-Windows/package/tetrisai.tar
 # Release configuration
-CND_PLATFORM_Release=GNU-Linux
-CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux
-CND_ARTIFACT_NAME_Release=tetris_ai
-CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux/tetris_ai
-CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux/package
-CND_PACKAGE_NAME_Release=tetrisai.tar
-CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux/package/tetrisai.tar
+CND_PLATFORM_Release=MinGW-Windows
+CND_ARTIFACT_DIR_Release=dist/Release/MinGW-Windows
+CND_ARTIFACT_NAME_Release=libtetris_ai.dll
+CND_ARTIFACT_PATH_Release=dist/Release/MinGW-Windows/libtetris_ai.dll
+CND_PACKAGE_DIR_Release=dist/Release/MinGW-Windows/package
+CND_PACKAGE_NAME_Release=libtetrisai.dll.tar
+CND_PACKAGE_PATH_Release=dist/Release/MinGW-Windows/package/libtetrisai.dll.tar
 #
 # include compiler specific variables
 #
