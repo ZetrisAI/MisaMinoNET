@@ -16,6 +16,8 @@ public:
     void startParser();
     void setup();
     void outputAction();
+    void updateLevel(int level);
+    void updateStyle(int style);
     
     struct tetris_ai {
         int style;
@@ -42,10 +44,9 @@ public:
     };
     
 private:
-    void updateState(const std::string & p1,const std::string & p2,const std::string & p3);
+    void updateState(const std::string & p1, const std::string & p2);
     void updateQueue(const std::string & s);
     void updateField(const std::string & s);
-    void changeSettings(const std::string & p1,const std::string & p2);
     
     void processMoves();
     

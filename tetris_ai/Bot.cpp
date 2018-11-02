@@ -20,7 +20,7 @@ Bot::Bot(const Bot& orig) {
 
 Bot::~Bot() {}
 
-void Bot::startParser() {
+/*void Bot::startParser() {
     while (true) {
         string command;
         cin >> command;
@@ -39,8 +39,6 @@ void Bot::startParser() {
             #endif
 
         } else if (command == "action") {
-            string part1, part2;
-            cin >> part1 >> part2;
             outputAction();
             
         } else if (command.size() == 0) {
@@ -51,7 +49,7 @@ void Bot::startParser() {
             cerr << "Unable to parse command: " << command << endl;
         }
     }
-}
+}*/
 
 void Bot::updateField(const std::string& s) {
     vector<int> rows;
@@ -100,7 +98,7 @@ void Bot::updateQueue(const std::string& s) {
     assert(tetris.newpiece());
 }
 
-void Bot::changeSettings(const std::string& p1, const std::string& p2){
+/*void Bot::changeSettings(const std::string& p1, const std::string& p2){
     bool changed=false;
     if(p1=="level"){
         ai.level = std::stoi(p2);
@@ -117,6 +115,17 @@ void Bot::changeSettings(const std::string& p1, const std::string& p2){
         setup();
         cout << "{\"name\":\"" << tetris.m_name << "\"}" << endl;
     }
+}*/
+
+void Bot::updateLevel(int level) {
+    ai.level = level;
+    if (ai.level > 10) ai.level = 10;
+    if (ai.level < -2) ai.level = -2;
+}
+
+void Bot::updateStyle(int style) {
+    ai.style = style;
+    if (ai.style == -1) ai.style = 2;
 }
 
 void Bot::updateState(const std::string& p1, const std::string& p2) {
