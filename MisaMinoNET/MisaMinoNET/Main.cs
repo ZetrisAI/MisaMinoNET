@@ -37,7 +37,7 @@ namespace MisaMinoNET {
     }
 
     public class MisaMino {
-        public static string Test() {
+        public static byte[] Test() {
             Interface.settings_level(10);
             Interface.settings_style(1);
             Interface.update_next("T,L,I,O,Z");
@@ -49,7 +49,12 @@ namespace MisaMinoNET {
             StringBuilder sb = new StringBuilder(500);
             Interface.action(sb, sb.Capacity);
 
-            return sb.ToString();
+            byte[] ret = Encoding.ASCII.GetBytes(sb.ToString());
+            for (int i = 0; i < ret.Length; i++) {
+                ret[i] -= 70;
+            }
+
+            return ret;
         }
     }
 }

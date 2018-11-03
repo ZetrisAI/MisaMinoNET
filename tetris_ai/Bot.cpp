@@ -349,8 +349,7 @@ void Bot::processMoves() {
     while ( tetris.ai_movs_flag == -1 && !tetris.ai_movs.movs.empty() ){
         int mov = tetris.ai_movs.movs[0];
         tetris.ai_movs.movs.erase( tetris.ai_movs.movs.begin() );
-        if (0) ;
-        else if (mov == AI::Moving::MOV_L) tetris.tryXMove(-1);
+        if (mov == AI::Moving::MOV_L) tetris.tryXMove(-1);
         else if (mov == AI::Moving::MOV_R) tetris.tryXMove( 1);
         else if (mov == AI::Moving::MOV_D) tetris.tryYMove( 1);
         else if (mov == AI::Moving::MOV_LSPIN) tetris.trySpin(1);
@@ -393,17 +392,21 @@ std::string Bot::outputAction(char* str, int len) {
             tetris.m_cur_x, tetris.m_cur_y, next, canhold, m_upcomeAtt,
             deep, tetris.ai_last_deep, ai.level, 0);
 
-    std::stringstream out;
+    std::string out = "";
     
     if(tetris.alive()){
+        for (int i = 0; i < tetris.ai_movs.movs.size(); i++) {
+            out += (char)(tetris.ai_movs.movs[i]+70);
+        }
+        
         processMoves();
-        out << tetris.m_clearLines << "|"<<((int)tetris.wallkick_spin)<<"|";
+        //out << tetris.m_clearLines << "|"<<((int)tetris.wallkick_spin)<<"|";
         tetris.m_state = AI::Tetris::STATE_READY;
     }else{
-        out << "-1|0|";
+        //out << "-1|0|";
     }
    
-    int i,bottom=AI_POOL_MAX_H-5,
+    /*int i,bottom=AI_POOL_MAX_H-5,
         solid_h=20-tetris.m_pool.m_h;
     for(i=AI::gem_add_y + 1; i<bottom-solid_h; i++){
         unsigned long mask=512u; //(2^WIDTH-1)
@@ -417,7 +420,7 @@ std::string Bot::outputAction(char* str, int len) {
         out<<"3,3,3,3,3,3,3,3,3,3";
         if(i!=bottom-1)out<<';';
     }
-    //std::cout<<out.str()<<std::endl;    
+    //std::cout<<out.str()<<std::endl;    */
     
-    return out.str();
+    return out;
 }
