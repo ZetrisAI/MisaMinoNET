@@ -41,11 +41,11 @@ public:
         int GarbageBlocking;
         int combo_table_style;
         tetris_rule() {
-            spin180 = 1;
+            spin180 = 0;
             GarbageCancel = 1;
-            GarbageBuffer = 1;
-            GarbageBlocking = 1;
-            combo_table_style = 2; //1=TOJ, 2=TF
+            GarbageBuffer = 0;
+            GarbageBlocking = 0;
+            combo_table_style = 3; //1=TOJ, 2=TF, 3=PPT
         }
     };
     
