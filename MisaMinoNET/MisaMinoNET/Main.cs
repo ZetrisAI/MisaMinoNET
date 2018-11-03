@@ -72,30 +72,20 @@ namespace MisaMinoNET {
         }
 
         private static readonly char[] MinoMap = new char[7] {
-            'I', 'T', 'L', 'J', 'Z', 'S', 'O'
+            'Z', 'S', 'L', 'J', 'T', 'O', 'I'
         };
-
-        private static char MinoConvert(int piece) {
-            if (piece < 5) {
-                piece = 5 - piece;
-            } else {
-                piece = 6 * (6 - piece);
-            }
-
-            return MinoMap[piece];
-        }
 
         private static void updateQueue(int[] queue) {
             char[] queueMinos = new char[queue.Length];
 
             for (int i = 0; i < queue.Length; i++)
-                queueMinos[i] = MinoConvert(queue[i]);
+                queueMinos[i] = MinoMap[queue[i]];
 
             Interface.update_next(String.Join(",", queueMinos));
         }
 
         private static void updateCurrent(int current) {
-            Interface.update_current(MinoConvert(current).ToString());
+            Interface.update_current(MinoMap[current].ToString());
         }
 
         private static void updateField(int[,] field) {
@@ -106,9 +96,10 @@ namespace MisaMinoNET {
 
                 for (int j = 0; j < 10; j++) {
                     if (field[j, i] == -1) {
-                        row[j] = 0;
+                        // Mirror for whatever reason. Blaming MisaMino.
+                        row[9 - j] = 0;
                     } else {
-                        row[j] = 2;
+                        row[9 - j] = 2;
                     }
                 }
 
