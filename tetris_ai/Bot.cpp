@@ -395,9 +395,9 @@ std::string Bot::outputAction(char* str, int len) {
     std::stringstream out;
     
     if(tetris.alive()){
-        /*for (int i = 0; i < tetris.ai_movs.movs.size(); i++) {
-            out += (char)(tetris.ai_movs.movs[i]+70);
-        }*/
+        for (int i = 0; i < tetris.ai_movs.movs.size(); i++) {
+            out << tetris.ai_movs.movs[i] << ((i == tetris.ai_movs.movs.size() - 1)? "|" : ",");
+        }
         
         processMoves();
         //out << tetris.m_clearLines << "|"<<((int)tetris.wallkick_spin)<<"|";
@@ -420,7 +420,7 @@ std::string Bot::outputAction(char* str, int len) {
         out<<"3,3,3,3,3,3,3,3,3,3";
         if(i!=bottom-1)out<<';';
     }
-    //std::cout<<out.str()<<std::endl;    */
+    //std::cout<<out.str()<<std::endl;    
     
-    return out.str().c_str();
+    return out.str();
 }
