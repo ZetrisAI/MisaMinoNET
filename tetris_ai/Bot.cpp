@@ -392,12 +392,12 @@ std::string Bot::outputAction(char* str, int len) {
             tetris.m_cur_x, tetris.m_cur_y, next, canhold, m_upcomeAtt,
             deep, tetris.ai_last_deep, ai.level, 0);
 
-    std::string out = "";
+    std::stringstream out;
     
     if(tetris.alive()){
-        for (int i = 0; i < tetris.ai_movs.movs.size(); i++) {
+        /*for (int i = 0; i < tetris.ai_movs.movs.size(); i++) {
             out += (char)(tetris.ai_movs.movs[i]+70);
-        }
+        }*/
         
         processMoves();
         //out << tetris.m_clearLines << "|"<<((int)tetris.wallkick_spin)<<"|";
@@ -406,7 +406,7 @@ std::string Bot::outputAction(char* str, int len) {
         //out << "-1|0|";
     }
    
-    /*int i,bottom=AI_POOL_MAX_H-5,
+    int i,bottom=AI_POOL_MAX_H-5,
         solid_h=20-tetris.m_pool.m_h;
     for(i=AI::gem_add_y + 1; i<bottom-solid_h; i++){
         unsigned long mask=512u; //(2^WIDTH-1)
@@ -422,5 +422,5 @@ std::string Bot::outputAction(char* str, int len) {
     }
     //std::cout<<out.str()<<std::endl;    */
     
-    return out;
+    return out.str().c_str();
 }

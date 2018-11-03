@@ -118,7 +118,7 @@ namespace MisaMinoNET {
             Interface.update_field(String.Join(";", rows));
         }
 
-        public static byte[] FindMove(int[] queue, int current, int[,] field, int combo, int garbage) {
+        public static string FindMove(int[] queue, int current, int[,] field, int combo, int garbage) {
             updateQueue(queue);
             updateCurrent(current);
             updateField(field);
@@ -129,12 +129,12 @@ namespace MisaMinoNET {
 
             Interface.action(sb, sb.Capacity);
 
-            byte[] ret = Encoding.ASCII.GetBytes(sb.ToString());
+            /*byte[] ret = Encoding.ASCII.GetBytes(sb.ToString());
             for (int i = 0; i < ret.Length; i++) {
                 ret[i] -= 70;
-            }
+            }*/
 
-            return ret;
+            return sb.ToString();
         }
     }
 }
