@@ -31,12 +31,25 @@ namespace MisaMinoNET {
 
         [DllImport("libtetris_ai.dll")]
         public static extern void update_reset();
+
+        [DllImport("libtetris_ai.dll")]
+        public static extern void action(StringBuilder str, int len);
     }
 
     public class MisaMino {
-        public static void Test() {
+        public static string Test() {
+            Interface.settings_level(10);
+            Interface.settings_style(1);
             Interface.update_next("T,L,I,O,Z");
             Interface.update_current("J");
+            Interface.update_combo(0);
+            Interface.update_incoming(0);
+            Interface.update_field("0,0,0,1,1,1,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0");
+
+            StringBuilder sb = new StringBuilder(500);
+            Interface.action(sb, sb.Capacity);
+
+            return sb.ToString();
         }
     }
 }

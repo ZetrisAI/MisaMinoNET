@@ -148,7 +148,8 @@ void Bot::updateStyle(int style) {
 }*/
 
 void Bot::updateCurrent(const char* piece) {
-    tetris.m_next[0] = AI::getGem(m_gemMap[*piece], 0);
+    std::string s = piece;
+    tetris.m_cur = AI::getGem(m_gemMap[s[0]], 0);
 }
 
 void Bot::updateIncoming(int attack) {
@@ -368,7 +369,7 @@ void Bot::processMoves() {
     tetris.clearLines();
 }
 
-void Bot::outputAction() {
+std::string Bot::outputAction(char* str, int len) {
     std::vector<AI::Gem> next;
     for (int j = 0; j < 5; ++j) //NEXT size
         next.push_back(tetris.m_next[j]);
@@ -413,6 +414,7 @@ void Bot::outputAction() {
         out<<"3,3,3,3,3,3,3,3,3,3";
         if(i!=bottom-1)out<<';';
     }
-    std::cout<<out.str()<<std::endl;    
-
+    //std::cout<<out.str()<<std::endl;    
+    
+    return out.str();
 }

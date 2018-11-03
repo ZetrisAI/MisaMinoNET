@@ -15,7 +15,7 @@ public:
     
     void startParser();
     void setup();
-    void outputAction();
+    std::string outputAction(char* str, int len);
     void updateLevel(int level);
     void updateStyle(int style);
     void updateQueue(const char* s);

@@ -16,7 +16,7 @@ DLL void update_next(const char* queue) {
     MisaBot.updateQueue(queue);
 }
 DLL void update_current(const char* piece) {
-    MisaBot.updateCurrent(piece);
+    return MisaBot.updateCurrent(piece);
 }
 DLL void update_incoming(int attack) {
     MisaBot.updateIncoming(attack);
@@ -31,8 +31,9 @@ DLL void update_reset() {
     MisaBot.updateReset();
 }
 
-DLL void action() {
-    MisaBot.outputAction();
+DLL void action(char* str, int len) {
+    std::string a = MisaBot.outputAction(str, len);
+    std::copy(a.c_str(), a.c_str() + a.length() + 1, str);
 }
 
 BOOL WINAPI DllMain(HANDLE handle, DWORD reason, LPVOID reserved) {
