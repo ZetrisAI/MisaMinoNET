@@ -1757,7 +1757,9 @@ namespace AI {
         ~AI_THREAD_PARAM() {
         }
     };
-    void AI_Thread( void* lpParam ) {
+    AI::Gem AI_Thread( void* lpParam ) {
+        AI::Gem cur;
+        
         AI_THREAD_PARAM* p = (AI_THREAD_PARAM*)lpParam;
         int searchDeep = 0;
         *p->flag = 1;
@@ -1773,7 +1775,6 @@ namespace AI {
                 hold_num = gemNext[0].num;
             }
             std::vector<AI::Moving> movs;
-            AI::Gem cur;
             if ( best.hold ) {
                 cur = AI::getGem(hold_num, 0);
                 FindPathMoving(gamefield, movs, cur, AI::gem_beg_x, AI::gem_beg_y, true);
@@ -1830,11 +1831,12 @@ namespace AI {
         *p->flag = -1;
         delete p;
         //_endthread();
+        
+        return cur;
     }
-    int RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, int level, int player) {
+    AI::Gem RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, int level, int player) {
         flag = 0;
-        AI_Thread(new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, level, player));
         //_beginthread(AI_Thread, 0, new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, level, player) );
-        return 0;
+        return AI_Thread(new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, level, player));;
     }
 }

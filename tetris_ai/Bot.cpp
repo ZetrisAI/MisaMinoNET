@@ -387,7 +387,7 @@ std::string Bot::outputAction(char* str, int len) {
     cerr<< " " <<((canhold)?"canhold":"NOThold")<<", Deep:"<<deep<<",last:"<<tetris.ai_last_deep<<",level:"<<ai.level<<endl;
     #endif
     
-    AI::RunAI(tetris.ai_movs, tetris.ai_movs_flag, tetris.m_ai_param, tetris.m_pool, tetris.m_hold,
+    AI::Gem piece = AI::RunAI(tetris.ai_movs, tetris.ai_movs_flag, tetris.m_ai_param, tetris.m_pool, tetris.m_hold,
             tetris.m_cur,
             tetris.m_cur_x, tetris.m_cur_y, next, canhold, m_upcomeAtt,
             deep, tetris.ai_last_deep, ai.level, 0);
@@ -399,6 +399,8 @@ std::string Bot::outputAction(char* str, int len) {
             out << tetris.ai_movs.movs[i] << ((i == tetris.ai_movs.movs.size() - 1)? "|" : ",");
         }
         
+        out << piece.num;
+        
         processMoves();
         //out << tetris.m_clearLines << "|"<<((int)tetris.wallkick_spin)<<"|";
         tetris.m_state = AI::Tetris::STATE_READY;
@@ -406,7 +408,7 @@ std::string Bot::outputAction(char* str, int len) {
         //out << "-1|0|";
     }
    
-    int i,bottom=AI_POOL_MAX_H-5,
+    /*int i,bottom=AI_POOL_MAX_H-5,
         solid_h=20-tetris.m_pool.m_h;
     for(i=AI::gem_add_y + 1; i<bottom-solid_h; i++){
         unsigned long mask=512u; //(2^WIDTH-1)
@@ -419,7 +421,7 @@ std::string Bot::outputAction(char* str, int len) {
     for(; i<bottom; i++){
         out<<"3,3,3,3,3,3,3,3,3,3";
         if(i!=bottom-1)out<<';';
-    }
+    }*/
     //std::cout<<out.str()<<std::endl;    
     
     return out.str();

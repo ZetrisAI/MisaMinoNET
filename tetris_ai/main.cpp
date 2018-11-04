@@ -7,9 +7,11 @@ Bot MisaBot;
 
 DLL void settings_level(int level) {
     MisaBot.updateLevel(level);
+    MisaBot.setup();
 }
 DLL void settings_style(int style) {
     MisaBot.updateStyle(style);
+    MisaBot.setup();
 };
 
 DLL void update_next(const char* queue) {
@@ -29,6 +31,7 @@ DLL void update_field(const char* field) {
 }
 DLL void update_reset() {
     MisaBot.updateReset();
+    MisaBot.setup();
 }
 
 DLL void action(char* str, int len) {
