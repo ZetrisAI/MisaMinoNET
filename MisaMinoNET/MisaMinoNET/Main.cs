@@ -7,6 +7,22 @@ using System.Text;
 using MisaMinoNET;
 
 namespace MisaMinoNET {
+    public enum Instruction {
+        NULL, // Don't use Hold piece
+        L, // Tap Left
+        R, // Tap Right
+        LL, // DAS to Left wall
+        RR, // DAS to Right wall
+        D, // Soft drop tap
+        DD, // Soft drop to ground
+        LSPIN, // Rotate Left
+        RSPIN, // Rotate Right
+        DROP, // Hard drop
+        HOLD, // Use Hold piece
+        SPIN2, // Rotate 180
+        REFRESH // ?
+    };
+
     static class Interface {
         [DllImport("libtetris_ai.dll")]
         public static extern void settings_level(int level);
@@ -37,42 +53,26 @@ namespace MisaMinoNET {
     }
 
     public static class MisaMino {
-        /*public static byte[] Test() {
-            Interface.settings_level(10);
-            Interface.settings_style(1);
-            Interface.update_next("T,L,I,O,Z");
-            Interface.update_current("J");
-            Interface.update_combo(0);
-            Interface.update_incoming(0);
-            Interface.update_field("0,0,0,1,1,1,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0;0,0,0,0,0,0,0,0,0,0");
-
-            StringBuilder sb = new StringBuilder(500);
-            Interface.action(sb, sb.Capacity);
-
-            byte[] ret = Encoding.ASCII.GetBytes(sb.ToString());
-            for (int i = 0; i < ret.Length; i++) {
-                ret[i] -= 70;
-            }
-
-            return ret;
-        }*/
-
         public static void Reset() {
             Interface.update_reset();
-            Init();
         }
 
-        public static void Init() {
-            Interface.settings_level(10);
-            Interface.settings_style(1);
+        private static void Init(int level, int style) {
+            Interface.settings_level(level);
+            Interface.settings_style(style);
         }
 
         static MisaMino() {
-            Init();
+            Init(10, 1);
+            Reset();
         }
 
         private static readonly char[] MinoMap = new char[7] {
             'Z', 'S', 'L', 'J', 'T', 'O', 'I'
+        };
+
+        private static readonly char[] RevMinoMap = new char[7] {
+            'I', 'T', 'J', 'L', 'S', 'Z', 'O'
         };
 
         private static void updateQueue(int[] queue) {
@@ -109,7 +109,7 @@ namespace MisaMinoNET {
             Interface.update_field(String.Join(";", rows));
         }
 
-        public static string FindMove(int[] queue, int current, int[,] field, int combo, int garbage) {
+        public static List<Instruction> FindMove(int[] queue, int current, int[,] field, int combo, int garbage, ref char pieceUsed) {
             updateQueue(queue);
             updateCurrent(current);
             updateField(field);
@@ -117,15 +117,16 @@ namespace MisaMinoNET {
             Interface.update_incoming(garbage);
 
             StringBuilder sb = new StringBuilder(500);
-
             Interface.action(sb, sb.Capacity);
 
-            /*byte[] ret = Encoding.ASCII.GetBytes(sb.ToString());
-            for (int i = 0; i < ret.Length; i++) {
-                ret[i] -= 70;
-            }*/
+            string[] info = sb.ToString().Split('|');
+            pieceUsed = RevMinoMap[int.Parse(info[1]) - 1];
 
-            return sb.ToString();
+            List<Instruction> ret = new List<Instruction>();
+            foreach (string mov in info[0].Split(',')) {
+                ret.Add((Instruction)int.Parse(mov));
+            }
+            return ret;
         }
     }
 }
