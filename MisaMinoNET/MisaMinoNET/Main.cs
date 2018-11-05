@@ -53,17 +53,29 @@ namespace MisaMinoNET {
     }
 
     public static class MisaMino {
+        public static void updateLevel(int level) {
+            if (level < 1) level = 1;
+            if (level > 10) level = 10;
+
+            Interface.settings_level(level);
+            Reset();
+        }
+
+        public static void updateStyle(int style) {
+            if (style < 1) style = 1;
+            if (style > 5) style = 5;
+
+            Interface.settings_style(style);
+            Reset();
+        }
+
         public static void Reset() {
             Interface.update_reset();
         }
 
-        private static void Init(int level, int style) {
-            Interface.settings_level(level);
-            Interface.settings_style(style);
-        }
-
         static MisaMino() {
-            Init(10, 1);
+            Interface.settings_level(10);
+            Interface.settings_style(1);
             Reset();
         }
 
