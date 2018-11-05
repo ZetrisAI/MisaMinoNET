@@ -71,8 +71,8 @@ namespace MisaMinoNET {
             'Z', 'S', 'L', 'J', 'T', 'O', 'I'
         };
 
-        private static readonly char[] RevMinoMap = new char[7] {
-            'I', 'T', 'J', 'L', 'S', 'Z', 'O'
+        private static readonly int[] RevMinoMap = new int[7] {
+            6, 4, 2, 3, 0, 1, 5
         };
 
         private static void updateQueue(int[] queue) {
@@ -109,7 +109,7 @@ namespace MisaMinoNET {
             Interface.update_field(String.Join(";", rows));
         }
 
-        public static List<Instruction> FindMove(int[] queue, int current, int[,] field, int combo, int garbage, ref char pieceUsed) {
+        public static List<Instruction> FindMove(int[] queue, int current, int[,] field, int combo, int garbage, ref int pieceUsed) {
             updateQueue(queue);
             updateCurrent(current);
             updateField(field);
