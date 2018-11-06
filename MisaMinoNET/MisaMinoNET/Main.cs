@@ -25,10 +25,7 @@ namespace MisaMinoNET {
 
     static class Interface {
         [DllImport("libtetris_ai.dll")]
-        public static extern void settings_level(int level);
-
-        [DllImport("libtetris_ai.dll")]
-        public static extern void settings_style(int style);
+        public static extern void configure(int level, int style);
 
         [DllImport("libtetris_ai.dll")]
         public static extern void update_next(string queue);
@@ -61,19 +58,14 @@ namespace MisaMinoNET {
     }
 
     public static class MisaMino {
-        public static void updateLevel(int level) {
+        public static void Configure(int level, int style) {
             if (level < 1) level = 1;
             if (level > 10) level = 10;
 
-            Interface.settings_level(level);
-            Reset();
-        }
-
-        public static void updateStyle(int style) {
             if (style < 1) style = 1;
             if (style > 6) style = 6;
 
-            Interface.settings_style(style);
+            Interface.configure(level, style);
             Reset();
         }
 
@@ -82,8 +74,6 @@ namespace MisaMinoNET {
         }
 
         static MisaMino() {
-            Interface.settings_level(10);
-            Interface.settings_style(1);
             Reset();
         }
 

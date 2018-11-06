@@ -394,7 +394,7 @@ std::string Bot::outputAction(char* str, int len) {
 
     std::stringstream out;
     
-    if(tetris.alive() && 1 <= piece.num && piece.num <= 7){
+    if(/*tetris.alive() && */1 <= piece.num && piece.num <= 7){
         for (int i = 0; i < tetris.ai_movs.movs.size(); i++) {
             out << tetris.ai_movs.movs[i] << ((i == tetris.ai_movs.movs.size() - 1)? "|" : ",");
         }

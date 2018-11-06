@@ -5,11 +5,9 @@ using namespace std;
 
 Bot MisaBot;
 
-DLL void settings_level(int level) {
+DLL void configure(int level, int style) {
+    MisaBot = Bot();
     MisaBot.updateLevel(level);
-    MisaBot.setup();
-}
-DLL void settings_style(int style) {
     MisaBot.updateStyle(style);
     MisaBot.setup();
 };
