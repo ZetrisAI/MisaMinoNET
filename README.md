@@ -6,7 +6,7 @@ MisaMino is located in the `tetris_ai` directory.
 ### MisaMino Commands
 * settings
     * level (int 0 to 10)
-    * style (int 1 = t-spin+, 2 = t-spin, 3 = ren, 4 = no hold, 5 = downstack)
+    * style (int 1 = t-spin+, 2 = t-spin, 3 = ren, 4 = no hold, 5 = 4-wide, 6 = downstack)
 * update
     * next_pieces (string comma-separated I,T,L,J,Z,S,O)
     * combo (int)

@@ -71,7 +71,7 @@ namespace MisaMinoNET {
 
         public static void updateStyle(int style) {
             if (style < 1) style = 1;
-            if (style > 5) style = 5;
+            if (style > 6) style = 6;
 
             Interface.settings_style(style);
             Reset();
