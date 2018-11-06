@@ -18,7 +18,7 @@ DLL void update_next(const char* queue) {
     MisaBot.updateQueue(queue);
 }
 DLL void update_current(const char* piece) {
-    return MisaBot.updateCurrent(piece);
+    MisaBot.updateCurrent(piece);
 }
 DLL void update_incoming(int attack) {
     MisaBot.updateIncoming(attack);
@@ -37,6 +37,9 @@ DLL void update_reset() {
 DLL void action(char* str, int len) {
     std::string a = MisaBot.outputAction(str, len);
     std::copy(a.c_str(), a.c_str() + a.length() + 1, str);
+}
+DLL bool alive() {
+    return MisaBot.tetris.alive();
 }
 
 BOOL WINAPI DllMain(HANDLE handle, DWORD reason, LPVOID reserved) {

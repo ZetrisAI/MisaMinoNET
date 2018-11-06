@@ -49,7 +49,15 @@ namespace MisaMinoNET {
         public static extern void update_reset();
 
         [DllImport("libtetris_ai.dll")]
-        public static extern void action(StringBuilder str, int len);
+        private static extern void action(StringBuilder str, int len);
+        public static string process() {
+            StringBuilder sb = new StringBuilder(500);
+            Interface.action(sb, sb.Capacity);
+            return sb.ToString();
+        }
+
+        [DllImport("libtetris_ai.dll")]
+        public static extern bool alive();
     }
 
     public static class MisaMino {
@@ -122,22 +130,26 @@ namespace MisaMinoNET {
         }
 
         public static List<Instruction> FindMove(int[] queue, int current, int[,] field, int combo, int garbage, ref int pieceUsed) {
-            updateQueue(queue);
-            updateCurrent(current);
-            updateField(field);
-            Interface.update_combo(combo);
-            Interface.update_incoming(garbage);
-
-            StringBuilder sb = new StringBuilder(500);
-            Interface.action(sb, sb.Capacity);
-
-            string[] info = sb.ToString().Split('|');
-            pieceUsed = RevMinoMap[int.Parse(info[1]) - 1];
-
             List<Instruction> ret = new List<Instruction>();
-            foreach (string mov in info[0].Split(',')) {
-                ret.Add((Instruction)int.Parse(mov));
+
+            if (Interface.alive()) {
+                updateQueue(queue);
+                updateCurrent(current);
+                updateField(field);
+                Interface.update_combo(combo);
+                Interface.update_incoming(garbage);
+                string action = Interface.process();
+
+                if (!action.Equals("-1")) {
+                    string[] info = action.Split('|');
+                    pieceUsed = RevMinoMap[int.Parse(info[1]) - 1];
+
+                    foreach (string i in info[0].Split(',')) {
+                        ret.Add((Instruction)int.Parse(i));
+                    }
+                }
             }
+
             return ret;
         }
     }

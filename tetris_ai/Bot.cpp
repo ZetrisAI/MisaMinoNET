@@ -97,7 +97,7 @@ void Bot::updateQueue(const char* q) {
         tetris.m_next[i++] = AI::getGem(m_gemMap[c], 0);
     }
     tetris.m_next_num=i;
-    assert(tetris.newpiece());
+    tetris.newpiece();
 }
 
 /*void Bot::changeSettings(const std::string& p1, const std::string& p2){
@@ -394,7 +394,7 @@ std::string Bot::outputAction(char* str, int len) {
 
     std::stringstream out;
     
-    if(tetris.alive()){
+    if(tetris.alive() && 1 <= piece.num && piece.num <= 7){
         for (int i = 0; i < tetris.ai_movs.movs.size(); i++) {
             out << tetris.ai_movs.movs[i] << ((i == tetris.ai_movs.movs.size() - 1)? "|" : ",");
         }
@@ -405,7 +405,7 @@ std::string Bot::outputAction(char* str, int len) {
         //out << tetris.m_clearLines << "|"<<((int)tetris.wallkick_spin)<<"|";
         tetris.m_state = AI::Tetris::STATE_READY;
     }else{
-        //out << "-1|0|";
+       out << "-1";
     }
    
     /*int i,bottom=AI_POOL_MAX_H-5,

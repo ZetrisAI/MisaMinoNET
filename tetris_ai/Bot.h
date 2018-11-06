@@ -25,12 +25,14 @@ public:
     void updateField(const char* s);
     void updateReset();
     
+    TetrisGame tetris;
+    
     struct tetris_ai {
         int style;
         int level;
         tetris_ai() {
-            style = 2;
-            level = 4;
+            style = 1;
+            level = 10;
         }
     };
 
@@ -59,7 +61,6 @@ private:
     int m_upcomeAtt;
     std::map<char, int> m_gemMap;
     
-    TetrisGame tetris;
     tetris_rule rule;
     tetris_ai ai;
 };
