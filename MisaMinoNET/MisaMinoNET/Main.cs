@@ -99,9 +99,9 @@ namespace MisaMinoNET {
         }
 
         private static void updateField(int[,] field) {
-            string[] rows = new string[20];
+            string[] rows = new string[21];
 
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 21; i++) {
                 int[] row = new int[10];
 
                 for (int j = 0; j < 10; j++) {
@@ -113,7 +113,7 @@ namespace MisaMinoNET {
                     }
                 }
 
-                rows[19 - i] = String.Join(",", row);
+                rows[20 - i] = String.Join(",", row);
             }
 
             Interface.update_field(String.Join(";", rows));
