@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MisaMinoNET", "MisaMinoNET\MisaMinoNET.csproj", "{AA5BA1EC-C51B-49F2-BE93-B018601E8111}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PPTMonitor", "..\..\puyopuyotetris-monitor\PPTMonitor\PPTMonitor.csproj", "{2AA66E25-BFCB-4B34-8BB3-E5A1046A7B5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zetris", "..\..\puyopuyotetris-monitor\PPTMonitor\Zetris.csproj", "{2AA66E25-BFCB-4B34-8BB3-E5A1046A7B5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
