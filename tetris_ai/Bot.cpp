@@ -399,10 +399,10 @@ std::string Bot::outputAction(char* str, int len) {
             out << tetris.ai_movs.movs[i] << ((i == tetris.ai_movs.movs.size() - 1)? "|" : ",");
         }
         
-        out << piece.num;
+        out << piece.num << "|";
         
         processMoves();
-        //out << tetris.m_clearLines << "|"<<((int)tetris.wallkick_spin)<<"|";
+        out << ((int)tetris.wallkick_spin);
         tetris.m_state = AI::Tetris::STATE_READY;
     }else{
        out << "-1";

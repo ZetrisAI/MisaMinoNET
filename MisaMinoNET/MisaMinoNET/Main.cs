@@ -119,7 +119,7 @@ namespace MisaMinoNET {
             Interface.update_field(String.Join(";", rows));
         }
 
-        public static List<Instruction> FindMove(int[] queue, int current, int[,] field, int combo, int garbage, ref int pieceUsed) {
+        public static List<Instruction> FindMove(int[] queue, int current, int[,] field, int combo, int garbage, ref int pieceUsed, ref bool spinUsed) {
             List<Instruction> ret = new List<Instruction>();
 
             if (Interface.alive()) {
@@ -132,7 +132,8 @@ namespace MisaMinoNET {
 
                 if (!action.Equals("-1")) {
                     string[] info = action.Split('|');
-                    pieceUsed = RevMinoMap[int.Parse(info[1]) - 1];
+                    pieceUsed = RevMinoMap[Convert.ToInt32(info[1]) - 1];
+                    spinUsed = Convert.ToInt32(info[2]) != 0;
 
                     foreach (string i in info[0].Split(',')) {
                         ret.Add((Instruction)int.Parse(i));
