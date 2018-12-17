@@ -95,10 +95,10 @@ namespace MisaMinoNET {
             Interface.update_current(MinoMap[current].ToString());
         }
 
-        private static void updateField(int[,] field) {
-            string[] rows = new string[21];
+        private static void updateField(int[,] field, int pieceY) {
+            string[] rows = new string[25 - pieceY];
 
-            for (int i = 0; i < 21; i++) {
+            for (int i = 0; i < 25 - pieceY; i++) {
                 int[] row = new int[10];
 
                 for (int j = 0; j < 10; j++) {
@@ -110,19 +110,19 @@ namespace MisaMinoNET {
                     }
                 }
 
-                rows[20 - i] = String.Join(",", row);
+                rows[24 - pieceY - i] = String.Join(",", row);
             }
 
             Interface.update_field(String.Join(";", rows));
         }
 
-        public static List<Instruction> FindMove(int[] queue, int current, int[,] field, int combo, int garbage, ref int pieceUsed, ref bool spinUsed) {
+        public static List<Instruction> FindMove(int[] queue, int current, int currentY, int[,] field, int combo, int garbage, ref int pieceUsed, ref bool spinUsed) {
             List<Instruction> ret = new List<Instruction>();
 
             if (Interface.alive()) {
                 updateQueue(queue);
                 updateCurrent(current);
-                updateField(field);
+                updateField(field, currentY);
                 Interface.update_combo(combo);
                 Interface.update_incoming(garbage);
                 string action = Interface.process();
