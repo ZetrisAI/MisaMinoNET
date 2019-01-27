@@ -95,34 +95,28 @@ namespace MisaMinoNET {
             Interface.update_current(MinoMap[current].ToString());
         }
 
-        private static void updateField(int[,] field, int pieceY) {
-            string[] rows = new string[25 - pieceY];
+        private static void updateField(int[,] field, int height) {
+            string[] rows = new string[height];
 
-            for (int i = 0; i < 25 - pieceY; i++) {
+            for (int i = 0; i < height; i++) {
                 int[] row = new int[10];
 
-                for (int j = 0; j < 10; j++) {
-                    if (field[j, i] == -1) {
-                        // Mirror for whatever reason. Blaming MisaMino.
-                        row[9 - j] = 0;
-                    } else {
-                        row[9 - j] = 2;
-                    }
-                }
+                for (int j = 0; j < 10; j++)
+                    row[9 - j] = (field[j, i] == 255)? 0 : 2; // Mirror for whatever reason. Blaming MisaMino.
 
-                rows[24 - pieceY - i] = String.Join(",", row);
+                rows[height - i - 1] = String.Join(",", row);
             }
 
             Interface.update_field(String.Join(";", rows));
         }
 
-        public static List<Instruction> FindMove(int[] queue, int current, int currentY, int[,] field, int combo, int garbage, ref int pieceUsed, ref bool spinUsed) {
+        public static List<Instruction> FindMove(int[] queue, int current, int height, int[,] field, int combo, int garbage, ref int pieceUsed, ref bool spinUsed) {
             List<Instruction> ret = new List<Instruction>();
 
             if (Interface.alive()) {
                 updateQueue(queue);
                 updateCurrent(current);
-                updateField(field, currentY);
+                updateField(field, height);
                 Interface.update_combo(combo);
                 Interface.update_incoming(garbage);
                 string action = Interface.process();
