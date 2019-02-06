@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -110,7 +111,7 @@ namespace MisaMinoNET {
             Interface.update_field(String.Join(";", rows));
         }
 
-        public static List<Instruction> FindMove(int[] queue, int current, int height, int[,] field, int combo, int garbage, ref int pieceUsed, ref bool spinUsed) {
+        public static List<Instruction> FindMove(int[] queue, int current, int height, int[,] field, int combo, int garbage, ref int pieceUsed, ref bool spinUsed, ref int finalX, ref int finalY, ref int finalR) {
             List<Instruction> ret = new List<Instruction>();
 
             if (Interface.alive()) {
@@ -123,12 +124,19 @@ namespace MisaMinoNET {
 
                 if (!action.Equals("-1")) {
                     string[] info = action.Split('|');
-                    pieceUsed = RevMinoMap[Convert.ToInt32(info[1]) - 1];
-                    spinUsed = Convert.ToInt32(info[2]) != 0;
 
                     foreach (string i in info[0].Split(',')) {
                         ret.Add((Instruction)int.Parse(i));
                     }
+
+                    pieceUsed = RevMinoMap[Convert.ToInt32(info[1]) - 1];
+
+                    spinUsed = Convert.ToInt32(info[2]) != 0;
+
+                    int[] pieceInfo = info[3].Split(',').Select(s => int.Parse(s)).ToArray();
+                    finalX = pieceInfo[0];
+                    finalY = pieceInfo[1];
+                    finalR = (ret.Count(i => i == Instruction.RSPIN) - ret.Count(i => i == Instruction.LSPIN) + 12) % 4;
                 }
             }
 
