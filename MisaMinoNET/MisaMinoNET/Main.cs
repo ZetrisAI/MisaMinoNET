@@ -45,14 +45,22 @@ namespace MisaMinoNET {
 
         [DllImport("libtetris_ai.dll")]
         private static extern void action(StringBuilder str, int len);
-        public static string process() {
+        public static string Move() {
             StringBuilder sb = new StringBuilder(500);
-            Interface.action(sb, sb.Capacity);
+            action(sb, sb.Capacity);
             return sb.ToString();
         }
 
         [DllImport("libtetris_ai.dll")]
         public static extern bool alive();
+
+        [DllImport("libtetris_ai.dll")]
+        private static extern void findpath(string field, string piece, int x, int y, int r, bool hold, StringBuilder str, int len);
+        public static string Path(string field, string piece, int x, int y, int r, bool hold) {
+            StringBuilder sb = new StringBuilder(500);
+            findpath(field, piece, x, y, r, hold, sb, sb.Capacity);
+            return sb.ToString();
+        }
     }
 
     public static class MisaMino {
@@ -92,11 +100,9 @@ namespace MisaMinoNET {
             Interface.update_next(String.Join(",", queueMinos));
         }
 
-        private static void updateCurrent(int current) {
-            Interface.update_current(MinoMap[current].ToString());
-        }
+        private static string encodeCurrent(int current) => MinoMap[current].ToString();
 
-        private static void updateField(int[,] field, int height) {
+        private static string encodeField(int[,] field, int height) {
             string[] rows = new string[height];
 
             for (int i = 0; i < height; i++) {
@@ -108,7 +114,7 @@ namespace MisaMinoNET {
                 rows[height - i - 1] = String.Join(",", row);
             }
 
-            Interface.update_field(String.Join(";", rows));
+            return String.Join(";", rows);
         }
 
         public static List<Instruction> FindMove(int[] queue, int current, int height, int[,] field, int combo, int garbage, ref int pieceUsed, ref bool spinUsed, ref int finalX, ref int finalY, ref int finalR) {
@@ -116,11 +122,11 @@ namespace MisaMinoNET {
 
             if (Interface.alive()) {
                 updateQueue(queue);
-                updateCurrent(current);
-                updateField(field, height);
+                Interface.update_current(encodeCurrent(current));
+                Interface.update_field(encodeField(field, height));
                 Interface.update_combo(combo);
                 Interface.update_incoming(garbage);
-                string action = Interface.process();
+                string action = Interface.Move();
 
                 if (!action.Equals("-1")) {
                     string[] info = action.Split('|');
@@ -138,6 +144,28 @@ namespace MisaMinoNET {
                     finalY = pieceInfo[1];
                     finalR = (ret.Count(i => i == Instruction.RSPIN) - ret.Count(i => i == Instruction.LSPIN) + 12) % 4;
                 }
+            }
+
+            return ret;
+        }
+
+        public static List<Instruction> FindPath(int[,] field, int height, int piece, int x, int y, int r, bool hold, ref bool spinUsed) {
+            List<Instruction> ret = new List<Instruction>();
+
+            string action = Interface.Path(
+                encodeField(field, height),
+                encodeCurrent(piece),
+                x - 1, y - 3, r, hold
+            );
+
+            if (!action.Equals("-1")) {
+                string[] info = action.Split('|');
+
+                foreach (string i in info[0].Split(',')) {
+                    ret.Add((Instruction)int.Parse(i));
+                }
+
+                spinUsed = Convert.ToInt32(info[1]) != 0;
             }
 
             return ret;
