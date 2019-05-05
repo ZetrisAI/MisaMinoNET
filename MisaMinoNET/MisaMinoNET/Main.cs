@@ -140,8 +140,8 @@ namespace MisaMinoNET {
                     spinUsed = Convert.ToInt32(info[2]) != 0;
 
                     int[] pieceInfo = info[3].Split(',').Select(s => int.Parse(s)).ToArray();
-                    finalX = pieceInfo[0];
-                    finalY = pieceInfo[1];
+                    finalX = pieceInfo[0] + 1;
+                    finalY = pieceInfo[1] + 3;
                     finalR = (ret.Count(i => i == Instruction.RSPIN) - ret.Count(i => i == Instruction.LSPIN) + 12) % 4;
                 }
             }
