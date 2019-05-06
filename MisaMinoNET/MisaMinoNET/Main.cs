@@ -152,6 +152,9 @@ namespace MisaMinoNET {
         public static List<Instruction> FindPath(int[,] field, int height, int piece, int x, int y, int r, bool hold, ref bool spinUsed) {
             List<Instruction> ret = new List<Instruction>();
 
+            if (r == 3) r = 1;
+            else if (r == 1) r = 3;
+
             string action = Interface.Path(
                 encodeField(field, height),
                 encodeCurrent(piece),
