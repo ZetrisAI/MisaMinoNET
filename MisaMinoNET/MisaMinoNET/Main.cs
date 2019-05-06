@@ -153,7 +153,7 @@ namespace MisaMinoNET {
             return ret;
         }
 
-        public static List<Instruction> FindPath(int[,] field, int height, int piece, int x, int y, int r, bool hold, ref bool spinUsed) {
+        public static List<Instruction> FindPath(int[,] field, int height, int piece, int x, int y, int r, bool hold, ref bool spinUsed, out bool success) {
             List<Instruction> ret = new List<Instruction>();
 
             if (r == 3) r = 1;
@@ -165,7 +165,7 @@ namespace MisaMinoNET {
                 x - 1, y - 3, r, hold
             );
 
-            if (!action.Equals("-1")) {
+            if (success = !action.Equals("0")) {
                 string[] info = action.Split('|');
 
                 foreach (string i in info[0].Split(',')) {
