@@ -152,6 +152,11 @@ void Bot::updateCurrent(const char* piece) {
     tetris.m_cur = AI::getGem(m_gemMap[s[0]], 0);
 }
 
+void Bot::updateHold(const char* piece) {
+    std::string s = piece;
+    tetris.m_pool.m_hold = m_gemMap[s[0]];
+}
+
 void Bot::updateIncoming(int attack) {
     m_upcomeAtt = attack;
 }

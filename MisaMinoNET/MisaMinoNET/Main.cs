@@ -32,6 +32,9 @@ namespace MisaMinoNET {
         public static extern void update_current(string piece);
 
         [DllImport("libtetris_ai.dll")]
+        public static extern void update_hold(string piece);
+
+        [DllImport("libtetris_ai.dll")]
         public static extern void update_incoming(int attack);
 
         [DllImport("libtetris_ai.dll")]
@@ -117,12 +120,13 @@ namespace MisaMinoNET {
             return String.Join(";", rows);
         }
 
-        public static List<Instruction> FindMove(int[] queue, int current, int height, int[,] field, int combo, int garbage, ref int pieceUsed, ref bool spinUsed, ref int finalX, ref int finalY, ref int finalR) {
+        public static List<Instruction> FindMove(int[] queue, int current, int? hold, int height, int[,] field, int combo, int garbage, ref int pieceUsed, ref bool spinUsed, ref int finalX, ref int finalY, ref int finalR) {
             List<Instruction> ret = new List<Instruction>();
 
             if (Interface.alive()) {
                 updateQueue(queue);
                 Interface.update_current(encodeCurrent(current));
+                Interface.update_hold((hold == null)? " " : encodeCurrent(hold.Value));
                 Interface.update_field(encodeField(field, height));
                 Interface.update_combo(combo);
                 Interface.update_incoming(garbage);

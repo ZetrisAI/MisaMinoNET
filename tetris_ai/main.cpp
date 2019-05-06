@@ -18,6 +18,9 @@ DLL void update_next(const char* queue) {
 DLL void update_current(const char* piece) {
     MisaBot.updateCurrent(piece);
 }
+DLL void update_hold(const char* piece) {
+    MisaBot.updateHold(piece);
+}
 DLL void update_incoming(int attack) {
     MisaBot.updateIncoming(attack);
 }

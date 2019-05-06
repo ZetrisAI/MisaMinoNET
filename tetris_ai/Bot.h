@@ -20,6 +20,7 @@ public:
     void updateStyle(int style);
     void updateQueue(const char* s);
     void updateCurrent(const char* s);
+    void updateHold(const char* s);
     void updateIncoming(int attack);
     void updateCombo(int combo);
     void updateField(const char* s);
