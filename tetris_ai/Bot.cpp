@@ -130,6 +130,10 @@ void Bot::updateStyle(int style) {
     if (ai.style == -1) ai.style = 2;
 }
 
+void Bot::updateC4W(int c4w) {
+    ai.c4w = (c4w > 0)? 1 : 0;
+}
+
 /*void Bot::updateState(const std::string& p1, const std::string& p2) {
     if(p1=="next_pieces")
         updateQueue(p2);
@@ -319,7 +323,7 @@ void Bot::setup() {
     if (tetris.pAIName) {
         tetris.m_name = tetris.pAIName(ai.level);
     }
-    if (ai.level < 6) {
+    if (!ai.c4w) {
         tetris.m_ai_param.strategy_4w = 0;
     }
     if (tetris.m_ai_param.strategy_4w > 0) {

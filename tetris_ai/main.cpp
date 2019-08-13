@@ -5,10 +5,11 @@
 std::map<char, int> m_gemMap;
 Bot MisaBot;
 
-DLL void configure(int level, int style) {
+DLL void configure(int level, int style, int c4w) {
     MisaBot = Bot();
     MisaBot.updateLevel(level);
     MisaBot.updateStyle(style);
+    MisaBot.updateC4W(c4w);
     MisaBot.setup();
 };
 

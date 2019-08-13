@@ -18,6 +18,7 @@ public:
     std::string outputAction(char* str, int len);
     void updateLevel(int level);
     void updateStyle(int style);
+    void updateC4W(int c4w);
     void updateQueue(const char* s);
     void updateCurrent(const char* s);
     void updateHold(const char* s);
@@ -31,9 +32,11 @@ public:
     struct tetris_ai {
         int style;
         int level;
+        int c4w;
         tetris_ai() {
             style = 1;
-            level = 5;
+            level = 10;
+            c4w = 0;
         }
     };
 
