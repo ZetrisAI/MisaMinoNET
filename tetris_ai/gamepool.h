@@ -292,30 +292,18 @@ namespace AI {
                     attack = clearfull - 1;
                 } else {
                     attack = clearfull;
-                    if ( b2b > 1 ) attack += 1;
+                    if ( b2b > 1 ) attack += 1; // what the fuck
                 }
             }
             if ( clearfull > 0 ) {
                 if ( wallkick ) {
-                    if ( isEnableAllSpin() ) {
-                        attack += clearfull + 1;
-                        if ( wallkick == 2 ) { // mini
-                            attack -= 1; // mini minus
+                    if ( b2b > 1 ) attack += 1;
+                    if ( clearfull == 1 ) {
+                        if ( wallkick != 2 ) {
+                            attack += 2;
                         }
                     } else {
-                        if ( b2b > 1 ) attack += 1;
-                        if ( clearfull == 1 ) {
-                            if ( wallkick == 2 ) { // mini
-                                attack += 1;
-                            } else {
-                                attack += 2;
-                            }
-                        } else {
-                            attack += clearfull + 1;
-                        }
-                        if ( clearfull == 3 ) {
-                            if ( b2b > 1 ) attack += 1;
-                        }
+                        attack += clearfull + 1;
                     }
                 }
                 attack += getComboAttack( combo );
@@ -325,7 +313,7 @@ namespace AI {
                         if ( m_row[i] ) break;
                     }
                     if ( i < 0 ) {
-                        attack += m_pc_att; // pc
+                        attack = m_pc_att; // pc
                     }
                 }
             }
