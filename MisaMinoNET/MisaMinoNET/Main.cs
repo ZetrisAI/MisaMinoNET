@@ -72,7 +72,7 @@ namespace MisaMinoNET {
             if (level > 10) level = 10;
 
             if (style < 1) style = 1;
-            if (style > 6) style = 6;
+            if (style > 7) style = 7;
 
             Interface.configure(level, style);
             Reset();

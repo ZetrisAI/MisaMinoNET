@@ -294,6 +294,10 @@ void Bot::setup() {
         tetris.m_ai_param.clear_useless_factor *= 0.8;
         tetris.m_ai_param.strategy_4w = 500;
         ai_name = "4W Ren AI";
+    } else if (ai.style == 6) {
+        tetris.m_ai_param.tspin3 *= 25;
+        tetris.m_ai_param.tspin *= 0.2;
+        ai_name = "T-spin Triple AI";
     } else if (ai.style != -1) { //if ( ai.style == 5 ) {
         AI::AI_Param param[2] = {
             {49, 918, 176, 33, -300, -0, 0, 25, 22, 99, 41, -300, 0, 14, 290, 0}, // defence AI
