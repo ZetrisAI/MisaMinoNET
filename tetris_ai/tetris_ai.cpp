@@ -366,71 +366,7 @@ namespace AI {
             pool_hole_score = hole_score;
         }
         score += pool_hole_score;
-#ifdef XP_RELEASE
-        // ȫ��
-        if ( 0 ) //&& pool.getPCAttack() > 8 )
-        {
-            if ( beg_y > pool_h )
-            {
-                //score -= 1000;
-                clearScore -= (2000 * pool.combo - curdepth * 50) * 1.0;
-            }
-            else if ( pool_total_cell % 2 == 0 && beg_y > pool_h - 10 && total_hole < 2 )
-            {
-                int h_hole[32] = {0};
-                const GameField& _pool = pool;
-                int top_y = beg_y, hole_add = 0, height;
-                if ( pool_total_cell % 4 ) top_y -= 1;
-                //if ( x_holes[beg_y+1] > 0 ) top_y -= 2;
-                //if ( top_y > pool_h - 2 ) top_y -= 2;
-                height = pool_h + 1 - top_y;
-                if ( height < 3 ) height += 2;
-                for ( int x = 0; x < pool_w; ++x) {
-                    h_hole[x] = min_y[x] - top_y + y_holes[x];
-                }
 
-                int last_cnt = 0, pc = 1, finish = 0, h4 = 0, cnt1 = 0, total_cnt = 0;
-                for ( int x = 0; x < pool_w; ++x) {
-                    total_cnt += h_hole[x];
-                }
-                for ( int x = 0; x < pool_w; ++x) {
-                    if ( h_hole[x] == 0 ) {
-                        if ( last_cnt % 4 != 0 ) {
-                            //pc = 0;
-                            top_y -= 2;
-                            height += 2;
-                            x = -1;
-                            last_cnt = 0, finish = 0, h4 = 0, cnt1 = 0, total_cnt += pool_w * 2;
-                            {
-                                for ( int x = 0; x < pool_w; ++x) {
-                                    h_hole[x] += 2;
-                                }
-                            }
-                        }
-                        else if ( last_cnt <= 0 || last_cnt >= total_cnt - 0 ) finish++;
-                        else ++h4;
-                    } else {
-                        if ( min_y[x] == top_y + 1 ) {
-                            ++cnt1;
-                        }
-                        last_cnt += h_hole[x];
-                    }
-                }
-                //if ( pc && ( height <= 4 || last_cnt < height * 6 ) ) {
-                if ( pc && ( (total_cnt) / 4 * 0.8 + total_clear_att < pool.getPCAttack() ) ) { //&& last_cnt < 30 ) {
-                    //if ( beg_y > pool_h - 4 ) score -= 500 * 2;
-                    //int s = 1000 * 5 + finish * 400 - h4 * 10 - (height + total_clears) * 800 - cnt1 * 20;
-                    //int s = (50 + finish * 10 + h4 * 1 - (height + total_clears) * 10 - cnt1 * 2) * 2.0;
-                    int s = (30 + finish * 2 + h4 * 1 - (height /*+ total_clears * 2*/) * 3 /*- cnt1 * 2 */) * 1.0;
-                    //int s = 100 * 2 + finish * 3 - h4 * 1 - (height + total_clears) * 10 - cnt1 * 2;
-                    //score -= 1000 * 4 + finish * 100 - last_cnt * 30 - cnt1 * 50;
-                    //score -= 500 * 4 + finish * 100 - last_cnt * 30 - cnt1 * 50 - curdepth * 100;
-                    if ( s > 0 )
-                        score -= s;
-                }
-            }
-        }
-#endif
         // �߶Ȳ�
         {
             //int n_maxy_index = maxy_index;
@@ -541,7 +477,7 @@ namespace AI {
                     }
                 }
                 clearScore += cs;
-#ifdef XP_RELEASE
+
                 if (1)
                 if ( clears > 0 && upcomeAtt >= 4 && ai_param.upcomeAtt > 0 ) {
                     int cur_s = 0;
@@ -555,7 +491,7 @@ namespace AI {
                     //    }
                     //}
                 }
-#endif
+
                 score += s;
             }
             //if ( clears ) {
@@ -1146,9 +1082,8 @@ namespace AI {
         if ( pool.combo > 0 && (pool.row[10] || pool.combo > 1) ) ai_param.strategy_4w = 0;
         if ( ai_param.hole < 0 ) ai_param.hole = 0;
         ai_param.hole += ai_param.open_hole;
-#if AI_WEAK_VERSION || defined(XP_RELEASE)
+        
         int ai_level_map[] = {
-            4000,  //LV0 search all
             4000,  //LV1 search all
             4000,
             4000,
@@ -1165,9 +1100,7 @@ namespace AI {
         if ( level <= 0 ) maxDeep = 0;
         else if ( level <= 6 ) maxDeep = std::min(level, 6); // TODO: max deep
         //else maxDeep = level;
-#else
-        int max_search_nodes = 4000;
-#endif
+        
         int next_add = 0;
         if ( pool.m_hold == 0 ) {
             next_add = 1;
@@ -1337,7 +1270,7 @@ namespace AI {
         searchDeep = 1;
         for ( int depth = 0; search_nodes < max_search_nodes && depth < maxDeep; searchDeep = ++depth ) { //d < maxDeep
             std::swap(pq_last, pq);
-#if defined(XP_RELEASE)
+            
             int (*sw_map)[8] = sw_map1;
             if ( ai_settings[player].hash ) {
                 sw_map = sw_map2;
@@ -1349,15 +1282,7 @@ namespace AI {
             int search_wide = 1000;
             if ( depth > 7 ) search_wide = sw_map[level][7];
             else search_wide = sw_map[level][depth];
-#else
-            int sw_map[16][8] = {
-                {15,  30,  20,  15,  10,  10,  10,  10},
-            };
-            int search_wide = 0;
-            if ( depth > 7 ) search_wide = sw_map[0][7];
-            else search_wide = sw_map[0][depth];
-            int search_base_width = sw_map[0][0];;
-#endif
+            
             //int seach_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
             int seach_select_best = std::min(search_wide - search_wide / 4, search_base_width);
             if ( level <= 3 ) {
@@ -1586,7 +1511,7 @@ namespace AI {
             std::swap(pq_last, pq);
             pq->clear();
             int depth = searchDeep - 1;
-#if defined(XP_RELEASE)
+            
             int (*sw_map)[8] = sw_map1;
             if ( ai_settings[player].hash )
                 sw_map = sw_map2;
@@ -1594,10 +1519,7 @@ namespace AI {
             int search_wide = 1000;
             if ( depth > 7 ) search_wide = sw_map[level][7];
             else search_wide = sw_map[level][depth];
-#else
-            int search_wide = (depth < 2 ? 20 : 20);
-            int search_base_width = 20;
-#endif
+            
             //int seach_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
             int seach_select_best = std::min(search_wide - search_wide / 4, search_base_width);
             if ( level <= 3 ) {

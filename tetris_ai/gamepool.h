@@ -5,11 +5,7 @@
 #include <cstdint>
 #include <iostream>
 #include "tetris_gem.h"
-#ifdef XP_RELEASE
 #define AI_POOL_MAX_H 50
-#else
-#define AI_POOL_MAX_H 32
-#endif
 
 namespace AI {
     struct GameField;
@@ -22,11 +18,7 @@ namespace AI {
     typedef uint64_t uint64;
     void InitHashTable();
     uint64 hash(const GameField & pool);
-#ifdef XP_RELEASE
     const int gem_add_y = 20;
-#else
-    const int gem_add_y = 6;
-#endif
     const int gem_beg_x = 3;
     const int gem_beg_y = 1;
 
