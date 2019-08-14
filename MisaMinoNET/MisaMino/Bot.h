@@ -1,6 +1,8 @@
 #ifndef BOT_H
 #define	BOT_H
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <iostream>
 #include <map>
 #include <string>

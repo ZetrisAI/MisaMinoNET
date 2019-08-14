@@ -22,31 +22,31 @@ namespace MisaMinoNET {
     };
 
     static class Interface {
-        [DllImport("libtetris_ai.dll")]
+        [DllImport("MisaMino.dll")]
         public static extern void configure(int level, int style, int c4w);
 
-        [DllImport("libtetris_ai.dll")]
+        [DllImport("MisaMino.dll")]
         public static extern void update_next(string queue);
 
-        [DllImport("libtetris_ai.dll")]
+        [DllImport("MisaMino.dll")]
         public static extern void update_current(string piece);
 
-        [DllImport("libtetris_ai.dll")]
+        [DllImport("MisaMino.dll")]
         public static extern void update_hold(string piece);
 
-        [DllImport("libtetris_ai.dll")]
+        [DllImport("MisaMino.dll")]
         public static extern void update_incoming(int attack);
 
-        [DllImport("libtetris_ai.dll")]
+        [DllImport("MisaMino.dll")]
         public static extern void update_combo(int combo);
 
-        [DllImport("libtetris_ai.dll")]
+        [DllImport("MisaMino.dll")]
         public static extern void update_field(string field);
 
-        [DllImport("libtetris_ai.dll")]
+        [DllImport("MisaMino.dll")]
         public static extern void update_reset();
 
-        [DllImport("libtetris_ai.dll")]
+        [DllImport("MisaMino.dll")]
         private static extern void action(StringBuilder str, int len);
         public static string Move() {
             StringBuilder sb = new StringBuilder(500);
@@ -54,10 +54,10 @@ namespace MisaMinoNET {
             return sb.ToString();
         }
 
-        [DllImport("libtetris_ai.dll")]
+        [DllImport("MisaMino.dll")]
         public static extern bool alive();
 
-        [DllImport("libtetris_ai.dll")]
+        [DllImport("MisaMino.dll")]
         private static extern void findpath(string field, string piece, int x, int y, int r, bool hold, StringBuilder str, int len);
         public static string Path(string field, string piece, int x, int y, int r, bool hold) {
             StringBuilder sb = new StringBuilder(500);

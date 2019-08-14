@@ -134,6 +134,8 @@ DLL void findpath(const char* _field, const char* _piece, int x, int y, int r, b
     std::copy(a.c_str(), a.c_str() + a.length() + 1, str);
 }
 
+#pragma unmanaged
+
 BOOL WINAPI DllMain(HANDLE handle, DWORD reason, LPVOID reserved) {
     switch (reason) {
         case DLL_PROCESS_ATTACH:
@@ -146,8 +148,7 @@ BOOL WINAPI DllMain(HANDLE handle, DWORD reason, LPVOID reserved) {
             m_gemMap['S'] = AI::GEMTYPE_S;
             m_gemMap['O'] = AI::GEMTYPE_O;
     
-            MisaBot.setup();     
-            // MisaBot.startParser();
+            MisaBot.setup();
             break;
 
         case DLL_THREAD_ATTACH:

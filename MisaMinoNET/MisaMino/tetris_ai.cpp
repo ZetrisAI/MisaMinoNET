@@ -1084,6 +1084,7 @@ namespace AI {
         ai_param.hole += ai_param.open_hole;
         
         int ai_level_map[] = {
+			4000, // unused LV0
             4000,  //LV1 search all
             4000,
             4000,
@@ -1095,6 +1096,7 @@ namespace AI {
             32000,
             64000,
         };
+
         int max_search_nodes = ai_level_map[level];
         //if ( AI_SHOW && GAMEMODE_4W ) max_search_nodes *= 2;
         if ( level <= 0 ) maxDeep = 0;
