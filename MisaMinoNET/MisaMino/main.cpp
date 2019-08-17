@@ -1,9 +1,15 @@
-#include "Bot.h"
-#include "Windows.h"
-#define DLL extern "C" __declspec(dllexport)
+#include "main.h"
+
+#pragma unmanaged
 
 std::map<char, int> m_gemMap;
 Bot MisaBot;
+
+Callback Abort = 0;
+
+DLL void set_abort(Callback handler) {
+	Abort = handler;
+}
 
 DLL void configure(int style, int c4w) {
     MisaBot = Bot();
@@ -132,8 +138,6 @@ DLL void findpath(const char* _field, const char* _piece, int x, int y, int r, b
     std::string a = out.str();
     std::copy(a.c_str(), a.c_str() + a.length() + 1, str);
 }
-
-#pragma unmanaged
 
 BOOL WINAPI DllMain(HANDLE handle, DWORD reason, LPVOID reserved) {
     switch (reason) {
