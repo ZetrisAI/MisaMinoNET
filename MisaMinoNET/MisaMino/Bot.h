@@ -15,7 +15,7 @@ public:
     Bot(const Bot& orig);
     virtual ~Bot();
     
-    void startParser();
+    //void startParser();
     void setup();
     std::string outputAction(char* str, int len);
     void updateLevel(int level);
@@ -33,11 +33,9 @@ public:
     
     struct tetris_ai {
         int style;
-        int level;
         int c4w;
         tetris_ai() {
             style = 1;
-            level = 10;
             c4w = 0;
         }
     };

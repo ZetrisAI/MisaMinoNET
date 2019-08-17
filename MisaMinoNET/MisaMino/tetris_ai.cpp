@@ -1068,8 +1068,10 @@ namespace AI {
         };
     };
 #define BEG_ADD_Y 1
-    MovingSimple AISearch(AI_Param ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, int level, int player) {
+    MovingSimple AISearch(AI_Param ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep) {
         assert( cur.num != 0 );
+		int player = 0;
+		int level = 10;
         typedef std::vector<MovingSimple> MovingList;
         MovingList movs;
         MovQueue<MovsState> que(16384);
@@ -1082,25 +1084,12 @@ namespace AI {
         if ( pool.combo > 0 && (pool.row[10] || pool.combo > 1) ) ai_param.strategy_4w = 0;
         if ( ai_param.hole < 0 ) ai_param.hole = 0;
         ai_param.hole += ai_param.open_hole;
-        
-        int ai_level_map[] = {
-			4000, // unused LV0
-            4000,  //LV1 search all
-            4000,
-            4000,
-            4000,  //lv4
-            5000,
-            6000,
-            8000,  //LV7
-            16000,
-            32000,
-            64000,
-        };
 
-        int max_search_nodes = ai_level_map[level];
+		int max_search_nodes = 8000; //ai_level_map[level] TODO: get rid of this
+		maxDeep = 6;
         //if ( AI_SHOW && GAMEMODE_4W ) max_search_nodes *= 2;
-        if ( level <= 0 ) maxDeep = 0;
-        else if ( level <= 6 ) maxDeep = std::min(level, 6); // TODO: max deep
+        //if ( level <= 0 ) maxDeep = 0;
+        //else if ( level <= 6 ) maxDeep = std::min(level, 6); // TODO: max deep
         //else maxDeep = level;
         
         int next_add = 0;
@@ -1658,9 +1647,8 @@ namespace AI {
         int upcomeAtt;
         int maxDeep;
         int *searchDeep;
-        int level;
         int player;
-        AI_THREAD_PARAM(TetrisAI_t _func, Moving& _ret_mov, int& _flag, const AI_Param& _ai_param, const GameField& _pool, int _hold, Gem _cur, int _x, int _y, const std::vector<Gem>& _next, bool _canhold, int _upcomeAtt, int _maxDeep, int & _searchDeep, int _level, int _player) {
+        AI_THREAD_PARAM(TetrisAI_t _func, Moving& _ret_mov, int& _flag, const AI_Param& _ai_param, const GameField& _pool, int _hold, Gem _cur, int _x, int _y, const std::vector<Gem>& _next, bool _canhold, int _upcomeAtt, int _maxDeep, int & _searchDeep, int _player) {
             func = _func;
             ret_mov = &_ret_mov;
             flag = &_flag;
@@ -1675,7 +1663,6 @@ namespace AI {
             upcomeAtt = _upcomeAtt;
             maxDeep = _maxDeep;
             searchDeep = &_searchDeep;
-            level = _level;
             player = _player;
         }
         ~AI_THREAD_PARAM() {
@@ -1688,7 +1675,7 @@ namespace AI {
         int searchDeep = 0;
         *p->flag = 1;
 
-        AI::MovingSimple best = AISearch(p->ai_param, p->pool, p->hold, p->cur, p->x, p->y, p->next, p->canhold, p->upcomeAtt, p->maxDeep, searchDeep, p->level, p->player);
+        AI::MovingSimple best = AISearch(p->ai_param, p->pool, p->hold, p->cur, p->x, p->y, p->next, p->canhold, p->upcomeAtt, p->maxDeep, searchDeep);
         AI::Moving mov;
         const AI::GameField &gamefield = p->pool;
         std::vector<AI::Gem> &gemNext = p->next;
@@ -1758,9 +1745,9 @@ namespace AI {
         
         return cur;
     }
-    AI::Gem RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, int level, int player) {
+    AI::Gem RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep) {
         flag = 0;
         //_beginthread(AI_Thread, 0, new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, level, player) );
-        return AI_Thread(new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, level, player));;
+        return AI_Thread(new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, 0));
     }
 }

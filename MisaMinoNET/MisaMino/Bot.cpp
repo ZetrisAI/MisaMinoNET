@@ -119,12 +119,6 @@ void Bot::updateQueue(const char* q) {
     }
 }*/
 
-void Bot::updateLevel(int level) {
-    ai.level = level;
-    if (ai.level > 10) ai.level = 10;
-    if (ai.level < -2) ai.level = -2;
-}
-
 void Bot::updateStyle(int style) {
     ai.style = style;
     if (ai.style == -1) ai.style = 2;
@@ -248,33 +242,7 @@ void Bot::setup() {
         13, 9, 17, 10, 29, 25, 39, 2, 12, 19, 7, 24, 21, 16, 14, 19, 200
 
     };
-    tetris.m_ai_param = param;
-
-    if (ai.level <= 0) {
-        AI::AI_Param param[2] = {
-            {
-
-                //  43,  47,  84,  62,  60,  47,  53,  21,   2,  98,  85,  13,  21,  37,  38,  0
-                //  47,  66,  86,  66, -79,  42,  38,  23,  -3,  95,  74,  13,  27,  36,  37,  0
-                //  45,  61,  99,  49,  63,  40,  42,  31, -27,  88,  80,  28,  28,  41,  33,  0
-                //  58,  61,  90,  82,  19,  27,  44,  17,  -4,  75,  47,  20,  38,  32,  41,  0
-                47, 62, 94, 90, 11, 35, 48, 19, -21, 78, 64, 20, 42, 42, 39, 300
-                //  48,  65,  84,  59, -75,  39,  43,  23, -17,  92,  64,  20,  29,  37,  36,  0
-
-            },
-            {
-
-                //  43,  47,  84,  62,  60,  47,  53,  21,   2,  98,  85,  13,  21,  37,  38,  0
-                //  47,  66,  86,  66, -79,  42,  38,  23,  -3,  95,  74,  13,  27,  36,  37,  0
-                //  45,  61,  99,  49,  63,  40,  42,  31, -27,  88,  80,  28,  28,  41,  33,  0 // a
-                //  58,  61,  90,  82,  19,  27,  44,  17,  -4,  75,  47,  20,  38,  32,  41,  0 // b
-                //  47,  62,  94,  90,  11,  35,  48,  19, -21,  78,  64,  20,  42,  42,  39,  0 // s
-                //  48,  65,  84,  59, -75,  39,  43,  23, -17,  92,  64,  20,  29,  37,  36,  0 // s
-                71, 12, 78, 52, 96, 37, 14, 24, 40, 99, 44, 49, 93, 25, 44, 380
-            }
-        };
-        tetris.m_ai_param = param[0];
-    }
+	tetris.m_ai_param = param;
 
     std::string ai_name = "T-spin AI";
     if (ai.style == 1) {
@@ -312,17 +280,6 @@ void Bot::setup() {
         ai_name = "Downstack";
     }
 
-    if (ai.style) {
-        char name[200];
-        sprintf(name, "%s LV%d", ai_name.c_str(), ai.level);
-        tetris.m_name = name;
-        #if DEBUG_LEVEL>=1
-        cerr << "[debug] Name:" << tetris.m_name << std::endl;
-        #endif
-    }
-    if (tetris.pAIName) {
-        tetris.m_name = tetris.pAIName(ai.level);
-    }
     if (!ai.c4w) {
         tetris.m_ai_param.strategy_4w = 0;
     }
@@ -403,7 +360,7 @@ std::string Bot::outputAction(char* str, int len) {
     AI::Gem piece = AI::RunAI(tetris.ai_movs, tetris.ai_movs_flag, tetris.m_ai_param, tetris.m_pool, tetris.m_hold,
             tetris.m_cur,
             tetris.m_cur_x, tetris.m_cur_y, next, canhold, m_upcomeAtt,
-            deep, tetris.ai_last_deep, ai.level, 0);
+            deep, tetris.ai_last_deep);
 
     std::stringstream out;
     

@@ -23,7 +23,7 @@ namespace MisaMinoNET {
 
     static class Interface {
         [DllImport("MisaMino.dll")]
-        public static extern void configure(int level, int style, int c4w);
+        public static extern void configure(int style, int c4w);
 
         [DllImport("MisaMino.dll")]
         public static extern void update_next(string queue);
@@ -67,14 +67,11 @@ namespace MisaMinoNET {
     }
 
     public static class MisaMino {
-        public static void Configure(int level, int style, bool c4w) {
-            if (level < 1) level = 1;
-            if (level > 10) level = 10;
-
+        public static void Configure(int style, bool c4w) {
             if (style < 1) style = 1;
             if (style > 7) style = 7;
 
-            Interface.configure(level, style, Convert.ToInt32(c4w));
+            Interface.configure(style, Convert.ToInt32(c4w));
             Reset();
         }
 

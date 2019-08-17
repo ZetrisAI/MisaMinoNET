@@ -210,6 +210,5 @@ public:
     int m_lr; // 3d��Ч����
     int m_piecedelay;
     AI::AI_Param m_ai_param;
-    std::string m_name;
     mutable std::string m_att_info;
 };
