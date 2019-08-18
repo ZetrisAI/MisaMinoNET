@@ -343,7 +343,7 @@ void Bot::processMoves() {
 
 std::string Bot::outputAction(char* str, int len) {
     std::vector<AI::Gem> next;
-    for (int j = 0; j < 5; ++j) //NEXT size
+    for (int j = 0; j < 5; ++j) //NEXT size TODO: Expand
         next.push_back(tetris.m_next[j]);
     int deep = tetris.m_next_num + 1;
     bool canhold = tetris.hold;

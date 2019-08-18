@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bot.cpp" />
+    <ClCompile Include="callback.cpp" />
     <ClCompile Include="gamepool.cpp" />
     <ClCompile Include="genmove.cpp" />
     <ClCompile Include="main.cpp" />
@@ -20,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bot.h" />
+    <ClInclude Include="callback.h" />
     <ClInclude Include="gamepool.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="tetris.h" />

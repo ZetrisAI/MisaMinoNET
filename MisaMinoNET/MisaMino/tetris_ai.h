@@ -1,6 +1,7 @@
 #pragma once
 #define _ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH
 
+#include "callback.h"
 #include "gamepool.h"
 
 #include <algorithm>

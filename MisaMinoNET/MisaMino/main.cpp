@@ -5,8 +5,6 @@
 std::map<char, int> m_gemMap;
 Bot MisaBot;
 
-Callback Abort = 0;
-
 DLL void set_abort(Callback handler) {
 	Abort = handler;
 }

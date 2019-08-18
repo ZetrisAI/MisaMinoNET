@@ -1085,7 +1085,6 @@ namespace AI {
         if ( ai_param.hole < 0 ) ai_param.hole = 0;
         ai_param.hole += ai_param.open_hole;
 
-		int max_search_nodes = 8000; //ai_level_map[level] TODO: get rid of this
         //if ( AI_SHOW && GAMEMODE_4W ) max_search_nodes *= 2;
         //if ( level <= 0 ) maxDeep = 0;
         //else if ( level <= 6 ) maxDeep = std::min(level, 6); // TODO: max deep
@@ -1258,7 +1257,7 @@ namespace AI {
         };
         MovQueue<MovsState> * pq_last = &que2, * pq = &que;
         searchDeep = 1;
-        for ( int depth = 0; search_nodes < max_search_nodes && depth < maxDeep; searchDeep = ++depth ) { //d < maxDeep
+        for ( int depth = 0; /*search_nodes < max_search_nodes &&*/ depth < maxDeep; searchDeep = ++depth ) { //d < maxDeep
             std::swap(pq_last, pq);
             
             int (*sw_map)[8] = sw_map1;
@@ -1305,7 +1304,7 @@ namespace AI {
                 if ( pq_size != pqmax_size && ms_last.first.score > 50000000 ) { // ���߷ּ�֦
                     break;
                 }
-                if ( search_nodes >= max_search_nodes ) {
+                if (Abort()) {
                     //MovsState ms_last = pq_last->back();
                     pq->push(ms_last);
                     continue;
@@ -1497,7 +1496,7 @@ namespace AI {
             }
         }
         //if (0)
-        if ( ai_settings[player].hash && canhold && search_nodes < max_search_nodes ) { // extra search
+        if ( ai_settings[player].hash && canhold && !Abort() ) { // extra search
             std::swap(pq_last, pq);
             pq->clear();
             int depth = searchDeep - 1;
@@ -1535,7 +1534,7 @@ namespace AI {
                     break;
                 }
                 pq->push(ms_last);
-                if ( search_nodes >= max_search_nodes ) {
+                if ( Abort() ) {
                     continue;
                 }
                 //max_combo = std::max( max_combo, (int)ms_last.pool_last.combo );

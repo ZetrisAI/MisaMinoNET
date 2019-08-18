@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+// Suppresses readonly suggestion
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044")]
+
+// Suppresses naming rule violation
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006")]
 
 namespace MisaMinoNET {
     public enum Instruction {
@@ -22,6 +30,27 @@ namespace MisaMinoNET {
     };
 
     static class Interface {
+        private static bool abort = false;
+
+        private delegate bool Callback();
+        private static Callback AbortCallback;
+
+        [DllImport("MisaMino.dll")]
+        private static extern void set_abort(Callback func);
+
+        private static object locker = new object();
+        public static bool Running { get; private set; } = false;
+
+        static Interface() {
+            AbortCallback = new Callback(Abort);
+            set_abort(AbortCallback);
+        }
+
+        public static bool Abort() => abort;
+        public static void SetAbort() {
+            if (Running) abort = true;
+        }
+
         [DllImport("MisaMino.dll")]
         public static extern void configure(int style, int c4w);
 
@@ -50,7 +79,19 @@ namespace MisaMinoNET {
         private static extern void action(StringBuilder str, int len);
         public static string Move() {
             StringBuilder sb = new StringBuilder(500);
-            action(sb, sb.Capacity);
+
+            abort = true;
+
+            lock (locker) {
+                abort = false;
+
+                Running = true;
+
+                action(sb, sb.Capacity);
+
+                Running = false;
+            }
+
             return sb.ToString();
         }
 
@@ -66,6 +107,54 @@ namespace MisaMinoNET {
         }
     }
 
+    public static class Mino {
+        public static readonly string[] ToChar = new string[7] {
+            "S", "Z", "J", "L", "T", "O", "I"
+        };
+
+        public static readonly char[] MisaMinoMap = new char[7] {
+            'Z', 'S', 'L', 'J', 'T', 'O', 'I'
+        };
+
+        public static readonly int[] FromMisaMino = new int[7] {
+            6, 4, 2, 3, 0, 1, 5
+        };
+    }
+
+    public class Solution {
+        #pragma warning disable 0169
+        public int PieceUsed { get; private set; }
+        public bool SpinUsed { get; private set; }
+        public int FinalX { get; private set; }
+        public int FinalY { get; private set; }
+        public int FinalR { get; private set; }
+        public List<Instruction> Instructions { get; private set; } = new List<Instruction>();
+        #pragma warning restore 0169
+
+        public bool Empty => Instructions.Count == 0;
+
+        public Solution() {}
+
+        public Solution(string input) {
+            string[] info = input.Split('|');
+
+            foreach (string i in info[0].Split(',')) {
+                Instructions.Add((Instruction)int.Parse(i));
+            }
+
+            PieceUsed = Mino.FromMisaMino[Convert.ToInt32(info[1]) - 1];
+
+            SpinUsed = Convert.ToInt32(info[2]) != 0;
+
+            int[] pieceInfo = info[3].Split(',').Select(s => int.Parse(s)).ToArray();
+            FinalX = pieceInfo[0] + 1;
+            FinalY = pieceInfo[1] + 3;
+            FinalR = (Instructions.Count(i => i == Instruction.RSPIN) - Instructions.Count(i => i == Instruction.LSPIN) + 100) % 4;
+        }
+
+        public override string ToString() => $"{SpinUsed} {Mino.ToChar[PieceUsed]}={FinalX},{FinalY},{FinalR}: {String.Join(", ", Instructions)}";
+    }
+
     public static class MisaMino {
         public static void Configure(int style, bool c4w) {
             if (style < 1) style = 1;
@@ -76,6 +165,7 @@ namespace MisaMinoNET {
         }
 
         public static void Reset() {
+            Abort();
             Interface.update_reset();
         }
 
@@ -83,24 +173,16 @@ namespace MisaMinoNET {
             Reset();
         }
 
-        private static readonly char[] MinoMap = new char[7] {
-            'Z', 'S', 'L', 'J', 'T', 'O', 'I'
-        };
-
-        private static readonly int[] RevMinoMap = new int[7] {
-            6, 4, 2, 3, 0, 1, 5
-        };
-
         private static void updateQueue(int[] queue) {
             char[] queueMinos = new char[queue.Length];
 
             for (int i = 0; i < queue.Length; i++)
-                queueMinos[i] = MinoMap[queue[i]];
+                queueMinos[i] = Mino.MisaMinoMap[queue[i]];
 
             Interface.update_next(String.Join(",", queueMinos));
         }
 
-        private static string encodeCurrent(int current) => MinoMap[current].ToString();
+        private static string encodeCurrent(int current) => Mino.MisaMinoMap[current].ToString();
 
         private static string encodeField(int[,] field, int height) {
             string[] rows = new string[height];
@@ -116,10 +198,27 @@ namespace MisaMinoNET {
 
             return String.Join(";", rows);
         }
+        
+        public delegate void FinishedEventHandler(bool success);
+        public static event FinishedEventHandler Finished;
 
-        public static List<Instruction> FindMove(int[] queue, int current, int? hold, int height, int[,] field, int combo, int garbage, ref int pieceUsed, ref bool spinUsed, ref int finalX, ref int finalY, ref int finalR) {
-            List<Instruction> ret = new List<Instruction>();
+        public static Solution LastSolution = new Solution();
 
+        public static bool Running { get => Interface.Running; }
+
+        static ManualResetEvent abortWait;
+
+        public static void Abort() {
+            if (Interface.Running) {
+                abortWait = new ManualResetEvent(false);
+
+                Interface.SetAbort();
+
+                abortWait.WaitOne();
+            }
+        }
+
+        public static async void FindMove(int[] queue, int current, int? hold, int height, int[,] field, int combo, int garbage) {
             if (Interface.alive()) {
                 updateQueue(queue);
                 Interface.update_current(encodeCurrent(current));
@@ -127,27 +226,25 @@ namespace MisaMinoNET {
                 Interface.update_field(encodeField(field, height));
                 Interface.update_combo(combo);
                 Interface.update_incoming(garbage);
-                string action = Interface.Move();
 
-                if (!action.Equals("-1")) {
-                    string[] info = action.Split('|');
+                string action;
 
-                    foreach (string i in info[0].Split(',')) {
-                        ret.Add((Instruction)int.Parse(i));
+                await Task.Run(() => {
+                    action = Interface.Move();
+
+                    LastSolution = new Solution();
+
+                    bool solved = !action.Equals("-1");
+
+                    if (solved) {
+                        LastSolution = new Solution(action);
                     }
 
-                    pieceUsed = RevMinoMap[Convert.ToInt32(info[1]) - 1];
+                    Finished?.Invoke(solved);
 
-                    spinUsed = Convert.ToInt32(info[2]) != 0;
-
-                    int[] pieceInfo = info[3].Split(',').Select(s => int.Parse(s)).ToArray();
-                    finalX = pieceInfo[0] + 1;
-                    finalY = pieceInfo[1] + 3;
-                    finalR = (ret.Count(i => i == Instruction.RSPIN) - ret.Count(i => i == Instruction.LSPIN) + 12) % 4;
-                }
+                    abortWait?.Set();
+                });
             }
-
-            return ret;
         }
 
         public static List<Instruction> FindPath(int[,] field, int height, int piece, int x, int y, int r, bool hold, ref bool spinUsed, out bool success) {
