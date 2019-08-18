@@ -16,6 +16,7 @@
     <ClCompile Include="gamepool.cpp" />
     <ClCompile Include="genmove.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="lastnodes.cpp" />
     <ClCompile Include="tetris_ai.cpp" />
     <ClCompile Include="tetris_gem.cpp" />
   </ItemGroup>
@@ -23,6 +24,7 @@
     <ClInclude Include="Bot.h" />
     <ClInclude Include="callback.h" />
     <ClInclude Include="gamepool.h" />
+    <ClInclude Include="lastnodes.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="tetris.h" />
     <ClInclude Include="tetrisgame.h" />

@@ -125,6 +125,7 @@ namespace MisaMinoNET {
         #pragma warning disable 0169
         public int PieceUsed { get; private set; }
         public bool SpinUsed { get; private set; }
+        public int Nodes { get; private set; }
         public int FinalX { get; private set; }
         public int FinalY { get; private set; }
         public int FinalR { get; private set; }
@@ -143,10 +144,10 @@ namespace MisaMinoNET {
             }
 
             PieceUsed = Mino.FromMisaMino[Convert.ToInt32(info[1]) - 1];
-
             SpinUsed = Convert.ToInt32(info[2]) != 0;
+            Nodes = Convert.ToInt32(info[3]);
 
-            int[] pieceInfo = info[3].Split(',').Select(s => int.Parse(s)).ToArray();
+            int[] pieceInfo = info[4].Split(',').Select(s => int.Parse(s)).ToArray();
             FinalX = pieceInfo[0] + 1;
             FinalY = pieceInfo[1] + 3;
             FinalR = (Instructions.Count(i => i == Instruction.RSPIN) - Instructions.Count(i => i == Instruction.LSPIN) + 100) % 4;

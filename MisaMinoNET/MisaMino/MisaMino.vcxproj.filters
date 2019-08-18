@@ -36,6 +36,9 @@
     <ClCompile Include="callback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lastnodes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bot.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="callback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lastnodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

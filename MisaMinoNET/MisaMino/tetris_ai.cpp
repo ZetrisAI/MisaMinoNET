@@ -1627,6 +1627,7 @@ namespace AI {
                     }
                 }
             }
+			last_nodes = search_nodes;
             return m.first;
         }
     }

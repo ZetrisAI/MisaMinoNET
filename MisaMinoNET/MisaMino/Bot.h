@@ -7,6 +7,7 @@
 #include <map>
 #include <string>
 #include <sstream>
+#include "lastnodes.h"
 #include "tetrisgame.h"
 
 class Bot {

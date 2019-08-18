@@ -3,6 +3,7 @@
 
 #include "callback.h"
 #include "gamepool.h"
+#include "lastnodes.h"
 
 #include <algorithm>
 #include <vector>

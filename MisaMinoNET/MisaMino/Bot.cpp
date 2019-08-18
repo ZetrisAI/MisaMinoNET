@@ -372,7 +372,7 @@ std::string Bot::outputAction(char* str, int len) {
         out << piece.num << "|";
         
         processMoves();
-        out << ((int)tetris.wallkick_spin) << "|";
+        out << ((int)tetris.wallkick_spin) << "|" << last_nodes << "|";
         
         out << tetris.m_cur_x << "," << tetris.m_cur_y;
         
