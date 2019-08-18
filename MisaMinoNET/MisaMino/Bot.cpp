@@ -345,7 +345,7 @@ std::string Bot::outputAction(char* str, int len) {
     std::vector<AI::Gem> next;
     for (int j = 0; j < 5; ++j) //NEXT size
         next.push_back(tetris.m_next[j]);
-    int deep = AI_TRAINING_DEEP;
+    int deep = tetris.m_next_num + 1;
     bool canhold = tetris.hold;
 
     #if DEBUG_LEVEL>=5

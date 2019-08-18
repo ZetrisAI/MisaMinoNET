@@ -1086,7 +1086,6 @@ namespace AI {
         ai_param.hole += ai_param.open_hole;
 
 		int max_search_nodes = 8000; //ai_level_map[level] TODO: get rid of this
-		maxDeep = 6;
         //if ( AI_SHOW && GAMEMODE_4W ) max_search_nodes *= 2;
         //if ( level <= 0 ) maxDeep = 0;
         //else if ( level <= 6 ) maxDeep = std::min(level, 6); // TODO: max deep
