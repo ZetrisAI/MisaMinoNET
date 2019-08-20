@@ -70,6 +70,9 @@ namespace MisaMinoNET {
         public static extern void update_combo(int combo);
 
         [DllImport("MisaMino.dll")]
+        public static extern void update_b2b(int b2b);
+
+        [DllImport("MisaMino.dll")]
         public static extern void update_field(string field);
 
         [DllImport("MisaMino.dll")]
@@ -125,6 +128,7 @@ namespace MisaMinoNET {
         #pragma warning disable 0169
         public int PieceUsed { get; private set; }
         public bool SpinUsed { get; private set; }
+        public int B2B { get; private set; }
         public int Nodes { get; private set; }
         public int FinalX { get; private set; }
         public int FinalY { get; private set; }
@@ -145,9 +149,10 @@ namespace MisaMinoNET {
 
             PieceUsed = Mino.FromMisaMino[Convert.ToInt32(info[1]) - 1];
             SpinUsed = Convert.ToInt32(info[2]) != 0;
-            Nodes = Convert.ToInt32(info[3]);
+            B2B = Convert.ToInt32(info[3]);
+            Nodes = Convert.ToInt32(info[4]);
 
-            int[] pieceInfo = info[4].Split(',').Select(s => int.Parse(s)).ToArray();
+            int[] pieceInfo = info[5].Split(',').Select(s => int.Parse(s)).ToArray();
             FinalX = pieceInfo[0] + 1;
             FinalY = pieceInfo[1] + 3;
             FinalR = (Instructions.Count(i => i == Instruction.RSPIN) - Instructions.Count(i => i == Instruction.LSPIN) + 100) % 4;
@@ -219,13 +224,14 @@ namespace MisaMinoNET {
             }
         }
 
-        public static async void FindMove(int[] queue, int current, int? hold, int height, int[,] field, int combo, int garbage) {
+        public static async void FindMove(int[] queue, int current, int? hold, int height, int[,] field, int combo, int b2b, int garbage) {
             if (Interface.alive()) {
                 updateQueue(queue);
                 Interface.update_current(encodeCurrent(current));
                 Interface.update_hold((hold == null)? " " : encodeCurrent(hold.Value));
                 Interface.update_field(encodeField(field, height));
                 Interface.update_combo(combo);
+                Interface.update_b2b(b2b);
                 Interface.update_incoming(garbage);
 
                 string action;

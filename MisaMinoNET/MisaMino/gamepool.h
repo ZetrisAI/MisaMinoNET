@@ -25,7 +25,7 @@ namespace AI {
     struct GameField {
         signed char m_w, m_h;
         signed short combo;
-        signed char b2b;
+        int b2b;
         unsigned long m_w_mask;
         unsigned long m_row[AI_POOL_MAX_H];
         int m_hold;
@@ -284,12 +284,12 @@ namespace AI {
                     attack = clearfull - 1;
                 } else {
                     attack = clearfull;
-                    if ( b2b > 1 ) attack += 1; // what the fuck
+                    if ( b2b > 0 ) attack += 1;
                 }
             }
             if ( clearfull > 0 ) {
                 if ( wallkick ) {
-                    if ( b2b > 1 ) attack += 1;
+                    if ( b2b > 0 ) attack += 1;
                     if ( clearfull == 1 ) {
                         if ( wallkick != 2 ) {
                             attack += 2;

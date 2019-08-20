@@ -163,6 +163,10 @@ void Bot::updateCombo(int combo) {
     tetris.m_pool.combo = combo;
 }
 
+void Bot::updateB2B(int b2b) {
+	tetris.m_pool.b2b = b2b;
+}
+
 void Bot::updateReset() {
     tetris.reset(0);
     m_upcomeAtt = 0;
@@ -372,7 +376,7 @@ std::string Bot::outputAction(char* str, int len) {
         out << piece.num << "|";
         
         processMoves();
-        out << ((int)tetris.wallkick_spin) << "|" << last_nodes << "|";
+        out << ((int)tetris.wallkick_spin) << "|" << tetris.m_pool.b2b << "|" << last_nodes << "|";
         
         out << tetris.m_cur_x << "," << tetris.m_cur_y;
         

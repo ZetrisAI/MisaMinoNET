@@ -449,7 +449,7 @@ namespace AI {
                 int s = 0;
                 int t_att = total_clear_att;
                 double t_clear = total_clears; //+ total_clears / 4.0;
-                if ( pool.b2b ) s -= 5; // b2b score
+                if ( pool.b2b ) s -= 2; // b2b score
                 if ( t_clear > 0 ) {
                     s -= int( ((ai_param.clear_efficient) * ( t_att ) ) );
                 }

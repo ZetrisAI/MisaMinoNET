@@ -31,6 +31,9 @@ DLL void update_incoming(int attack) {
 DLL void update_combo(int combo) {
     MisaBot.updateCombo(combo);
 }
+DLL void update_b2b(int b2b) {
+	MisaBot.updateB2B(b2b);
+}
 DLL void update_field(const char* field) {
     MisaBot.updateField(field);
 }

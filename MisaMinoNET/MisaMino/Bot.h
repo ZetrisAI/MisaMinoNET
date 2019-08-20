@@ -27,6 +27,7 @@ public:
     void updateHold(const char* s);
     void updateIncoming(int attack);
     void updateCombo(int combo);
+	void updateB2B(int b2b);
     void updateField(const char* s);
     void updateReset();
     
