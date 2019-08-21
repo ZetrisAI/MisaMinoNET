@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MisaMinoNET")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A .NET wrapper for misakamm's MisaMino, a battle Tetris AI")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("mat1jaczyyy")]
 [assembly: AssemblyProduct("MisaMinoNET")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCopyright("Copyright ©  2018 - 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
