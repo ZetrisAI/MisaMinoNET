@@ -252,36 +252,15 @@ void Bot::setup() {
     if (ai.style == 1) {
         ai_name = "T-spin+ AI";
     } else if (ai.style == 2) {
-        AI::setAIsettings(0, "hash", 0);
-        //
-    } else if (ai.style == 3) {
-        tetris.m_ai_param.tspin = tetris.m_ai_param.tspin3 = -300;
-        tetris.m_ai_param.clear_useless_factor *= 0.8;
-        ai_name = "Ren AI";
-    } else if (ai.style == 4) {
         tetris.hold = false;
         tetris.m_ai_param.clear_useless_factor *= 0.7;
         ai_name = "non-Hold";
-        // no 4w
         tetris.m_ai_param.strategy_4w = 0;
         AI::setAIsettings(0, "4w", 0);
-    } else if (ai.style == 5) {
-        tetris.m_ai_param.tspin = tetris.m_ai_param.tspin3 = -300;
-        tetris.m_ai_param.clear_useless_factor *= 0.8;
-        tetris.m_ai_param.strategy_4w = 500;
-        ai_name = "4W Ren AI";
-    } else if (ai.style == 6) {
+    } else if (ai.style == 3) {
         tetris.m_ai_param.tspin3 *= 25;
         tetris.m_ai_param.tspin *= 0.2;
         ai_name = "T-spin Triple AI";
-    } else if (ai.style != -1) { //if ( ai.style == 5 ) {
-        AI::AI_Param param[2] = {
-            {49, 918, 176, 33, -300, -0, 0, 25, 22, 99, 41, -300, 0, 14, 290, 0}, // defence AI
-            {21, 920, 66, 40, -300, -2, 0, 26, 8, 71, 13, -300, 0, 7, 269, 0},
-        };
-        AI::setAIsettings(0, "combo", 0);
-        tetris.m_ai_param = param[0];
-        ai_name = "Downstack";
     }
 
     if (!ai.c4w) {

@@ -164,7 +164,7 @@ namespace MisaMinoNET {
     public static class MisaMino {
         public static void Configure(int style, bool c4w) {
             if (style < 1) style = 1;
-            if (style > 7) style = 7;
+            if (style > 3) style = 3;
 
             Interface.configure(style, Convert.ToInt32(c4w));
             Reset();

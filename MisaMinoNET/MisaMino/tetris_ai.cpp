@@ -1069,7 +1069,7 @@ namespace AI {
     };
 #define BEG_ADD_Y 1
     MovingSimple AISearch(AI_Param ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep) {
-        assert( cur.num != 0 );
+		assert( cur.num != 0 );
 		int player = 0;
 		int level = 10;
         typedef std::vector<MovingSimple> MovingList;
