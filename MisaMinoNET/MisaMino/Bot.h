@@ -21,7 +21,6 @@ public:
     std::string outputAction(char* str, int len);
     void updateStyle(AI::AI_Param param);
 	void updateHoldAllowed(bool holdAllowed);
-    void updateC4W(int c4w);
     void updateQueue(const char* s);
     void updateCurrent(const char* s);
     void updateHold(const char* s);
@@ -32,15 +31,6 @@ public:
     void updateReset();
     
     TetrisGame tetris;
-    
-    struct tetris_ai {
-        int style;
-        int c4w;
-        tetris_ai() {
-            style = 1;
-            c4w = 0;
-        }
-    };
 
     struct tetris_rule {
         int spin180;
@@ -68,7 +58,6 @@ private:
     std::map<char, int> m_gemMap;
     
     tetris_rule rule;
-    tetris_ai ai;
 };
 
 #endif	/* BOT_H */

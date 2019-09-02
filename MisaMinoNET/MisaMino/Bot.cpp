@@ -70,7 +70,7 @@ void Bot::updateQueue(const char* q) {
 }
 
 AI::AI_Param globalparam = {
-	13, 9, 17, 10, 29, 25, 39, 2, 12, 19, 7, 24, 21, 16, 14, 19, 200
+	13, 9, 17, 10, 29, 25, 39, 2, 12, 19, 7, 24, 21, 16, 14, 19, 0 // 4w=200 default
 };
 
 void Bot::updateStyle(AI::AI_Param param) {
@@ -81,10 +81,6 @@ bool holdallow = true;
 
 void Bot::updateHoldAllowed(bool holdAllowed) {
 	holdallow = holdAllowed;
-}
-
-void Bot::updateC4W(int c4w) {
-    ai.c4w = (c4w > 0)? 1 : 0;
 }
 
 void Bot::updateCurrent(const char* piece) {
@@ -117,13 +113,7 @@ void Bot::updateReset() {
 void Bot::setup() {
 	tetris.m_ai_param = globalparam;
 	tetris.hold = holdallow;
-
-    if (!ai.c4w) {
-        tetris.m_ai_param.strategy_4w = 0;
-    }
-    if (tetris.m_ai_param.strategy_4w > 0) {
-        AI::setAIsettings(0, "4w", 1);
-    }
+	AI::setAIsettings(0, "4w", tetris.m_ai_param.strategy_4w > 0? 1 : 0);
 
     if (rule.combo_table_style == 0) {
         int a[] = {0, 0, 0, 1, 1, 2};
