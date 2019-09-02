@@ -29,6 +29,29 @@ namespace MisaMinoNET {
         REFRESH // ?
     };
 
+    public struct AI_Param {
+        int miny_factor;
+        int hole;
+        int open_hole;
+        int v_transitions;
+        int tspin3;
+
+        int clear_efficient;
+        int upcomeAtt;
+        int h_factor;
+        int hole_dis_factor2;
+        int hole_dis;
+
+        int hole_dis_factor;
+        int tspin;
+        int hold_T;
+        int hold_I;
+        int clear_useless_factor;
+
+        int dif_factor;
+        int strategy_4w;
+    };
+
     static class Interface {
         private static bool abort = false;
 
@@ -52,7 +75,7 @@ namespace MisaMinoNET {
         }
 
         [DllImport("MisaMino.dll")]
-        public static extern void configure(int style, int c4w);
+        public static extern void configure(AI_Param param, bool holdAllowed);
 
         [DllImport("MisaMino.dll")]
         public static extern void update_next(string queue);
@@ -164,11 +187,8 @@ namespace MisaMinoNET {
     }
 
     public static class MisaMino {
-        public static void Configure(int style, bool c4w) {
-            if (style < 1) style = 1;
-            if (style > 3) style = 3;
-
-            Interface.configure(style, Convert.ToInt32(c4w));
+        public static void Configure(AI_Param param, bool hold_allowed) {
+            Interface.configure(param, hold_allowed);
             Reset();
         }
 
