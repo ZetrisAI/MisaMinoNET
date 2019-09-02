@@ -19,8 +19,8 @@ public:
     //void startParser();
     void setup();
     std::string outputAction(char* str, int len);
-    void updateLevel(int level);
-    void updateStyle(int style);
+    void updateStyle(AI::AI_Param param);
+	void updateHoldAllowed(bool holdAllowed);
     void updateC4W(int c4w);
     void updateQueue(const char* s);
     void updateCurrent(const char* s);

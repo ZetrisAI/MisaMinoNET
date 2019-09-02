@@ -302,7 +302,7 @@ namespace AI {
             --m_next_num;
             //m_next[15] = AI::getGem( m_rand.randint(7) + 1, 0);
         }
-        bool newpiece() {
+        bool newpiece() { // TODO see what the fuck this shit does
             if ( m_state != STATE_READY ) return false;
             m_cur_x = AI::gem_beg_x;
             m_cur_y = AI::gem_beg_y;

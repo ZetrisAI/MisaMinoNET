@@ -20,37 +20,6 @@ Bot::Bot(const Bot& orig) {
 
 Bot::~Bot() {}
 
-/*void Bot::startParser() {
-    while (true) {
-        string command;
-        cin >> command;
-        
-        if (command == "settings") {
-            string part1, part2;
-            cin >> part1 >> part2;
-            changeSettings(part1,part2);
-            
-        } else if (command == "update") {
-            string part1, part2;
-            cin >> part1 >> part2;
-            updateState(part1, part2);
-            #if DEBUG_LEVEL>=4
-            cerr << command <<" "<< part1 <<" "<< part2 <<" "<< endl;
-            #endif
-
-        } else if (command == "action") {
-            outputAction();
-            
-        } else if (command.size() == 0) {
-            // no more commands, exit.
-            break;
-            
-        } else {
-            cerr << "Unable to parse command: " << command << endl;
-        }
-    }
-}*/
-
 void Bot::updateField(const char* q) {
     std::string s = q;
     vector<int> rows;
@@ -100,50 +69,23 @@ void Bot::updateQueue(const char* q) {
     tetris.newpiece();
 }
 
-/*void Bot::changeSettings(const std::string& p1, const std::string& p2){
-    bool changed=false;
-    if(p1=="level"){
-        ai.level = std::stoi(p2);
-        if(ai.level>10)ai.level=10;
-        if(ai.level<-2)ai.level=-2;
-        changed=true;
-    }else if(p1=="style"){
-        ai.style = std::stoi(p2);
-        if(ai.style==-1)ai.style=2;
-        changed=true;
-    }
-    
-    if(changed){
-        setup();
-        cout << "{\"name\":\"" << tetris.m_name << "\"}" << endl;
-    }
-}*/
+AI::AI_Param globalparam = {
+	13, 9, 17, 10, 29, 25, 39, 2, 12, 19, 7, 24, 21, 16, 14, 19, 200
+};
 
-void Bot::updateStyle(int style) {
-    ai.style = style;
-    if (ai.style == -1) ai.style = 2;
+void Bot::updateStyle(AI::AI_Param param) {
+	globalparam = param;
+}
+
+bool holdallow = true;
+
+void Bot::updateHoldAllowed(bool holdAllowed) {
+	holdallow = holdAllowed;
 }
 
 void Bot::updateC4W(int c4w) {
     ai.c4w = (c4w > 0)? 1 : 0;
 }
-
-/*void Bot::updateState(const std::string& p1, const std::string& p2) {
-    if(p1=="next_pieces")
-        updateQueue(p2);
-    else if(p1=="combo")
-        tetris.m_pool.combo=std::stoi(p2);
-    else if(p1=="field")
-        updateField(p2);
-    else if(p1=="this_piece_type")
-        tetris.m_next[0]=AI::getGem(m_gemMap[p2[0]], 0);
-    else if(p1=="inAtt")
-        m_upcomeAtt=std::stoi(p2);
-    else if(p1=="round"){
-        if(p2=="1")tetris.reset(0);
-        m_upcomeAtt=0;
-    }
-}*/
 
 void Bot::updateCurrent(const char* piece) {
     std::string s = piece;
@@ -173,95 +115,8 @@ void Bot::updateReset() {
 }
 
 void Bot::setup() {
-    AI::AI_Param param = {
-        //  47,  26,  70,   4,  46,  16,  26,  21,   7,  31,  14,  17,  69,  11,  53, 300
-
-        //  33,  25,  57,  19,  37,  11,  33,  10,   9,  38,  12,  13,  63,  11,  51, 300
-        //  37,  24,  50,  29,  53,  15,  26,  12,  13,  36,  11,   7,  69,  12,  53, 300
-        //  36,  25,  50,  20,  55,  15,  28,  12,  15,  36,  12,  10,  70,  12,  53, 300
-
-        //  40,  15,  50,  20,  56,  16,  17,  12,   7,  55,  99,  23,  78,  16,  67, 300
-        //  37,  16,  51,  18,  50,  16,  32,  11,   5,  32,  99,  21,  68,   8,  41,   0 //lv1 s lv2 b
-        //  26,  18,  46,  30,  53,  22,  29,  17,   9,  33,   3,  11,  84,   6,  50, -16 //lv1 b lv2 a
-        //  28,  21,  57,  28,  48,  17,  18,  12,   8,  29,  17,  22,  78,  10,  65, -10 //lv2 c
-
-        //  21,  20,  66,  40,  27,  22,  48,  26,   8,  71,  13,  24,  92,   7,  69, 300 // a
-        //  19,  24,  99,  35,  24,  20,  52,  30,   9,  77,  13,  32,  91,   9,  69,  83 // b
-        //  19,  22,  87,  37,  16,  13,  42,  19,   6,  73,  10,  33,  93,   5,  73,  83 // b+
-        //  21,  24,  54,  33,  23,  24,  36,  16,   8,  70,  12,  25,  73,   8,  67,  92 // c
-        //  23,  20,  66,  36,  24,  21,  46,  27,  14,  77,  15,  32,  93,   5,  67,  85 // s
-        //  20,  21,  71,  35,  16,  22,  44,  20,   6,  79,   9,  28,  74,   4,  67,  82 // s
-
-        //  49,  18,  76,  33,  39,  27,  32,  25,  22,  99,  41,  29,  96,  14,  60, 300 //s
-        //  31,  17,  69,  32,  21,  27,  49,  24,  18,  99,  78,  28,  99,   8,  62,  91 //c
-        //  52,  19,  69,  34,  35,  30,  34,  20,  17,  89,  37,  31,  83,   9,  55,  97 //c
-        //  53,  16,  73,  33,  26,  28,  30,  22,  22,  79,  18,  28,  93,   5,  63,  95 //a
-        //  60,  16,  72,  35,  29,  30,  41,  20,  20,  79,  55,  22,  97,   4,  60,  95 // b
-        //  40,  13,  80,  37,  16,  24,  38,  19,  21,  67,  99,  24,  96,   6,  42,  83 // a
-
-        //  49,  18,  76,  40,  39,  27,  32,  50,  22,  99,   0,  29,  96,  14,  60, 300 //s ogn
-
-        //  45,  28,  84,  21,  35,  27,  56,  30,   9,  64,  13,  18,  97,  11,  29,  300 // cmp
-        //  43,  16,  80,  20,  38,  26,  53,  30,   3,  70, -17,  19,  96,  18,  30,  300 // b
-        //  40,  18,  97,  25,  39,  18,  59,  30,   4,  64,  -9,  17,  97,  17,  31,  300 // b+
-        //  39,  28,  94,  24,  42,  23,  56,  31,   5,  78,  -8,  14,  96,  13,  33,  300 //b
-        //  38,  21,  94,  28,  48,  25,  54,  34,   8,  88, -21,  19,  80,  31,  32,  300 //a
-        //  43,  27,  87,  34,  50,  32,  68,  26, -10,  83,  -2,  14,  89,   6,  27,  300 //a
-        //  40,  20,  98,  13,  35,  22,  63,  29,   5,  68, -11,  15,  98,  14,  32,  300 //b
-
-        //  48,  27,  88,  25,  34,  23,  52,  26,   3,  63, -14,  19,  34,   5,  33, 300 // a+
-        //  47,  27,  92,  31,  38,  28,  52,  29,   5,  61,  -6,  25,  92,   9,  33, 300 // b
-        //  50,  26,  84,  29,  46,  25,  35,  29,   0,  68, -14,  17,  99,   3,  40, 300 // b-
-        //  37,  30,  95,  34,  32,  26,  44,  33,  11,  56, -11,  22,  37,  12,  35, 300 // a
-        //  44,  32,  96,  28,  42,  24,  49,  25,  -6,  58,  17,  20,  51,  10,  32, 300 // s
-        //  48,  27,  97,  22,  41,  29,  53,  27,   3,  60, -10,  19,  42,   6,  31, 300 // a+
-
-        //new param
-
-        //  41,  13,  99,  28,  42,  32,  47,  24,   6,  61,  19,  30,  41,  12,  27, 300 // b
-        //  41,  25,  91,  28,  41,  26,  54,  31,   7,  43,  16,  35,   8,  12,  24, 300 // b
-        //  35,   5,  98,  26,  43,  32,  52,  18,  16,  57,  24,  22,  38,  10,  28, 300 // b
-        //  41,  13,  98,  27,  45,  24,  51,  28,  13,  65,  27,  21,  39,  13,  39, 300 // s
-        //  39,  15,  99,  26,  41,  28,  50,  26,   8,  68,  23,  22,  36,  14,  28, 300 // a
-        //  36,  20,  99,  27,  41,  32,  28,  24,  11,  56,  26,  24,  43,  14,  27, 300 //s
-
-        //*
-        //  41,  13,  99,  25,  46,  27,  49,  27,   9,  73,  23,  26,  25,   9,  42,  300 // a
-        //  44,  13,  98,  31,  51,  30,  53,  27,  16,  56,  29,  27,  34,  16,  24,  300 // s
-        //  39,  13,  98,  29,  30,  34,  54,  28,  18,  58,  20,  28,  35,  11,  33,  300 // s-
-        //  36,  11,  90,  29,  31,  34,  52,  22,  20,  66,  26,  26,  38,  11,  30,  300 // a
-        //  34,  29,  97,  35,  24,  23,  55,  27,  14,  75,  19,  41,  32,   0,  46,  300 // a
-        //  39,  12,  98,  30,  32,  27,  55,  25,  15,  68,  22,  25,  30,   9,  33,  300 // s-
-        //*/
-        //  46,  10,  99,  86,  80,  29,  30,  24, -22,  71,  50,  36,  47,  37,  44,  83 // a
-        //  74,  39,  88,  99,  57,  33,  30,  23, -14,  73,  60,  43,  58,  39,  38,  96 // a
-        //  46,  38,  96,  98,  63,  37,  28,  26, -17,  69,  64,  43,  45,  42,  42,  99 // s
-        //  68,  34,  99,  99,  75,  38,  33,  20, -16,  80,  56,  31,  61,  36,  43,  88
-        //  42,  48,  99,  95,  63,  27,  -2,  29, -22,  60,  54,  31,  57,  38,  37,  99 // b
-        //  70,  30,  96,  99,  73,  41,  41,  18, -20,  82,  51,  35,  55,  50,  41,  89 // a
-        //  36,  30,  71,  67,  72,  48,  22,  16,  34,  60,   0,  34,  46,  35,  16,  33 //test
-        //  31,  43,  78,  80,  63,  46,  48,  14,   0,  99,  59,  24,  29,  30,  33,   7 //test2
-        //  77,  42,  92,  98,  98,  28,   1,  19,  -1,  75,  52,  50,  99,  27,  49,  65 //test3
-        //  70,  16,  99,  50,  95,  33,  21,  29,  38,  98,  10,  54,  91,  26,  42,  65
-        13, 9, 17, 10, 29, 25, 39, 2, 12, 19, 7, 24, 21, 16, 14, 19, 200
-
-    };
-	tetris.m_ai_param = param;
-
-    std::string ai_name = "T-spin AI";
-    if (ai.style == 1) {
-        ai_name = "T-spin+ AI";
-    } else if (ai.style == 2) {
-        tetris.hold = false;
-        tetris.m_ai_param.clear_useless_factor *= 0.7;
-        ai_name = "non-Hold";
-        tetris.m_ai_param.strategy_4w = 0;
-        AI::setAIsettings(0, "4w", 0);
-    } else if (ai.style == 3) {
-        tetris.m_ai_param.tspin3 *= 25;
-        tetris.m_ai_param.tspin *= 0.2;
-        ai_name = "T-spin Triple AI";
-    }
+	tetris.m_ai_param = globalparam;
+	tetris.hold = holdallow;
 
     if (!ai.c4w) {
         tetris.m_ai_param.strategy_4w = 0;
@@ -364,22 +219,6 @@ std::string Bot::outputAction(char* str, int len) {
     }else{
        out << "-1";
     }
-   
-    /*int i,bottom=AI_POOL_MAX_H-5,
-        solid_h=20-tetris.m_pool.m_h;
-    for(i=AI::gem_add_y + 1; i<bottom-solid_h; i++){
-        unsigned long mask=512u; //(2^WIDTH-1)
-        for(;mask!=0;mask=mask>>1){
-            out<<( ((tetris.m_pool.m_row[i] & mask) == mask)? 2 : 0 );
-            if(mask!=1)out<<',';
-        }
-        if(i!=bottom-1)out<<';';
-    }
-    for(; i<bottom; i++){
-        out<<"3,3,3,3,3,3,3,3,3,3";
-        if(i!=bottom-1)out<<';';
-    }*/
-    //std::cout<<out.str()<<std::endl;    
     
     return out.str();
 }
