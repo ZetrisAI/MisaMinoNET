@@ -1094,7 +1094,7 @@ namespace AI {
         if ( pool.m_hold == 0 ) {
             next_add = 1;
             if ( next.empty() ) {
-                return MovingSimple();
+                //return MovingSimple();
             }
         }
 
@@ -1148,7 +1148,7 @@ namespace AI {
                 || ! pool.isCollide(gem_beg_x, gem_beg_y, getGem( pool.m_hold, 0 ) )
             )
             )
-        {
+        if (next.size() > 0){
             int cur_num;
             if ( pool.m_hold ) {
                 cur_num = pool.m_hold;
