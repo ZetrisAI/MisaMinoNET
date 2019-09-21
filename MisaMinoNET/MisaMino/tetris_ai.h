@@ -83,7 +83,8 @@ namespace AI {
         signed char spin;
         signed char wallkick_spin;
         bool hold;
-        MovingSimple () { x = INVALID_POS; wallkick_spin = 0; lastmove = MovingSimple::MOV_NULL; }
+		bool softdrop;
+		MovingSimple() { x = INVALID_POS; wallkick_spin = 0; lastmove = MovingSimple::MOV_NULL; softdrop = false; }
         MovingSimple ( const Moving & m ) {
             x = m.x;
             y = m.y;
@@ -103,6 +104,7 @@ namespace AI {
             score = m.score;
             score2 = m.score2;
             wallkick_spin = m.wallkick_spin;
+			softdrop = m.softdrop;
             hold = m.hold;
             lastmove = m.lastmove;
         }
@@ -116,6 +118,7 @@ namespace AI {
             if ( spin != _m.spin ) return false;
             if ( lastmove != _m.lastmove ) return false;
             if ( hold != _m.hold ) return false;
+			if ( softdrop != _m.softdrop) return false;
             if ( wallkick_spin != _m.wallkick_spin ) return false;
             return true;
         }
