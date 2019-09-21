@@ -10,16 +10,6 @@
 #define GEN_MOV_NO_PUSH 0
 
 namespace AI {
-    enum {
-        MOV_SCORE_DROP = 1,
-        MOV_SCORE_LR = 10,
-        MOV_SCORE_LR2 = 30,
-        MOV_SCORE_LLRR = 20,
-        MOV_SCORE_D = 50,
-        MOV_SCORE_DD = 100,
-        MOV_SCORE_SPIN = 50,
-    };
-
     struct _ai_settings {
         bool hash;
         bool combo;
@@ -1138,6 +1128,11 @@ namespace AI {
                 ms.first.score2 = 0;
                 ms.first.score = Evaluate(ms.first.score2, ai_param, pool, ms.pool_last, cur.num, 0, ms.att, ms.clear, att, clear, wallkick_spin, _pool.combo, t_dis, upcomeAtt);
                 if ( wallkick_spin == 0 && it->wallkick_spin ) ms.first.score += 1;
+
+
+				if (it->softdrop && cur.num != AI::GEMTYPE_T) {
+					ms.first.score += 100;
+				}
                 que.push_back();
             }
         }
@@ -1198,6 +1193,11 @@ namespace AI {
                     ms.first.score2 = 0;
                     ms.first.score = Evaluate(ms.first.score2, ai_param, pool, ms.pool_last, cur.num, 0, ms.att, ms.clear, att, clear, wallkick_spin, _pool.combo, t_dis, upcomeAtt);
                     if ( wallkick_spin == 0 && it->wallkick_spin ) ms.first.score += 1;
+
+
+					if (it->softdrop && cur_num != AI::GEMTYPE_T) {
+						ms.first.score += 100;
+					}
                     que.push_back();
                 }
             }
@@ -1401,6 +1401,11 @@ namespace AI {
                                 pool,
                                 ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
                             if ( wallkick_spin == 0 && movs[i].wallkick_spin ) ms.first.score += 1;
+
+
+							if (movs[i].softdrop && cur_num != AI::GEMTYPE_T) {
+								ms.first.score += 100;
+							}
                         }
                         p.push_back();
                     }
@@ -1478,6 +1483,11 @@ namespace AI {
                                     ms.first.score = Evaluate(ms.first.score2, ai_param,
                                         pool,
                                         ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
+
+
+									if (movs[i].softdrop && cur_num != AI::GEMTYPE_T) {
+										ms.first.score += 100;
+									}
                                     if ( wallkick_spin == 0 && movs[i].wallkick_spin ) ms.first.score += 1;
                                 }
                                 p.push_back();
@@ -1601,6 +1611,11 @@ namespace AI {
                             ms.first.score = Evaluate(ms.first.score2, ai_param,
                                 pool,
                                 ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
+
+
+							if (movs[i].softdrop && cur_num != AI::GEMTYPE_T) {
+								ms.first.score += 100;
+							}
                         }
                         p.push_back();
                     }

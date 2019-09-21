@@ -4,13 +4,14 @@
 #define GENMOV_W_MASK   15
 #define SWITCH_USING_HEIGHT_OPT
 
-#define _MACRO_CREATE_MOVINGSIMPLE(arg_action_name,arg_wkspin) \
+#define _MACRO_CREATE_MOVINGSIMPLE(arg_action_name,arg_wkspin,arg_sd) \
     MovingSimple nm = m; \
     nm.x = nx; \
     nm.y = ny; \
     nm.spin = ns; \
     nm.lastmove = Moving::arg_action_name; \
-    nm.wallkick_spin = arg_wkspin
+    nm.wallkick_spin = arg_wkspin; \
+	nm.softdrop = arg_sd;
 
 #define _MACRO_CREATE_MOVING(arg_action_name,arg_wkspin) \
     Moving nm = m; \
@@ -300,7 +301,7 @@ namespace AI {
 
                         //if ( (_MACRO_HASH_POS(hash_drop, _n) & ( 1 << v_spin)) == 0 )
                         {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_DROP, v_spin);
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_DROP, v_spin, m.softdrop);
                                 _MACRO_HASH_POS(hash_drop, _n) |= 1 << v_spin;
                                 q.push(nm);
                         }
@@ -309,8 +310,9 @@ namespace AI {
                     {
                         if ( ny != y ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_DD, 0);
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_DD, 0, m.softdrop);
                                 _MACRO_HASH_POS(hash, n) |= 1;
+								nm.softdrop = true;
                                 q.push(nm);
                             }
                         }
@@ -322,7 +324,7 @@ namespace AI {
                 --nx;
                 if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
                     if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
-                        _MACRO_CREATE_MOVINGSIMPLE(MOV_L, 0);
+                        _MACRO_CREATE_MOVINGSIMPLE(MOV_L, 0, m.softdrop);
                         _MACRO_HASH_POS(hash, n) |= 1;
                         q.push(nm);
                         if ( m.lastmove != MovingSimple::MOV_L && m.lastmove != MovingSimple::MOV_R
@@ -333,7 +335,7 @@ namespace AI {
                                 --nx;
                             }
                             if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LL, 0);
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LL, 0, m.softdrop);
                                 _MACRO_HASH_POS(hash, n) |= 1;
                                 q.push(nm);
                             }
@@ -346,7 +348,7 @@ namespace AI {
                 ++nx;
                 if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
                     if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
-                        _MACRO_CREATE_MOVINGSIMPLE(MOV_R, 0);
+                        _MACRO_CREATE_MOVINGSIMPLE(MOV_R, 0, m.softdrop);
                         _MACRO_HASH_POS(hash, n) |= 1;
                         q.push(nm);
                         if ( m.lastmove != MovingSimple::MOV_L && m.lastmove != MovingSimple::MOV_R
@@ -357,7 +359,7 @@ namespace AI {
                                 ++nx;
                             }
                             if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RR, 0);
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RR, 0, m.softdrop);
                                 _MACRO_HASH_POS(hash, n) |= 1;
                                 q.push(nm);
                             }
@@ -390,13 +392,13 @@ namespace AI {
                     if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LSPIN, 1);
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LSPIN, 1, m.softdrop);
                                 _MACRO_HASH_POS(hash, n) |= 1 << 1;
                                 q.push(nm);
                             }
                         } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 0 ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LSPIN, 2);
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LSPIN, 2, m.softdrop);
                                 _MACRO_HASH_POS(hash, n) |= 1 << 2;
                                 q.push(nm);
                             }
@@ -405,7 +407,7 @@ namespace AI {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) 
                             || field.wallkickTest(nx, ny, getGem(cur.num, ns), 0 ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LSPIN, 0);
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LSPIN, 0, m.softdrop);
                                 _MACRO_HASH_POS(hash, n) |= 1;
                                 q.push(nm);
                             }
@@ -419,13 +421,13 @@ namespace AI {
                     if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RSPIN, 1);
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RSPIN, 1, m.softdrop);
                                 _MACRO_HASH_POS(hash, n) |= 1 << 1;
                                 q.push(nm);
                             }
                         } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 1 ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RSPIN, 2);
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RSPIN, 2, m.softdrop);
                                 _MACRO_HASH_POS(hash, n) |= 1 << 2;
                                 q.push(nm);
                             }
@@ -434,7 +436,7 @@ namespace AI {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) )
                             || field.wallkickTest(nx, ny, getGem(cur.num, ns), 1 ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RSPIN, 0);
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RSPIN, 0, m.softdrop);
                                 _MACRO_HASH_POS(hash, n) |= 1;
                                 q.push(nm);
                             }
@@ -448,7 +450,7 @@ namespace AI {
                 if ( ns != m.spin ) {
                     if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
-                            _MACRO_CREATE_MOVINGSIMPLE(MOV_SPIN2, 1);
+                            _MACRO_CREATE_MOVINGSIMPLE(MOV_SPIN2, 1, m.softdrop);
                             _MACRO_HASH_POS(hash, n) |= 1;
                             q.push(nm);
                         }
