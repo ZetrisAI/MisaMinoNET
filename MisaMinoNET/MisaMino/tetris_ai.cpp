@@ -463,7 +463,7 @@ namespace AI {
                     } else if ( wallkick_spin == 1 ) { // T1
                         cs -= int( warning_factor * (ai_param.tspin * 1 + ai_param.open_hole / 2) );
                     } else if ( wallkick_spin == 2 ) { // Tmini
-                        cs -= int( warning_factor * (ai_param.tspin / 2) );
+						cs += 1000000;
                     }
                 }
                 clearScore += cs;
