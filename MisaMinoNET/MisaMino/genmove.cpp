@@ -1,3 +1,4 @@
+#include "main.h"
 #include "tetris_ai.h"
 #include <assert.h>
 #define USING_MOV_D     0
@@ -41,9 +42,8 @@ namespace AI {
         g_combo_attack = combolist;
     }
     int getComboAttack( int combo ) {
-        if ( g_combo_attack.empty() ) return 0;
-        if ( combo >= (int)g_combo_attack.size() ) return g_combo_attack.back();
-        return g_combo_attack[combo];
+		if (g_combo_attack.empty()) return 0;
+		return (int) ((double)((combo >= (int)g_combo_attack.size()) ? g_combo_attack.back() : g_combo_attack[combo]) * MisaBot.tetris.m_ai_param.combo / 30);
     }
     void setAllSpin(bool allSpin) {
         g_allSpin = allSpin;

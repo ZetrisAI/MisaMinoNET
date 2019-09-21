@@ -235,7 +235,13 @@ namespace AI {
         //int ready_combo; // ����Ԥ����x
 
         int dif_factor; //ƫ��ֵ
-        int strategy_4w;
+
+		int b2b;
+		int combo;
+		int avoid_softdrop;
+		int tmini;
+
+		int strategy_4w;
     };
     typedef char* (*AIName_t)( int level );
     typedef char* (*TetrisAI_t)(int overfield[], int field[], int field_w, int field_h, int b2b, int combo,

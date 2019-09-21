@@ -7,4 +7,6 @@
 
 #define DLL extern "C" __declspec(dllexport)
 
+extern Bot MisaBot;
+
 #endif

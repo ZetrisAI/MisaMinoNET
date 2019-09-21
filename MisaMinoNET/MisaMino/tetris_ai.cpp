@@ -439,7 +439,7 @@ namespace AI {
                 int s = 0;
                 int t_att = total_clear_att;
                 double t_clear = total_clears; //+ total_clears / 4.0;
-                if ( pool.b2b ) s -= 150; // b2b score
+                if ( pool.b2b ) s -= ai_param.b2b * 5 - 25; // b2b score
                 if ( t_clear > 0 ) {
                     s -= int( ((ai_param.clear_efficient) * ( t_att ) ) );
                 }
@@ -463,7 +463,8 @@ namespace AI {
                     } else if ( wallkick_spin == 1 ) { // T1
                         cs -= int( warning_factor * (ai_param.tspin * 1 + ai_param.open_hole / 2) );
                     } else if ( wallkick_spin == 2 ) { // Tmini
-						cs += 1000000;
+						cs -= int(warning_factor * (ai_param.tmini / 2));
+						if (ai_param.tmini == 0) cs += 100000000;
                     }
                 }
                 clearScore += cs;
@@ -1131,7 +1132,7 @@ namespace AI {
 
 
 				if (it->softdrop && cur.num != AI::GEMTYPE_T) {
-					ms.first.score += 100;
+					ms.first.score += ai_param.avoid_softdrop * 5;
 				}
                 que.push_back();
             }
@@ -1196,7 +1197,7 @@ namespace AI {
 
 
 					if (it->softdrop && cur_num != AI::GEMTYPE_T) {
-						ms.first.score += 100;
+						ms.first.score += ai_param.avoid_softdrop * 5;
 					}
                     que.push_back();
                 }
@@ -1404,7 +1405,7 @@ namespace AI {
 
 
 							if (movs[i].softdrop && cur_num != AI::GEMTYPE_T) {
-								ms.first.score += 100;
+								ms.first.score += ai_param.avoid_softdrop * 5;
 							}
                         }
                         p.push_back();
@@ -1486,7 +1487,7 @@ namespace AI {
 
 
 									if (movs[i].softdrop && cur_num != AI::GEMTYPE_T) {
-										ms.first.score += 100;
+										ms.first.score += ai_param.avoid_softdrop * 5;
 									}
                                     if ( wallkick_spin == 0 && movs[i].wallkick_spin ) ms.first.score += 1;
                                 }
@@ -1614,7 +1615,7 @@ namespace AI {
 
 
 							if (movs[i].softdrop && cur_num != AI::GEMTYPE_T) {
-								ms.first.score += 100;
+								ms.first.score += ai_param.avoid_softdrop * 5;
 							}
                         }
                         p.push_back();
