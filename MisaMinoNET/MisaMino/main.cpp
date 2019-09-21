@@ -9,10 +9,11 @@ DLL void set_abort(Callback handler) {
 	Abort = handler;
 }
 
-DLL void configure(AI::AI_Param param, bool holdAllowed) {
+DLL void configure(AI::AI_Param param, bool holdAllowed, bool TSDonly) {
     MisaBot = Bot();
 	MisaBot.updateStyle(param);
 	MisaBot.updateHoldAllowed(holdAllowed);
+	TSD_only = TSDonly;
     MisaBot.setup();
 };
 
