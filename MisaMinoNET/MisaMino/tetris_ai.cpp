@@ -631,13 +631,13 @@ namespace AI {
             //score -= readatt * ai_param.readyatt;
 
         }
-        // T3 ��״�ж�
-        //3001
-        //2000
-        // 1101
-        // 1x01
-        // 1101
-        //
+        // T3 形状判定 (Shape jugdement/ how to determine tst shape?)
+        //3001	
+        //2000	
+        // 1101	
+        // 1x01	
+        // 1101	
+        // Fumen visualization: https://tinyurl.com/y2ygrqtw 
         // 1003
         // 0002
         //1011 
@@ -649,16 +649,16 @@ namespace AI {
                 if ( x_holes[y] == 0 ) continue;
                 for ( int x = 1; x < pool_w - 1; ++x ) {
                     if ( ( pool.row[y + 1] & ( 1 << x ) ) == 0 || ( pool.row[y + 1] & ( 1 << x ) ) == 0  ) {
-                        continue; // �����޶�
+                        continue; // 上下无洞 (No holes top or bottom)
                     }
                     int row_y[5];
                     for ( int i = 0; i < 5; ++i ) {
                         row_y[i] = ( (pool.row[y - 3 + i] | (3 << pool_w)) << 2 ) | 3;
                     }
-                    if ( ( (row_y[3] >> (x + 1)) & ( 7 ) ) == 1 /*100*/ ) { // ��ͼ���
+                    if ( ( (row_y[3] >> (x + 1)) & ( 7 ) ) == 1 /*100*/ ) { // 上图情况 (See above diagram)
                         if ( x == pool_w - 2 ) continue;
-                        //if ( t2_x[x+1] == y ) continue; // �ų�T2��
-                        // ���пյĵط���ƥ��
+                        //if ( t2_x[x+1] == y ) continue; // 排除T2坑 (ignore tsd hole)
+                        // 所有空的地方先匹配 (Match all empty space first)
                         if (   ( (row_y[2] >> (x + 1)) & ( 7 ) ) != 3 /*110*/
                             //|| ( (row_y[4] >> (x + 1)) & ( 15 ) ) != 11 /*1101*/
                             || ( (row_y[4] >> (x + 1)) & ( 13 ) ) != 9 /*1011mask=1001*/
@@ -671,9 +671,9 @@ namespace AI {
                             continue;
                         }
                         if ( ( row_y[0] & ( 1 << (x) ) ) == 0 && ( row_y[1] & ( 1 << (x) ) ) ) {
-                            continue; // �ߴ�ת��
+                            continue; // 高处转角 (High turning corner -> Overhang for kick?)
                         }
-                        if ( min_y[x + 1] > y ) { // ���ж�
+                        if ( min_y[x + 1] > y ) { // 洞判定 (find holes)
                             if ( x_holes[y - 1] > 0 || x_holes[y + 1] > 0 || x_holes[y] > 1
                                 || x_op_holes[y - 1] > 0 || x_op_holes[y + 1] > 0 || x_op_holes[y] > 0)
                             {
@@ -700,8 +700,8 @@ namespace AI {
                         //int full = 0;
                         {
                             int e = ~(pool.row[y + 1] | (1<<x) ) & pool.m_w_mask;
-                            e &= ( e-1);
-                            if ( e == 0 ) { // ���ֻʣһ��
+                            e &= ( e-1); 
+                            if ( e == 0 ) { // 最底只剩一空 (Bottom only has one space)
                                 //++full;
                             } else {
                                 score -= s;
@@ -711,7 +711,7 @@ namespace AI {
                         {
                             int e = ~(pool.row[y] | (1<<(x+2))) & pool.m_w_mask;
                             e &= ( e-1 );
-                            if ( (e & ( e-1)) == 0 ) { // �׶�ֻʣ����
+                            if ( (e & ( e-1)) == 0 ) { // 底二只剩两空 (2nd row only has 2 spaces left)
                                 //++full;
                             } else {
                                 if ( (pool.row[y] & (1<<(x+2))) == 0 ) {
@@ -725,7 +725,7 @@ namespace AI {
                         {
                             int e = ~pool.row[y - 1] & pool.m_w_mask;
                             e &= ( e-1 );
-                            if ( e == 0 ) { // ����ֻʣһ��
+                            if ( e == 0 ) { // 底三只剩一空 (3rd row only has 1 space left)
                                 //++full;
                             } else {
                                 score -= s;
@@ -740,7 +740,7 @@ namespace AI {
                                 score -= int( warning_factor * ai_param.tspin3 * 3 / ( t_dis + 1 ) );
                             }
                         }
-                    } else if ( ( (row_y[3] >> (x+1) ) & ( 7 ) ) == 4 /*001*/ ) { // �������
+                    } else if ( ( (row_y[3] >> (x+1) ) & ( 7 ) ) == 4 /*001*/ ) { // 镜像情况 (Mirrored)
                         if ( x == 1 ) continue;
                         //if ( t2_x[x-1] == y ) continue; // �ų�T2��
                         // ���пյĵط���ƥ��
