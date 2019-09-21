@@ -160,7 +160,7 @@ namespace MisaMinoNET {
         }
 
         [DllImport("MisaMino.dll")]
-        public static extern void configure(AI_Param param, bool holdAllowed);
+        public static extern void configure(AI_Param param, bool holdAllowed, bool TSDonly);
 
         [DllImport("MisaMino.dll")]
         public static extern void update_next(string queue);
@@ -272,8 +272,8 @@ namespace MisaMinoNET {
     }
 
     public static class MisaMino {
-        public static void Configure(MisaMinoParameters param, bool hold_allowed) {
-            Interface.configure(param.Parameters, hold_allowed);
+        public static void Configure(MisaMinoParameters param, bool hold_allowed, bool tsd_only) {
+            Interface.configure(param.Parameters, hold_allowed, tsd_only);
             Reset();
         }
 
