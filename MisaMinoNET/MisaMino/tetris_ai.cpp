@@ -31,7 +31,7 @@ namespace AI {
         }
     }
 
-    int Evaluate( int &clearScore, const AI_Param& ai_param, const GameField& last_pool, const GameField& pool, int cur_num,
+    int Evaluate( int &clearScore, double &avg_height, const AI_Param& ai_param, const GameField& last_pool, const GameField& pool, int cur_num,
         int curdepth,
         int total_clear_att, int total_clears, int clear_att, int clears, signed char wallkick_spin,
         int lastCombo, int t_dis, int upcomeAtt
@@ -1138,10 +1138,11 @@ namespace AI {
                 ms.max_combo = ms.combo; //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
                 ms.first = *it;
                 ms.first.score2 = 0;
-                ms.first.score = Evaluate(ms.first.score2, ai_param, pool, ms.pool_last, cur.num, 0, ms.att, ms.clear, att, clear, wallkick_spin, _pool.combo, t_dis, upcomeAtt);
+				double h = 0;
+                ms.first.score = Evaluate(ms.first.score2, h, ai_param, pool, ms.pool_last, cur.num, 0, ms.att, ms.clear, att, clear, wallkick_spin, _pool.combo, t_dis, upcomeAtt);
                 if ( wallkick_spin == 0 && it->wallkick_spin ) ms.first.score += 1;
 
-				ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, it->softdrop, cur.num, it->wallkick_spin);
+				ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, it->softdrop, cur.num, it->wallkick_spin, h);
                 que.push_back();
             }
         }
@@ -1200,10 +1201,11 @@ namespace AI {
                     ms.max_combo = ms.combo; //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
                     ms.first = *it;
                     ms.first.score2 = 0;
-                    ms.first.score = Evaluate(ms.first.score2, ai_param, pool, ms.pool_last, cur.num, 0, ms.att, ms.clear, att, clear, wallkick_spin, _pool.combo, t_dis, upcomeAtt);
+					double h;
+                    ms.first.score = Evaluate(ms.first.score2, h, ai_param, pool, ms.pool_last, cur.num, 0, ms.att, ms.clear, att, clear, wallkick_spin, _pool.combo, t_dis, upcomeAtt);
                     if ( wallkick_spin == 0 && it->wallkick_spin ) ms.first.score += 1;
 
-					ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, it->softdrop, cur.num, it->wallkick_spin);
+					ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, it->softdrop, cur.num, it->wallkick_spin, h);
                     que.push_back();
                 }
             }
@@ -1403,12 +1405,13 @@ namespace AI {
                             ms.max_att = std::max((int)ms_last.max_att, ms_last.att + att);
                             ms.max_combo = std::max(ms_last.max_combo, ms.combo); //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
                             ms.first.score2 = ms_last.first.score2;
-                            ms.first.score = Evaluate(ms.first.score2, ai_param,
+							double h;
+                            ms.first.score = Evaluate(ms.first.score2, h, ai_param,
                                 pool,
                                 ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
                             if ( wallkick_spin == 0 && movs[i].wallkick_spin ) ms.first.score += 1;
 
-							ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur.num, movs[i].wallkick_spin);
+							ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur.num, movs[i].wallkick_spin, h);
                         }
                         p.push_back();
                     }
@@ -1483,11 +1486,12 @@ namespace AI {
                                     ms.max_att = std::max((int)ms_last.max_att, ms_last.att + att);
                                     ms.max_combo = std::max(ms_last.max_combo, ms.combo); //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
                                     ms.first.score2 = ms_last.first.score2;
-                                    ms.first.score = Evaluate(ms.first.score2, ai_param,
+									double h;
+                                    ms.first.score = Evaluate(ms.first.score2, h, ai_param,
                                         pool,
                                         ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
 
-									ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur.num, movs[i].wallkick_spin);
+									ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur.num, movs[i].wallkick_spin, h);
                                     if ( wallkick_spin == 0 && movs[i].wallkick_spin ) ms.first.score += 1;
                                 }
                                 p.push_back();
@@ -1608,11 +1612,12 @@ namespace AI {
                             ms.max_att = std::max((int)ms_last.max_att, ms_last.att + att);
                             ms.max_combo = std::max(ms_last.max_combo, ms.combo); //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
                             ms.first.score2 = ms_last.first.score2;
-                            ms.first.score = Evaluate(ms.first.score2, ai_param,
+							double h;
+                            ms.first.score = Evaluate(ms.first.score2, h, ai_param,
                                 pool,
                                 ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
 
-							ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur.num, movs[i].wallkick_spin);
+							ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur.num, movs[i].wallkick_spin, h);
                         }
                         p.push_back();
                     }
@@ -1643,8 +1648,8 @@ namespace AI {
             return m.first;
         }
     }
-	int score_avoid_softdrop(int param, bool sd, int cur, bool wk) {
-		return (sd && !(cur == AI::GEMTYPE_T && wk))? param * 5 : 0;
+	int score_avoid_softdrop(int param, bool sd, int cur, bool wk, double h) {
+		return TSD_only? 0 : (int) ((double)((sd && !(cur == AI::GEMTYPE_T && wk))? param * 5 : 0) / (1 + exp(h - 10)));
 	}
     struct AI_THREAD_PARAM {
         TetrisAI_t func;
