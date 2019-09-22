@@ -70,7 +70,7 @@ void Bot::updateQueue(const char* q) {
 }
 
 AI::AI_Param globalparam = {
-	13, 9, 7, 10, 14, 25, 39, 2, 12, 19, 7, 24, 29, 16, 14, 19, 35, 20, 20, 0, 0 // 4w default = 200
+	16, 9, 11, 23, 29, 25, 39, 2, 12, 19, 7, 24, 32, 16, 14, 19, 32, 25, 18, 0, 0 // 4w default = 200
 };
 
 void Bot::updateStyle(AI::AI_Param param) {

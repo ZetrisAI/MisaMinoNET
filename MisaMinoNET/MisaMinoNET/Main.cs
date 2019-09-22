@@ -49,7 +49,6 @@ namespace MisaMinoNET {
         public int clear_useless_factor;
 
         public int dif_factor;
-
         public int b2b;
         public int combo;
         public int avoid_softdrop;
@@ -62,10 +61,11 @@ namespace MisaMinoNET {
         public AI_Param Parameters;
 
         public MisaMinoParameters(
-            int miny_factor = 13, int hole = 9, int open_hole = 7, int v_transitions = 10, int tspin3 = 14,
+            int miny_factor = 16, int hole = 9, int open_hole = 11, int v_transitions = 23, int tspin3 = 29,
             int clear_efficient = 25, int upcomeAtt = 39, int h_factor = 2, int hole_dis_factor2 = 12, int hole_dis = 19,
-            int hole_dis_factor = 7, int tspin = 24, int hold_T = 29, int hold_I = 16, int clear_useless_factor = 14,
-            int dif_factor = 19, int b2b = 35, int combo = 20, int avoid_softdrop = 20, int tmini = 0, int strategy_4w = 0
+            int hole_dis_factor = 7, int tspin = 24, int hold_T = 32, int hold_I = 16, int clear_useless_factor = 14,
+            int dif_factor = 19, int b2b = 32, int combo = 25, int avoid_softdrop = 18, int tmini = 0,
+            int strategy_4w = 0
         ) {
             Parameters.miny_factor = miny_factor;
             Parameters.hole = hole;
@@ -86,7 +86,6 @@ namespace MisaMinoNET {
             Parameters.clear_useless_factor = clear_useless_factor;
 
             Parameters.dif_factor = dif_factor;
-
             Parameters.b2b = b2b;
             Parameters.combo = combo;
             Parameters.avoid_softdrop = avoid_softdrop;
@@ -127,7 +126,6 @@ namespace MisaMinoNET {
             Parameters.clear_useless_factor,
 
             Parameters.dif_factor,
-
             Parameters.b2b,
             Parameters.combo,
             Parameters.avoid_softdrop,
