@@ -1127,7 +1127,7 @@ namespace AI {
                 ms.clear = clear;
                 ms.att = att;
                 if ( clear > 0 ) {
-                    ms.combo = _pool.combo * combo_step_max + combo_step_max;// + 1 - clear;
+                    ms.combo = (_pool.combo + 1) * combo_step_max * ai_param.combo / 30;
                     ms.upcomeAtt = std::max(0, upcomeAtt - att);
                 } else {
                     ms.combo = 0;
@@ -1190,7 +1190,7 @@ namespace AI {
                     ms.clear = clear;
                     ms.att = att;
                     if ( clear > 0 ) {
-                        ms.combo = _pool.combo * combo_step_max + combo_step_max;// + 1 - clear;
+						ms.combo = (_pool.combo + 1) * combo_step_max * ai_param.combo / 30;
                         ms.upcomeAtt = std::max(0, upcomeAtt - att);
                     } else {
                         ms.combo = 0;
@@ -1392,7 +1392,7 @@ namespace AI {
                             ms.att = att + ms_last.att;
                             ms.upcomeAtt = ms_last.upcomeAtt;
                             if ( clear > 0 ) {
-                                ms.combo = ms_last.combo + combo_step_max + 1 - clear;
+                                ms.combo = ms_last.combo + (combo_step_max + 1 - clear) * ai_param.combo / 30;
                                 if ( ms_last.upcomeAtt > 0 )
                                     ms.upcomeAtt = std::max(0, ms_last.upcomeAtt - att);
                             } else {
@@ -1473,7 +1473,7 @@ namespace AI {
                                     ms.att = att + ms_last.att;
                                     ms.upcomeAtt = ms_last.upcomeAtt;
                                     if ( clear > 0 ) {
-                                        ms.combo = ms_last.combo + combo_step_max + 1 - clear;
+										ms.combo = ms_last.combo + (combo_step_max + 1 - clear) * ai_param.combo / 30;
                                         if ( ms_last.upcomeAtt > 0 )
                                             ms.upcomeAtt = std::max(0, ms_last.upcomeAtt - att);
                                     } else {
@@ -1599,7 +1599,7 @@ namespace AI {
                             ms.att = att + ms_last.att;
                             ms.upcomeAtt = ms_last.upcomeAtt;
                             if ( clear > 0 ) {
-                                ms.combo = ms_last.combo + combo_step_max + 1 - clear;
+								ms.combo = ms_last.combo + (combo_step_max + 1 - clear) * ai_param.combo / 30;
                                 if ( ms_last.upcomeAtt > 0 )
                                     ms.upcomeAtt = std::max(0, ms_last.upcomeAtt - att);
                             } else {
