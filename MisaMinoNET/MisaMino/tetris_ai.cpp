@@ -1207,7 +1207,7 @@ namespace AI {
                     if ( wallkick_spin == 0 && it->wallkick_spin ) ms.first.score += 1;
 
 
-					if (it->softdrop && cur_num != AI::GEMTYPE_T) {
+					if (it->softdrop && !(cur.num == AI::GEMTYPE_T && it->wallkick_spin)) {
 						ms.first.score += ai_param.avoid_softdrop * 5;
 					}
                     que.push_back();
@@ -1415,7 +1415,7 @@ namespace AI {
                             if ( wallkick_spin == 0 && movs[i].wallkick_spin ) ms.first.score += 1;
 
 
-							if (movs[i].softdrop && cur_num != AI::GEMTYPE_T) {
+							if (movs[i].softdrop && !(cur.num == AI::GEMTYPE_T && movs[i].wallkick_spin)) {
 								ms.first.score += ai_param.avoid_softdrop * 5;
 							}
                         }
@@ -1497,7 +1497,7 @@ namespace AI {
                                         ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
 
 
-									if (movs[i].softdrop && cur_num != AI::GEMTYPE_T) {
+									if (movs[i].softdrop && !(cur.num == AI::GEMTYPE_T && movs[i].wallkick_spin)) {
 										ms.first.score += ai_param.avoid_softdrop * 5;
 									}
                                     if ( wallkick_spin == 0 && movs[i].wallkick_spin ) ms.first.score += 1;
@@ -1625,7 +1625,7 @@ namespace AI {
                                 ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
 
 
-							if (movs[i].softdrop && cur_num != AI::GEMTYPE_T) {
+							if (movs[i].softdrop && !(cur.num == AI::GEMTYPE_T && movs[i].wallkick_spin)) {
 								ms.first.score += ai_param.avoid_softdrop * 5;
 							}
                         }
