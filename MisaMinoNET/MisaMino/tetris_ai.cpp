@@ -1142,7 +1142,7 @@ namespace AI {
                 if ( wallkick_spin == 0 && it->wallkick_spin ) ms.first.score += 1;
 
 
-				if (it->softdrop && cur.num != AI::GEMTYPE_T) {
+				if (it->softdrop && !(cur.num == AI::GEMTYPE_T && it->wallkick_spin)) {
 					ms.first.score += ai_param.avoid_softdrop * 5;
 				}
                 que.push_back();
