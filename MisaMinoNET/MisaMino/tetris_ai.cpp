@@ -440,7 +440,7 @@ namespace AI {
                 int t_att = total_clear_att;
                 double t_clear = total_clears; //+ total_clears / 4.0;
 				double h = pool_h - (double)avg / pool_w;
-                if ( pool.b2b ) s -= (int) ((double)(ai_param.b2b * 5) / (1 + (TSD_only? 0 : exp(h - 10)))); // b2b score
+                if ( pool.b2b ) s -= (int) ((double)(ai_param.b2b * 5) / (1 + (TSD_only? 0 : pow(5, h - 6.5)))) + 2; // b2b score
                 if ( t_clear > 0 ) {
                     s -= int( ((ai_param.clear_efficient) * ( t_att ) ) );
                 }
@@ -1652,7 +1652,7 @@ namespace AI {
         }
     }
 	int score_avoid_softdrop(int param, bool sd, int cur, bool wk, double h) {
-		return TSD_only? 0 : (int) ((double)((sd && !(cur == AI::GEMTYPE_T && wk))? param * 5 : 0) / (1 + exp(h - 10)));
+		return TSD_only? 0 : (int) ((double)((sd && !(cur == AI::GEMTYPE_T && wk))? param * 5 : 0) / (1 + pow(5, h - 6.5)));
 	}
     struct AI_THREAD_PARAM {
         TetrisAI_t func;
