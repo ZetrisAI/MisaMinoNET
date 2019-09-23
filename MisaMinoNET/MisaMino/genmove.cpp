@@ -77,8 +77,11 @@ namespace AI {
     };
 
     void GenMoving(const GameField& field, std::vector<MovingSimple> & movs, Gem cur, int x, int y, bool hold) {
-        assert( cur.num != 0 );
         movs.clear();
+		if (cur.num == 0) { // rare race condition, we're dead already if this happens
+			assert(true); // debug break
+			cur = AI::getGem(AI::GEMTYPE_I, 0);
+		}
         if ( field.isCollide(x, y, getGem(cur.num, cur.spin) ) ) {
             return ;
         }
