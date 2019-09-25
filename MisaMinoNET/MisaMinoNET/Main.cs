@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -186,7 +187,7 @@ namespace MisaMinoNET {
 
         [DllImport("MisaMino.dll")]
         private static extern void action(StringBuilder str, int len);
-        public static string Move() {
+        public static string Move(out long time) {
             StringBuilder sb = new StringBuilder(500);
 
             abort = true;
@@ -194,11 +195,17 @@ namespace MisaMinoNET {
             lock (locker) {
                 abort = false;
 
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
                 Running = true;
 
                 action(sb, sb.Capacity);
 
                 Running = false;
+
+                stopwatch.Stop();
+                time = stopwatch.ElapsedMilliseconds;
             }
 
             return sb.ToString();
@@ -236,6 +243,7 @@ namespace MisaMinoNET {
         public bool SpinUsed { get; private set; }
         public int B2B { get; private set; }
         public int Nodes { get; private set; }
+        public long Time { get; private set; }
         public int Attack { get; private set; }
         public int FinalX { get; private set; }
         public int FinalY { get; private set; }
@@ -245,9 +253,9 @@ namespace MisaMinoNET {
 
         public bool Empty => Instructions.Count == 0;
 
-        public Solution() {}
+        public Solution(long time = 0) => Time = time;
 
-        public Solution(string input) {
+        public Solution(string input, long time) {
             string[] info = input.Split('|');
 
             foreach (string i in info[0].Split(',')) {
@@ -258,6 +266,7 @@ namespace MisaMinoNET {
             SpinUsed = Convert.ToInt32(info[2]) != 0;
             B2B = Convert.ToInt32(info[3]);
             Nodes = Convert.ToInt32(info[4]);
+            Time = time;
             Attack = Convert.ToInt32(info[5]);
 
             int[] pieceInfo = info[6].Split(',').Select(s => int.Parse(s)).ToArray();
@@ -342,14 +351,14 @@ namespace MisaMinoNET {
                 string action;
 
                 await Task.Run(() => {
-                    action = Interface.Move();
+                    action = Interface.Move(out long time);
 
-                    LastSolution = new Solution();
+                    LastSolution = new Solution(time);
 
                     bool solved = !action.Equals("-1");
 
                     if (solved) {
-                        LastSolution = new Solution(action);
+                        LastSolution = new Solution(action, time);
                     }
 
                     Finished?.Invoke(solved);
