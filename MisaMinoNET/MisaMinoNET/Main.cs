@@ -243,6 +243,7 @@ namespace MisaMinoNET {
         public bool SpinUsed { get; private set; }
         public int B2B { get; private set; }
         public int Nodes { get; private set; }
+        public int Depth { get; private set; }
         public long Time { get; private set; }
         public int Attack { get; private set; }
         public int FinalX { get; private set; }
@@ -266,10 +267,11 @@ namespace MisaMinoNET {
             SpinUsed = Convert.ToInt32(info[2]) != 0;
             B2B = Convert.ToInt32(info[3]);
             Nodes = Convert.ToInt32(info[4]);
+            Depth = Convert.ToInt32(info[5]);
             Time = time;
-            Attack = Convert.ToInt32(info[5]);
+            Attack = Convert.ToInt32(info[6]);
 
-            int[] pieceInfo = info[6].Split(',').Select(s => int.Parse(s)).ToArray();
+            int[] pieceInfo = info[7].Split(',').Select(s => int.Parse(s)).ToArray();
             FinalX = pieceInfo[0] + 1;
             FinalY = pieceInfo[1] + 3;
             FinalR = (Instructions.Count(i => i == Instruction.RSPIN) - Instructions.Count(i => i == Instruction.LSPIN) + 100) % 4;

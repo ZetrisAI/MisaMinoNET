@@ -1268,7 +1268,8 @@ namespace AI {
         };
         MovQueue<MovsState> * pq_last = &que2, * pq = &que;
         searchDeep = 1;
-        for ( int depth = 0; /*search_nodes < max_search_nodes &&*/ depth < maxDeep; searchDeep = ++depth ) { //d < maxDeep
+		int depth = 0;
+        for (; /*search_nodes < max_search_nodes &&*/ depth < maxDeep; searchDeep = ++depth ) { //d < maxDeep
             std::swap(pq_last, pq);
             
             int (*sw_map)[8] = sw_map1;
@@ -1648,6 +1649,7 @@ namespace AI {
                 }
             }
 			last_nodes = search_nodes;
+			last_depth = depth;
             return m.first;
         }
     }
