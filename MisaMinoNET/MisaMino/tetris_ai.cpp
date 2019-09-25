@@ -1268,6 +1268,8 @@ namespace AI {
         };
         MovQueue<MovsState> * pq_last = &que2, * pq = &que;
         searchDeep = 1;
+		int final_depth = 65535;
+
 		int depth = 0;
         for (; /*search_nodes < max_search_nodes &&*/ depth < maxDeep; searchDeep = ++depth ) { //d < maxDeep
             std::swap(pq_last, pq);
@@ -1317,6 +1319,8 @@ namespace AI {
                     break;
                 }
                 if (Abort()) {
+					if (final_depth > depth) final_depth = depth;
+
                     //MovsState ms_last = pq_last->back();
                     pq->push(ms_last);
                     continue;
@@ -1513,6 +1517,8 @@ namespace AI {
                 return MovingSimple();
             }
         }
+		if (final_depth > depth) final_depth = depth;
+
         //if (0)
         if ( ai_settings[player].hash && canhold && !Abort() ) { // extra search
             std::swap(pq_last, pq);
@@ -1649,7 +1655,7 @@ namespace AI {
                 }
             }
 			last_nodes = search_nodes;
-			last_depth = depth;
+			last_depth = final_depth;
             return m.first;
         }
     }
