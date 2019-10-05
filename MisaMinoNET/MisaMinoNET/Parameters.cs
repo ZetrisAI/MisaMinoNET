@@ -1,6 +1,9 @@
 ﻿using System;
 
 namespace MisaMinoNET {
+    /// <summary>
+    /// The unmanaged AI_Param struct passed to MisaMino internally.
+    /// </summary>
     public struct AI_Param {
         public int miny_factor;
         public int hole;
@@ -29,9 +32,18 @@ namespace MisaMinoNET {
         public int strategy_4w;
     };
 
+    /// <summary>
+    /// The managed MisaMinoParameters class which wraps the AI_Param struct, and provides helper methods for easier manipulation.
+    /// </summary>
     public class MisaMinoParameters {
+        /// <summary>
+        /// The underlying AI_Param struct.
+        /// </summary>
         public AI_Param Parameters;
 
+        /// <summary>
+        /// Creates a new set of Parameters for MisaMino.
+        /// </summary>
         public MisaMinoParameters(
             int miny_factor = 16, int hole = 9, int open_hole = 11, int v_transitions = 17, int tspin3 = 17,
             int clear_efficient = 25, int upcomeAtt = 39, int h_factor = 2, int hole_dis_factor2 = 12, int hole_dis = 19,
@@ -66,6 +78,11 @@ namespace MisaMinoNET {
             Parameters.strategy_4w = strategy_4w;
         }
 
+        /// <summary>
+        /// Creates MisaMino Parameters from an array of integers.
+        /// </summary>
+        /// <param name="arr">The array of integers to create MisaMino Parameters from.</param>
+        /// <exception cref="ArgumentException">Thrown when the array size doesn't match the number of parameters.</exception>
         public static MisaMinoParameters FromArray(int[] arr) {
             if (arr.Length != 21) throw new ArgumentException();
 
@@ -78,6 +95,9 @@ namespace MisaMinoNET {
             );
         }
 
+        /// <summary>
+        /// Creates an array of integers from MisaMino Parameters. Useful for easier storing.
+        /// </summary>
         public int[] ToArray() => new int[] {
             Parameters.miny_factor,
             Parameters.hole,

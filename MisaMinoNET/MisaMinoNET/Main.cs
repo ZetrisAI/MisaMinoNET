@@ -4,24 +4,46 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace MisaMinoNET {
+    /// <summary>
+    /// The main MisaMino class.
+    /// Contains all methods for performing actions with MisaMino.
+    /// </summary>
     public static class MisaMino {
+        /// <summary>
+        /// Converts a piece's index to its regular string representation.
+        /// </summary>
         public static readonly string[] ToChar = new string[7] {
             "S", "Z", "J", "L", "T", "O", "I"
         };
 
+        /// <summary>
+        /// Converts a piece's index to its MisaMino string representation.
+        /// </summary>
         public static readonly char[] MisaMinoMap = new char[7] {
             'Z', 'S', 'L', 'J', 'T', 'O', 'I'
         };
 
+        /// <summary>
+        /// Converts a MisaMino piece's index to its regular index.
+        /// </summary>
         public static readonly int[] FromMisaMino = new int[7] {
             6, 4, 2, 3, 0, 1, 5
         };
 
+        /// <summary>
+        /// Configures and resets all parameters inside of MisaMino.
+        /// </summary>
+        /// <param name="param">The MisaMino parameters to configure MisaMino with.</param>
+        /// <param name="hold_allowed">Is holding is allowed in the game.</param>
+        /// <param name="tsd_only">Are only TSDs allowed (this parameter should only be used for 20 TSD Sprint mode).</param>
         public static void Configure(MisaMinoParameters param, bool hold_allowed, bool tsd_only) {
             Interface.configure(param.Parameters, hold_allowed, tsd_only);
             Reset();
         }
 
+        /// <summary>
+        /// Resets all temporary state variables inside of MisaMino.
+        /// </summary>
         public static void Reset() {
             Abort();
             Interface.update_reset();
@@ -56,16 +78,30 @@ namespace MisaMinoNET {
 
             return String.Join(";", rows);
         }
-        
+
+        /// <param name="success">Whether the search was successful or not.</param>
         public delegate void FinishedEventHandler(bool success);
+
+        /// <summary>
+        /// Fires when MisaMino reaches the end of its search, whether naturally or after it was aborted.
+        /// </summary>
         public static event FinishedEventHandler Finished;
 
+        /// <summary>
+        /// The latest search result from the most recent call to FindMove.
+        /// </summary>
         public static Solution LastSolution = new Solution();
 
-        public static bool Running { get => Interface.Running; }
+        /// <summary>
+        /// Checks if MisaMino is currently searching for solutions.
+        /// </summary>
+        public static bool Running => Interface.Running;
 
         static ManualResetEvent abortWait;
 
+        /// <summary>
+        /// Aborts the currently running search, if there is one.
+        /// </summary>
         public static void Abort() {
             if (Interface.Running) {
                 abortWait = new ManualResetEvent(false);
@@ -76,6 +112,21 @@ namespace MisaMinoNET {
             }
         }
 
+        /// <summary>
+        /// <para>Starts searching for a solution/decision for the given game state.</para>
+        /// <para>Pieces should be formatted with numbers from 0 to 6 in the order of SZJLTOI. Empty state on the field should be formatted with 255.</para>
+        /// <para>Since this method will begin a search in the background, it does not immediately return any data.</para>
+        /// <para>When the search ends, the Finished event will fire and LastSolution will update.</para>
+        /// <para>The search can be ended prematurely with the Abort method.</para>
+        /// </summary>
+        /// <param name="queue">The piece queue, can be of any size.</param>
+        /// <param name="current">The current piece.</param>
+        /// <param name="hold">The piece in hold. Should be null if empty.</param>
+        /// <param name="height">The height of the board, on top of which the piece spawns. If your piece spawns inside row 20, the correct value would be 21.</param>
+        /// <param name="field">A 2D array consisting of the field. Should be no smaller than int[10, height].</param>
+        /// <param name="combo">The combo count.</param>
+        /// <param name="b2b">The current number of consecutive back-to-back valid attacks. If you're lazy, you can pass 1 if the player has back-to-back, and 0 if they don't.</param>
+        /// <param name="garbage">The amount of incoming garbage which will spawn after the piece is placed.</param>
         public static async void FindMove(int[] queue, int current, int? hold, int height, int[,] field, int combo, int b2b, int garbage) {
             if (Interface.alive()) {
                 updateQueue(queue);
@@ -106,6 +157,20 @@ namespace MisaMinoNET {
             }
         }
 
+        /// <summary>
+        /// <para>Finds the optimal path to a specified piece placement.</para>
+        /// <para>Pieces should be formatted with numbers from 0 to 6 in the order of SZJLTOI. Empty state on the field should be formatted with 255.</para>
+        /// <para>Returns the list of Instructions necessary to correctly place the piece in the desired position.</para>
+        /// </summary>
+        /// <param name="field">A 2D array consisting of the field. Should be no smaller than int[10, height].</param>
+        /// <param name="height">The height of the board, on top of which the piece spawns. If your piece spawns inside row 20, the correct value would be 21.</param>
+        /// <param name="piece">The piece.</param>
+        /// <param name="x">The desired X position of the piece.</param>
+        /// <param name="y">The desired Y position of the piece.</param>
+        /// <param name="r">The desired rotation of the piece.</param>
+        /// <param name="hold">Whether the player needs to hold before starting to move the piece.</param>
+        /// <param name="spinUsed">This is set if a twist/spin was used to place the piece.</param>
+        /// <param name="success">This is set if it's possible to place the piece in the desired position.</param>
         public static List<Instruction> FindPath(int[,] field, int height, int piece, int x, int y, int r, bool hold, ref bool spinUsed, out bool success) {
             List<Instruction> ret = new List<Instruction>();
 
