@@ -1,23 +1,28 @@
 # MisaMinoNET
-.NET version of the MisaMino bot (via DLL Importing).
+[![NuGet - Download](https://img.shields.io/badge/nuget-download-orange)](https://www.nuget.org/packages/MisaMinoNET/)
+[![Discord - Join Chat](https://img.shields.io/badge/discord-join%20chat-blue)](https://discord.gg/vfrmzUV)
 
-MisaMino is located in the `tetris_ai` directory.
+.NET version of the MisaMino bot (via DLL importing).
 
-### MisaMino Commands
-* settings
-    * level (int 0 to 10)
-    * style (int 1 = t-spin+, 2 = t-spin, 3 = ren, 4 = no hold, 5 = 4-wide, 6 = downstack)
-* update
-    * next_pieces (string comma-separated I,T,L,J,Z,S,O)
-    * combo (int)
-    * field (array of int comma-separated 0 = empty, 2 = filled)
-    * this_piece_type (string I,T,L,J,Z,S,O)
-    * inAtt (int)
-    * round (int, 1 = reset bot)
-* action (process info and returns move)
+## Installation and Usage Example
 
-### Output
+Use MisaMinoNET from [NuGet](https://www.nuget.org/packages/MisaMinoNET/) in your project.
 
-1. Number of cleared lines, `-1` if no moves were found
-2. `>1` if spins were used to clear the lines
-3. Game field after line clears
+```cs
+using MisaMinoNET;
+
+// Listen for search completion
+MisaMino.Finished += ...;
+
+// Start search in the background
+MisaMino.FindMove(...);
+
+// Abort search prematurely
+MisaMino.Abort();
+
+// Access results of last search
+MisaMino.LastSolution;
+
+// Utilize pathfinder
+MisaMino.FindPath(...);
+```
