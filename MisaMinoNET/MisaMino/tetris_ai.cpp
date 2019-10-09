@@ -922,7 +922,7 @@ namespace AI {
 
 		if (TSD_only) {
 			if (cur_num == AI::GEMTYPE_T) {
-				if (wallkick_spin == 1 && clears == 2) clearScore -= 100000000;
+				if (wallkick_spin != 0 && clears == 2) clearScore -= 100000000;
 				else clearScore += 100000000;
 
 			} else if (clears != 0) clearScore += 100000000;
