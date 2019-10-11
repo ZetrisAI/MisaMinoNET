@@ -357,7 +357,7 @@ namespace AI {
         int m_cur_x, m_cur_y;
         int m_curnum;
         signed char wallkick_spin;
-        AI::Gem m_next[128];
+        AI::Gem m_next[1024];
         int m_next_num;
         point m_base, m_size;
         int m_clearLines;
