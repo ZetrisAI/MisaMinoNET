@@ -80,7 +80,7 @@ namespace AI {
         };
         int x, y;
         int lastmove;
-        int score, score2;
+        long long score, score2;
         signed char spin;
         signed char wallkick_spin;
         bool hold;

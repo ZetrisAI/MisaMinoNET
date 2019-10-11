@@ -31,7 +31,7 @@ namespace AI {
         }
     }
 
-    int Evaluate( int &clearScore, double &avg_height, const AI_Param& ai_param, const GameField& last_pool, const GameField& pool, int cur_num,
+    int Evaluate( long long &clearScore, double &avg_height, const AI_Param& ai_param, const GameField& last_pool, const GameField& pool, int cur_num,
         int curdepth,
         int total_clear_att, int total_clears, int clear_att, int clears, signed char wallkick_spin,
         int lastCombo, int t_dis, int upcomeAtt
@@ -997,7 +997,8 @@ namespace AI {
 					}
 					if ( max_combo > combo && m.max_combo > m.combo && (m.max_combo > 4 * 32 || max_combo > 4 * 32) ) {
 						if ( (combo <= 2 * 32 && m.combo <= 2 * 32) ) {
-							if ( abs(first.score - m.first.score) < 1000 ) {
+							long long diff = first.score - m.first.score;
+							if ( -1000 < diff && diff < 1000 ) {
 								if ( att != m.att )
 									return att < m.att;
 							} else {
@@ -1296,10 +1297,10 @@ namespace AI {
             }
             pq->clear();
             int max_combo = 3;
-            int max_search_score = pq_last->back().first.score;
+            long long max_search_score = pq_last->back().first.score;
             {
                 for ( int s = pq_last->size(), i = s / 2; i < s; ++i ) {
-                    max_search_score = std::max( max_search_score, pq_last->queue[i].first.score );
+                    max_search_score = std::max((long long)max_search_score, pq_last->queue[i].first.score );
                 }
                 max_search_score = (max_search_score * 2 + pq_last->front().first.score) / 3;
             }
