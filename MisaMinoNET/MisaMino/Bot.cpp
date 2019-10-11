@@ -127,7 +127,7 @@ void Bot::setup() {
         int a[] = {0, 0, 0, 1, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5};
         AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
     } else if (rule.combo_table_style == 3) {
-        int a[] = {0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
+        int a[] = {0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5};
         AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
     } else {
         int a[] = {0, 0, 0, 1, 1, 2};
