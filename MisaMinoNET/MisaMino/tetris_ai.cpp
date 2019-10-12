@@ -1324,7 +1324,7 @@ namespace AI {
 
                     //MovsState ms_last = pq_last->back();
                     pq->push(ms_last);
-                    continue;
+                    break;
                 }
                 max_combo = std::max( max_combo, (int)ms_last.pool_last.combo );
                 if (0)
@@ -1560,7 +1560,7 @@ namespace AI {
                 }
                 pq->push(ms_last);
                 if ( Abort() ) {
-                    continue;
+					break;
                 }
                 //max_combo = std::max( max_combo, (int)ms_last.pool_last.combo );
                 {
