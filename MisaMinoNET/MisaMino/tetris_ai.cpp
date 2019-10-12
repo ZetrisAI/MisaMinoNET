@@ -1273,6 +1273,8 @@ namespace AI {
 
 		int depth = 0;
         for (; /*search_nodes < max_search_nodes &&*/ depth < maxDeep; searchDeep = ++depth ) { //d < maxDeep
+			if (Abort()) break;
+
             std::swap(pq_last, pq);
             
             int (*sw_map)[8] = sw_map1;
