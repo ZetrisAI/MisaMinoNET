@@ -1273,6 +1273,8 @@ namespace AI {
 
 		int depth = 0;
         for (; /*search_nodes < max_search_nodes &&*/ depth < maxDeep; searchDeep = ++depth ) { //d < maxDeep
+			if (Abort()) break;
+
             std::swap(pq_last, pq);
             
             int (*sw_map)[8] = sw_map1;
@@ -1324,7 +1326,7 @@ namespace AI {
 
                     //MovsState ms_last = pq_last->back();
                     pq->push(ms_last);
-                    continue;
+                    break;
                 }
                 max_combo = std::max( max_combo, (int)ms_last.pool_last.combo );
                 if (0)
@@ -1560,7 +1562,7 @@ namespace AI {
                 }
                 pq->push(ms_last);
                 if ( Abort() ) {
-                    continue;
+					break;
                 }
                 //max_combo = std::max( max_combo, (int)ms_last.pool_last.combo );
                 {
