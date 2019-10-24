@@ -439,8 +439,8 @@ namespace AI {
                 int s = 0;
                 int t_att = total_clear_att;
                 double t_clear = total_clears; //+ total_clears / 4.0;
-				double h = pool_h - (double)avg / pool_w;
-                if ( pool.b2b ) s -= (int) ((double)(ai_param.b2b * 5) / (1 + (TSD_only? 0 : pow(5, h - 6.5)))) + 2; // b2b score
+                avg_height = pool_h - (double)avg / pool_w;
+                if ( pool.b2b ) s -= (int) ((double)(ai_param.b2b * 5) / (1 + (TSD_only? 0 : pow(5, avg_height - 6.5)))) + 2; // b2b score
                 if ( t_clear > 0 ) {
                     s -= int( ((ai_param.clear_efficient) * ( t_att ) ) );
                 }
@@ -1205,7 +1205,7 @@ namespace AI {
                     ms.max_combo = ms.combo; //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
                     ms.first = *it;
                     ms.first.score2 = 0;
-					double h;
+                    double h = 0;
                     ms.first.score = Evaluate(ms.first.score2, h, ai_param, pool, ms.pool_last, cur.num, 0, ms.att, ms.clear, att, clear, wallkick_spin, _pool.combo, t_dis, upcomeAtt);
                     if ( wallkick_spin == 0 && it->wallkick_spin ) ms.first.score += 1;
 
@@ -1416,7 +1416,7 @@ namespace AI {
                             ms.max_att = std::max((int)ms_last.max_att, ms_last.att + att);
                             ms.max_combo = std::max(ms_last.max_combo, ms.combo); //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
                             ms.first.score2 = ms_last.first.score2;
-							double h;
+                            double h = 0;
                             ms.first.score = Evaluate(ms.first.score2, h, ai_param,
                                 pool,
                                 ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
@@ -1497,7 +1497,7 @@ namespace AI {
                                     ms.max_att = std::max((int)ms_last.max_att, ms_last.att + att);
                                     ms.max_combo = std::max(ms_last.max_combo, ms.combo); //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
                                     ms.first.score2 = ms_last.first.score2;
-									double h;
+                                    double h = 0;
                                     ms.first.score = Evaluate(ms.first.score2, h, ai_param,
                                         pool,
                                         ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
@@ -1625,7 +1625,7 @@ namespace AI {
                             ms.max_att = std::max((int)ms_last.max_att, ms_last.att + att);
                             ms.max_combo = std::max(ms_last.max_combo, ms.combo); //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
                             ms.first.score2 = ms_last.first.score2;
-							double h;
+                            double h = 0;
                             ms.first.score = Evaluate(ms.first.score2, h, ai_param,
                                 pool,
                                 ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
