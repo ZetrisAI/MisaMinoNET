@@ -439,7 +439,7 @@ namespace AI {
                 int s = 0;
                 int t_att = total_clear_att;
                 double t_clear = total_clears; //+ total_clears / 4.0;
-                avg_height = pool_h - (double)avg / pool_w;
+                avg_height = pool_h + 1 - (double)avg / pool_w;
                 if ( pool.b2b ) s -= (int) ((double)(ai_param.b2b * 5) / (1 + (TSD_only? 0 : pow(5, avg_height - 6.5)))) + 2; // b2b score
                 if ( t_clear > 0 ) {
                     s -= int( ((ai_param.clear_efficient) * ( t_att ) ) );
