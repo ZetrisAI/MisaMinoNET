@@ -48,7 +48,7 @@ namespace MisaMinoNET {
             int miny_factor = 16, int hole = 9, int open_hole = 11, int v_transitions = 17, int tspin3 = 17,
             int clear_efficient = 25, int upcomeAtt = 39, int h_factor = 2, int hole_dis_factor2 = 12, int hole_dis = 19,
             int hole_dis_factor = 7, int tspin = 24, int hold_T = 18, int hold_I = 7, int clear_useless_factor = 14,
-            int dif_factor = 19, int b2b = 25, int combo = 30, int avoid_softdrop = 19, int tmini = 0,
+            int dif_factor = 19, int b2b = 25, int combo = 18, int avoid_softdrop = 19, int tmini = 0,
             int strategy_4w = 0
         ) {
             Parameters.miny_factor = miny_factor;
