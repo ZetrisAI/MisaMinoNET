@@ -34,10 +34,11 @@ namespace MisaMinoNET {
         /// Configures and resets all parameters inside of MisaMino.
         /// </summary>
         /// <param name="param">The MisaMino parameters to configure MisaMino with.</param>
-        /// <param name="hold_allowed">Is holding is allowed in the game.</param>
+        /// <param name="hold_allowed">Is holding allowed in the game.</param>
+        /// <param name="all_spin">Is the game awarding spins with all pieces.</param>
         /// <param name="tsd_only">Are only TSDs allowed (this parameter should only be used for 20 TSD Sprint mode).</param>
-        public static void Configure(MisaMinoParameters param, bool hold_allowed, bool tsd_only) {
-            Interface.configure(param.Parameters, hold_allowed, tsd_only);
+        public static void Configure(MisaMinoParameters param, bool hold_allowed, bool all_spin, bool tsd_only) {
+            Interface.configure(param.Parameters, hold_allowed, all_spin, tsd_only);
             Reset();
         }
 
