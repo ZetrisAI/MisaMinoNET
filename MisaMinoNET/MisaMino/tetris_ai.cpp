@@ -1646,20 +1646,20 @@ namespace AI {
             }
         }
         {
-            MovsState m, c;
+            MovingSimple* m;
             std::swap(pq_last, pq);
-            pq_last->pop(m);
+            m = &pq_last->queue[0].first;
             if ( ! GAMEMODE_4W ) {
-                while ( ! pq_last->empty() ) {
-                    pq_last->pop(c);
-                    if ( m.first.score > c.first.score ) {
+                for (int i = 1; i < pq_last->size(); i++) {
+					MovingSimple* c = &pq_last->queue[i].first;
+                    if ( m->score > c->score) {
                         m = c;
                     }
                 }
             }
 			last_nodes = search_nodes;
 			last_depth = final_depth;
-            return m.first;
+            return *m;
         }
     }
 	int score_avoid_softdrop(int param, bool sd, int cur, bool wk, double h) {
