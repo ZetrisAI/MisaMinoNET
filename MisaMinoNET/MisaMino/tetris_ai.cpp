@@ -1118,7 +1118,7 @@ namespace AI {
                 t_dis = 0;
             }
             GenMoving(_pool, movs, cur, x, y, 0);
-            for (MovingList::iterator it = movs.begin(); it != movs.end(); ++it) {
+            for (MovingList::iterator it = movs.begin(); it != movs.end() && !Abort(); ++it) {
                 ++search_nodes;
                 MovsState &ms = que.append();
                 ms.pool_last = _pool;
@@ -1181,7 +1181,7 @@ namespace AI {
                 int x = gem_beg_x, y = gem_beg_y;
                 Gem cur = getGem( cur_num, 0 );
                 GenMoving(_pool, movs, cur, x, y, 1);
-                for (MovingList::iterator it = movs.begin(); it != movs.end(); ++it) {
+                for (MovingList::iterator it = movs.begin(); it != movs.end() && !Abort(); ++it) {
                     ++search_nodes;
                     MovsState &ms = que.append();
                     ms.pool_last = _pool;
@@ -1387,7 +1387,7 @@ namespace AI {
                     continue; // ���־͹ҵĻ�ʹ��hold�����������
                 } else {
                     MovQueue<MovsState> p(movs.size());
-                    for (size_t i = 0; i < movs.size() ; ++i) {
+                    for (size_t i = 0; (i < movs.size()) && !Abort(); ++i) {
                         ++search_nodes;
                         MovsState &ms = p.append();
                         {
@@ -1432,7 +1432,7 @@ namespace AI {
                         p.dec_size();
                     }
                 }
-                if ( canhold && depth + next_add < next.size())
+                if ( canhold && depth + next_add < next.size() && !Abort())
                 {
                     MovsState ms_last = pq_last->back();
                     //int cur_num = ms_last.pool_last.m_hold;
@@ -1468,7 +1468,7 @@ namespace AI {
                             pq->push(ms);
                         } else {
                             MovQueue<MovsState> p(movs.size());
-                            for (size_t i = 0; i < movs.size() ; ++i) {
+                            for (size_t i = 0; i < movs.size() && !Abort(); ++i) {
                                 ++search_nodes;
                                 MovsState &ms = p.append();
                                 {
@@ -1507,7 +1507,7 @@ namespace AI {
                                 }
                                 p.push_back();
                             }
-                            for ( int i = 0; i < seach_select_best && ! p.empty(); ++i) {
+                            for ( int i = 0; i < seach_select_best && ! p.empty() && !Abort(); ++i) {
                                 pq->push(p.front());
                                 p.pop_back();
                                 p.dec_size();
@@ -1596,7 +1596,7 @@ namespace AI {
                     pq->push(ms);
                 } else {
                     MovQueue<MovsState> p;
-                    for (size_t i = 0; i < movs.size() ; ++i) {
+                    for (size_t i = 0; i < movs.size() && !Abort(); ++i) {
                         ++search_nodes;
                         MovsState &ms = p.append();
                         {
@@ -1634,7 +1634,7 @@ namespace AI {
                         }
                         p.push_back();
                     }
-                    for ( int i = 0; i < seach_select_best && ! p.empty(); ++i) {
+                    for ( int i = 0; i < seach_select_best && ! p.empty() && !Abort(); ++i) {
                         pq->push(p.front());
                         p.pop_back();
                         p.dec_size();
