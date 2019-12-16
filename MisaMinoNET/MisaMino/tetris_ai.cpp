@@ -1217,56 +1217,9 @@ namespace AI {
         if ( que.empty() ) {
             return MovingSimple();
         }
-        int sw_map1[16][8] = {
-            {999,   4,   2,   2,   2,   2,   2,   2},
-            {999,   4,   4,   2,   2,   2,   2,   2},
-            { 50, 999,   4,   2,   2,   2,   2,   2},
-            { 20,  40, 999,   4,   2,   2,   2,   2},
-            { 15,  30,  20, 999,   2,   2,   2,   2}, // 4
-            { 13,  25,  15,  12, 999,   2,   2,   2},
-            { 14,  27,  17,  14,  20, 999,   3,   2},
-            //{ 15,  27,  17,  15,  20, 999,   3,   2},
-            //{ 20,  30,  20,  20,  20, 100, 999, 999},
-            { 20,  30,  25,  20,  20, 100, 999, 999}, // 7
-            { 25,  60,  50,  40,  40,  40, 500, 999},
-            //{ 30,  50,  40,  30,  30,  25,  25,  20},
-            //{ 30, 150, 130, 130, 110, 100,  100, 80},
-            { 30,  90,  75,  60,  60,  60,  60, 9999}, // 9
-            //{ 50, 720, 720, 480, 480, 480, 480, 480}, // 9 PC
-            //{ 30,  90,  80,  60,  60,  60,  60,  60},
-            { 30, 240, 200, 200, 180, 160, 160, 9999}, // 10
-        };
-        int sw_map2[16][8] = {
-            {999, 999, 999, 999, 999, 999, 999, 999},
-            { 60,  60, 999, 999, 999, 999, 999, 999},
-            { 40,  40,  40, 999, 999, 999, 999, 999},
-            { 30,  60,  60,  60, 999, 999, 999, 999},
-            { 25,  45,  30,  30,  30, 999, 999, 999}, // 4
-            { 25,  35,  35,  30,  30,  30, 999, 999},
-            { 25,  35,  35,  35,  30,  25,  25, 999},
-            { 25,  45,  40,  30,  30,  30,  30,  30}, // 7
-            { 25,  90,  80,  60,  50,  50,  50,  50},
-            //{ 30, 220, 200, 200, 160, 150, 150, 120},
-            { 30, 150, 130, 100,  80,  80,  50,  50}, // 9
-            //{ 30, 150, 130, 130, 130, 130, 130, 130}, // 9 PC
-            { 30, 300, 200, 180, 120, 100,  80,  80}, // 10
-            //{ 30, 400, 400, 300, 300, 300, 300, 200}, // 10
-        };
-        int sw_map3[16][8] = {
-            {999, 999, 999, 999, 999, 999, 999, 999},
-            { 60,  60, 999, 999, 999, 999, 999, 999},
-            { 40,  40,  40, 999, 999, 999, 999, 999},
-            { 30,  60,  60,  60, 999, 999, 999, 999},
-            { 25,  45,  30,  30,  30, 999, 999, 999}, // 4
-            { 25,  35,  35,  30,  30,  30, 999, 999},
-            { 25,  35,  35,  35,  30,  25,  25, 999},
-            { 25,  45,  40,  30,  30,  30,  30,  30}, // 7
-            { 25,  90,  80,  60,  50,  40,  30,  30},
-            //{ 30, 220, 200, 200, 160, 150, 150, 120},
-            { 30, 120, 100,  80,  70,  60,  50,  40}, // 9
-            //{ 30, 150, 130, 130, 130, 130, 130, 130}, // 9 PC
-            { 30, 240, 200, 160, 120,  90,  70,  60}, // 10
-        };
+
+		int sw_map[5] = {40, 300, 200, 150, 100}; // {30, 300, 200, 180, 120, 100, 80, 80}; // Lvl10
+
         MovQueue<MovsState> * pq_last = &que2, * pq = &que;
         searchDeep = 1;
 		int final_depth = 65535;
@@ -1276,18 +1229,9 @@ namespace AI {
 			if (Abort()) break;
 
             std::swap(pq_last, pq);
-            
-            int (*sw_map)[8] = sw_map1;
-            if ( ai_settings[player].hash ) {
-                sw_map = sw_map2;
-                //if ( ai_param.strategy_4w > 0 ) {
-                //    sw_map = sw_map3;
-                //}
-            }
-            int search_base_width = sw_map[level][0];// - sw_map[level][0] / 6;
-            int search_wide = 1000;
-            if ( depth > 7 ) search_wide = sw_map[level][7];
-            else search_wide = sw_map[level][depth];
+
+            int search_base_width = sw_map[0];    // - sw_map[level][0] / 6;
+            int search_wide = sw_map[(depth > 4)? 4 : depth];
             
             //int seach_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
             int seach_select_best = std::min(search_wide - search_wide / 4, search_base_width);
@@ -1426,7 +1370,7 @@ namespace AI {
                         }
                         p.push_back();
                     }
-                    for ( int i = 0; i < seach_select_best && ! p.empty(); ++i) {
+                    for ( int i = 0; i < seach_select_best && ! p.empty() && !Abort(); ++i) {
                         pq->push(p.front());
                         p.pop_back();
                         p.dec_size();
@@ -1528,13 +1472,8 @@ namespace AI {
             pq->clear();
             int depth = searchDeep - 1;
             
-            int (*sw_map)[8] = sw_map1;
-            if ( ai_settings[player].hash )
-                sw_map = sw_map2;
-            int search_base_width = sw_map[level][0];// - sw_map[level][0] / 6;
-            int search_wide = 1000;
-            if ( depth > 7 ) search_wide = sw_map[level][7];
-            else search_wide = sw_map[level][depth];
+            int search_base_width = sw_map[0];// - sw_map[level][0] / 6;
+			int search_wide = sw_map[(depth > 4)? 4 : depth];
             
             //int seach_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
             int seach_select_best = std::min(search_wide - search_wide / 4, search_base_width);
