@@ -4,7 +4,7 @@
 #include "callback.h"
 #include "gamepool.h"
 #include "lastnodes.h"
-#include "tsdonly.h"
+#include "stuff.h"
 
 #include <algorithm>
 #include <vector>

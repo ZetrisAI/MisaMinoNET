@@ -1219,6 +1219,9 @@ namespace AI {
         }
 
 		int sw_map[5] = {40, 300, 200, 150, 100}; // {30, 300, 200, 180, 120, 100, 80, 80}; // Lvl10
+		for (int i = 0; i < 5; i++) {
+			sw_map[i] = sw_map[i] * sw_map_multiplier / 100;
+		}
 
         MovQueue<MovsState> * pq_last = &que2, * pq = &que;
         searchDeep = 1;

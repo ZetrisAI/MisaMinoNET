@@ -19,7 +19,7 @@
     <ClCompile Include="lastnodes.cpp" />
     <ClCompile Include="tetris_ai.cpp" />
     <ClCompile Include="tetris_gem.cpp" />
-    <ClCompile Include="tsdonly.cpp" />
+    <ClCompile Include="stuff.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bot.h" />
@@ -32,7 +32,7 @@
     <ClInclude Include="tetris_ai.h" />
     <ClInclude Include="tetris_gem.h" />
     <ClInclude Include="tetris_setting.h" />
-    <ClInclude Include="tsdonly.h" />
+    <ClInclude Include="stuff.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
