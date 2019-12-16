@@ -37,8 +37,9 @@ namespace MisaMinoNET {
         /// <param name="hold_allowed">Is holding allowed in the game.</param>
         /// <param name="all_spin">Is the game awarding spins with all pieces.</param>
         /// <param name="tsd_only">Are only TSDs allowed (this parameter should only be used for 20 TSD Sprint mode).</param>
-        public static void Configure(MisaMinoParameters param, bool hold_allowed, bool all_spin, bool tsd_only) {
-            Interface.configure(param.Parameters, hold_allowed, all_spin, tsd_only);
+        /// <param name="search_width">The width multiplier of the AI search per depth. The value 1000 means a regular search.</param>
+        public static void Configure(MisaMinoParameters param, bool hold_allowed, bool all_spin, bool tsd_only, int search_width) {
+            Interface.configure(param.Parameters, hold_allowed, all_spin, tsd_only, search_width);
             Reset();
         }
 
