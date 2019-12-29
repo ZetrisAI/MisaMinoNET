@@ -1660,50 +1660,12 @@ namespace AI {
             if ( gamefield.m_hold == 0 && ! gemNext.empty()) {
                 hold_num = gemNext[0].num;
             }
-            std::vector<AI::Moving> movs;
             if ( best.hold ) {
                 cur = AI::getGem(hold_num, 0);
-                FindPathMoving(gamefield, movs, cur, AI::gem_beg_x, AI::gem_beg_y, true);
+                FindPathMoving(gamefield, mov, cur, AI::gem_beg_x, AI::gem_beg_y, true, best.x, best.y, best.spin);
             } else {
                 cur = p->cur;
-                FindPathMoving(gamefield, movs, cur, p->x, p->y, false);
-            }
-            for ( size_t i = 0; i < movs.size(); ++i ) {
-                if ( movs[i].x == best.x && movs[i].y == best.y && movs[i].spin == best.spin ) {
-                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
-                        if ( movs[i].wallkick_spin == best.wallkick_spin ) {
-                            mov = movs[i];
-                            break;
-                        }
-                    } else {
-                        mov = movs[i];
-                        break;
-                    }
-                } else if ( cur.num == GEMTYPE_I || cur.num == GEMTYPE_Z || cur.num == GEMTYPE_S ) {
-                    if ( (best.spin + 2 ) % 4 == movs[i].spin ) {
-                        if ( best.spin == 0 ) {
-                            if ( movs[i].x == best.x && movs[i].y == best.y - 1 ) {
-                                mov = movs[i];
-                                break;
-                            }
-                        } else if ( best.spin == 1 ) {
-                            if ( movs[i].x == best.x - 1 && movs[i].y == best.y ) {
-                                mov = movs[i];
-                                break;
-                            }
-                        } else if ( best.spin == 2 ) {
-                            if ( movs[i].x == best.x && movs[i].y == best.y + 1 ) {
-                                mov = movs[i];
-                                break;
-                            }
-                        } else if ( best.spin == 3 ) {
-                            if ( movs[i].x == best.x + 1 && movs[i].y == best.y ) {
-                                mov = movs[i];
-                                break;
-                            }
-                        }
-                    }
-                }
+				FindPathMoving(gamefield, mov, cur, p->x, p->y, false, best.x, best.y, best.spin);
             }
         }
         if ( mov.movs.empty() ) {
