@@ -717,4 +717,289 @@ namespace AI {
             }
         }
     }
+	
+	void FindPathDirect(const GameField& field, Moving& mov, Gem cur, int x, int y, bool hold, int goalx, int goaly, int goalr) {
+        if ( field.isCollide(x, y, getGem(cur.num, cur.spin) ) ) {
+            return ;
+        }
+        char _hash[64][4][GENMOV_W_MASK+1] = {0};
+        char _hash_drop[64][4][GENMOV_W_MASK+1] = {0};
+        char (*hash)[4][GENMOV_W_MASK+1] = &_hash[gem_add_y];
+        char (*hash_drop)[4][GENMOV_W_MASK+1] = &_hash_drop[gem_add_y];
+        MovQueue<Moving> q(1024);
+        {
+            Moving m;
+            m.x = x;
+            m.y = y;
+            m.spin = cur.spin;
+            m.wallkick_spin = 0;
+            if ( hold ) {
+                m.movs.push_back(Moving::MOV_HOLD);
+            } else {
+                m.movs.push_back(Moving::MOV_NULL);
+            }
+            m.score = 0;
+            q.push(m);
+            //hash[m.y][m.spin][m.x & GENMOV_W_MASK] = 1;
+        }
+        while ( ! q.empty() ) {
+            Moving m;
+            q.pop(m);
+            if ( m.movs.back() == Moving::MOV_DROP) {
+				if (m.x == goalx && m.y == goaly && m.spin == goalr) {
+					mov = m;
+					return;
+				}
+				else if (cur.num == AI::GEMTYPE_I || cur.num == AI::GEMTYPE_Z || cur.num == AI::GEMTYPE_S) {
+					if ((goalr + 2) % 4 == m.spin) {
+						if (goalr == 0) {
+							if (m.x == goalx && m.y == goaly - 1) {
+								mov = m;
+								return;
+							}
+						}
+						else if (goalr == 1) {
+							if (m.x == goalx - 1 && m.y == goaly) {
+								mov = m;
+								return;
+							}
+						}
+						else if (goalr == 2) {
+							if (m.x == goalx && m.y == goaly + 1) {
+								mov = m;
+								return;
+							}
+						}
+						else if (goalr == 3) {
+							if (m.x == goalx + 1 && m.y == goaly) {
+								mov = m;
+								return;
+							}
+						}
+					}
+				}
+				continue;
+            }
+            {
+                if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
+                    if ( hash[m.y][m.spin][m.x & GENMOV_W_MASK] & ( 1 << m.wallkick_spin ) )
+                        continue;
+                    hash[m.y][m.spin][m.x & GENMOV_W_MASK] |= 1 << m.wallkick_spin;
+                } else {
+                    if ( hash[m.y][m.spin][m.x & GENMOV_W_MASK] & 1 )
+                        continue;
+                    hash[m.y][m.spin][m.x & GENMOV_W_MASK] |= 1;
+                }
+            }
+
+            if ( m.movs.back() != Moving::MOV_DD && m.movs.back() != Moving::MOV_D)
+            {
+                int nx = m.x, ny = m.y, ns = m.spin;
+                int wallkick_spin = m.wallkick_spin;
+                //while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) { // �ǿ����в���ʹ�õ��Ż�
+                //    ++ny; wallkick_spin = 0;
+                //}
+                while ( ! field.isCollide(nx, ny + 1, getGem(cur.num, ns) ) ) {
+                    //if ( !USING_MOV_D && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                    //    _MACRO_HASH_POS(hash, n) |= 1;
+                    //}
+                    ++ny; wallkick_spin = 0;
+                }
+                {
+                    int v_spin = (isEnableAllSpin() || cur.num == GEMTYPE_T) ? wallkick_spin : 0;
+                    if ( (_MACRO_HASH_POS(hash_drop, n) & ( 1 << v_spin )) == 0 )
+                    {
+                        int _nx = nx, _ny = ny, _ns = ns;
+                        //if ( (_MACRO_HASH_POS(hash_drop, _n) & ( 1 << v_spin)) == 0 )
+                        {
+                                _MACRO_CREATE_MOVING(MOV_DROP, v_spin);
+                                _MACRO_HASH_POS(hash_drop, _n) |= 1 << v_spin;
+                                q.push(nm);
+                        }
+                    }
+                    if ( softdropEnable() ) {
+                        if ( ny != y ) {
+                            if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                                _MACRO_CREATE_MOVING(MOV_DD, 0);
+                                //_MACRO_HASH_POS(hash, n) |= 1;
+                                nm.score += MOV_SCORE_DD - nm.movs.size();
+                                q.push(nm);
+                            }
+                        }
+                    }
+                }
+            }
+            {
+                int nx = m.x, ny = m.y, ns = m.spin;
+                --nx;
+                if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                    if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
+                        _MACRO_CREATE_MOVING(MOV_L, 0);
+                        //_MACRO_HASH_POS(hash, n) = 1;
+                        if ( m.movs.back() != Moving::MOV_L )
+                            nm.score += MOV_SCORE_LR;
+                        else
+                            nm.score += MOV_SCORE_LR2;
+                        q.push(nm);
+                        if ( m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
+                            && m.movs.back() != Moving::MOV_LL && m.movs.back() != Moving::MOV_RR )
+                        {
+                            int nx = m.x - 1, ny = m.y, ns = m.spin;
+                            while ( ! field.isCollide(nx - 1, ny, getGem(cur.num, ns) ) ) {
+                                --nx;
+                            }
+                            if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                                _MACRO_CREATE_MOVING(MOV_LL, 0);
+                                //_MACRO_HASH_POS(hash, n) |= 1;
+                                nm.score += MOV_SCORE_LLRR;
+                                q.push(nm);
+                            }
+                        }
+                    }
+                }
+            }
+            {
+                int nx = m.x, ny = m.y, ns = m.spin;
+                ++nx;
+                if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                    if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
+                        _MACRO_CREATE_MOVING(MOV_R, 0);
+                        //_MACRO_HASH_POS(hash, n) |= 1;
+                        if ( m.movs.back() != Moving::MOV_R )
+                            nm.score += MOV_SCORE_LR;
+                        else
+                            nm.score += MOV_SCORE_LR2;
+                        q.push(nm);
+                        if ( m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
+                            && m.movs.back() != Moving::MOV_LL && m.movs.back() != Moving::MOV_RR )
+                        {
+                            int nx = m.x + 1, ny = m.y, ns = m.spin;
+                            while ( ! field.isCollide(nx + 1, ny, getGem(cur.num, ns) ) ) {
+                                ++nx;
+                            }
+                            if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                                _MACRO_CREATE_MOVING(MOV_RR, 0);
+                                //_MACRO_HASH_POS(hash, n) |= 1;
+                                nm.score += MOV_SCORE_LLRR;
+                                q.push(nm);
+                            }
+                        }
+                    }
+                }
+            }
+            //if (USING_MOV_D)
+            if ( m.movs.back() != Moving::MOV_DD )
+            {
+                int nx = m.x, ny = m.y, ns = m.spin;
+                ++ny;
+                if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                    if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
+                        _MACRO_CREATE_MOVING(MOV_D, 0);
+                        //_MACRO_HASH_POS(hash, n) |= 1;
+                        nm.score += MOV_SCORE_D;
+                        q.push(nm);
+                    }
+                }
+            }
+            {
+                int nx = m.x, ny = m.y, ns = (m.spin + 1) % cur.mod;
+                if ( ns != m.spin ) {
+                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
+                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
+                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
+                                _MACRO_CREATE_MOVING(MOV_LSPIN, 1);
+                                //_MACRO_HASH_POS(hash, n) |= 1 << 1;
+                                if ( m.movs.back() != Moving::MOV_LSPIN )
+                                    nm.score += MOV_SCORE_LR;
+                                else
+                                    nm.score += MOV_SCORE_SPIN;
+                                q.push(nm);
+                            }
+                        } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 0 ) ) {
+                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
+                                _MACRO_CREATE_MOVING(MOV_LSPIN, 2);
+                                //_MACRO_HASH_POS(hash, n) |= 1 << 2;
+                                if ( m.movs.back() != Moving::MOV_LSPIN )
+                                    nm.score += MOV_SCORE_LR;
+                                else
+                                    nm.score += MOV_SCORE_SPIN;
+                                q.push(nm);
+                            }
+                        }
+                    } else {
+                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) )
+                            || field.wallkickTest(nx, ny, getGem(cur.num, ns), 0 ) ) {
+                            if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
+                                _MACRO_CREATE_MOVING(MOV_LSPIN, 0);
+                                //_MACRO_HASH_POS(hash, n) |= 1;
+                                if ( m.movs.back() != Moving::MOV_LSPIN )
+                                    nm.score += MOV_SCORE_LR;
+                                else
+                                    nm.score += MOV_SCORE_SPIN;
+                                q.push(nm);
+                            }
+                        }
+                    }
+                }
+            }
+            {
+                int nx = m.x, ny = m.y, ns = (m.spin + 3) % cur.mod;
+                if ( ns != m.spin ) {
+                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
+                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
+                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
+                                _MACRO_CREATE_MOVING(MOV_RSPIN, 1);
+                                //_MACRO_HASH_POS(hash, n) |= 1 << 1;
+                                if ( m.movs.back() != Moving::MOV_RSPIN )
+                                    nm.score += MOV_SCORE_LR;
+                                else
+                                    nm.score += MOV_SCORE_SPIN;
+                                q.push(nm);
+                            }
+                        } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 1 ) ) {
+                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
+                                _MACRO_CREATE_MOVING(MOV_RSPIN, 2);
+                                //_MACRO_HASH_POS(hash, n) |= 1 << 2;
+                                if ( m.movs.back() != Moving::MOV_RSPIN )
+                                    nm.score += MOV_SCORE_LR;
+                                else
+                                    nm.score += MOV_SCORE_SPIN;
+                                q.push(nm);
+                            }
+                        }
+                    } else {
+                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) )
+                            || field.wallkickTest(nx, ny, getGem(cur.num, ns), 1 ) ) {
+                            if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
+                                _MACRO_CREATE_MOVING(MOV_RSPIN, 0);
+                                //_MACRO_HASH_POS(hash, n) |= 1;
+                                if ( m.movs.back() != Moving::MOV_RSPIN )
+                                    nm.score += MOV_SCORE_LR;
+                                else
+                                    nm.score += MOV_SCORE_SPIN;
+                                q.push(nm);
+                            }
+                        }
+                    }
+                }
+            }
+            if ( spin180Enable() ) //&& m.movs.back() != Moving::MOV_SPIN2 ) // no 180 wallkick only
+            {
+                int nx = m.x, ny = m.y, ns = (m.spin + 2) % cur.mod;
+                if ( ns != m.spin ) {
+                    if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
+                            _MACRO_CREATE_MOVING(MOV_SPIN2, 1);
+                            //_MACRO_HASH_POS(hash, n) |= 1;
+                                if ( m.movs.back() != Moving::MOV_SPIN2 )
+                                    nm.score += MOV_SCORE_LR;
+                                else
+                                    nm.score += MOV_SCORE_SPIN;
+                            q.push(nm);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
