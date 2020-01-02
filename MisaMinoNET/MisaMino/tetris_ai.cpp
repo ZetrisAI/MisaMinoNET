@@ -920,6 +920,14 @@ namespace AI {
         }
         // �ۻ���
 
+		int i = gem_add_y + pool.m_h;
+		for (; i >= 0; --i) {
+			if (pool.m_row[i]) break;
+		}
+		if (i < 0) {
+			clearScore -= 1000000;
+		}
+
 		if (TSD_only) {
 			if (cur_num == AI::GEMTYPE_T) {
 				if (wallkick_spin != 0 && clears == 2) clearScore -= 100000000;
