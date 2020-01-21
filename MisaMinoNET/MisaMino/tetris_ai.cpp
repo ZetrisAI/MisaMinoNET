@@ -1670,10 +1670,10 @@ namespace AI {
             }
             if ( best.hold ) {
                 cur = AI::getGem(hold_num, 0);
-                FindPathMoving(gamefield, mov, cur, AI::gem_beg_x, AI::gem_beg_y, true, best.x, best.y, best.spin);
+				FindPathMoving(gamefield, mov, cur, AI::gem_beg_x, AI::gem_beg_y, true, best.x, best.y, best.spin, best.wallkick_spin);
             } else {
                 cur = p->cur;
-				FindPathMoving(gamefield, mov, cur, p->x, p->y, false, best.x, best.y, best.spin);
+				FindPathMoving(gamefield, mov, cur, p->x, p->y, false, best.x, best.y, best.spin, best.wallkick_spin);
             }
         }
         if ( mov.movs.empty() ) {

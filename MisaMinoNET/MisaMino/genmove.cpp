@@ -463,7 +463,7 @@ namespace AI {
         }
     }
 	
-	void FindPathMoving(const GameField& field, Moving& mov, Gem cur, int x, int y, bool hold, int goalx, int goaly, int goalr) {
+	void FindPathMoving(const GameField& field, Moving& mov, Gem cur, int x, int y, bool hold, int goalx, int goaly, int goalr, int goalwk) {
         if ( field.isCollide(x, y, getGem(cur.num, cur.spin) ) ) {
             return ;
         }
@@ -471,6 +471,7 @@ namespace AI {
         char _hash_drop[64][4][GENMOV_W_MASK+1] = {0};
         char (*hash)[4][GENMOV_W_MASK+1] = &_hash[gem_add_y];
         char (*hash_drop)[4][GENMOV_W_MASK+1] = &_hash_drop[gem_add_y];
+		goalwk = (goalwk < 0)? 0xFFFFFF : (1 << goalwk);
         MovQueue<Moving> q(1024);
         {
             Moving m;
@@ -491,32 +492,32 @@ namespace AI {
             Moving m;
             q.pop(m);
             if ( m.movs.back() == Moving::MOV_DROP) {
-				if (m.x == goalx && m.y == goaly && m.spin == goalr) {
+				if (m.x == goalx && m.y == goaly && m.spin == goalr && (1 << m.wallkick_spin & goalwk)) {
 					mov = m;
 					return;
 				}
 				else if (cur.num == AI::GEMTYPE_I || cur.num == AI::GEMTYPE_Z || cur.num == AI::GEMTYPE_S) {
 					if ((goalr + 2) % 4 == m.spin) {
 						if (goalr == 0) {
-							if (m.x == goalx && m.y == goaly - 1) {
+							if (m.x == goalx && m.y == goaly - 1 && (1 << m.wallkick_spin & goalwk)) {
 								mov = m;
 								return;
 							}
 						}
 						else if (goalr == 1) {
-							if (m.x == goalx - 1 && m.y == goaly) {
+							if (m.x == goalx - 1 && m.y == goaly && (1 << m.wallkick_spin & goalwk)) {
 								mov = m;
 								return;
 							}
 						}
 						else if (goalr == 2) {
-							if (m.x == goalx && m.y == goaly + 1) {
+							if (m.x == goalx && m.y == goaly + 1 && (1 << m.wallkick_spin & goalwk)) {
 								mov = m;
 								return;
 							}
 						}
 						else if (goalr == 3) {
-							if (m.x == goalx + 1 && m.y == goaly) {
+							if (m.x == goalx + 1 && m.y == goaly && (1 << m.wallkick_spin & goalwk)) {
 								mov = m;
 								return;
 							}

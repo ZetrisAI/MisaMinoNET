@@ -96,7 +96,7 @@ DLL void findpath(const char* _field, const char* _piece, int x, int y, int r, b
     AI::Gem piece = AI::getGem(m_gemMap[ps[0]], 0);
     
 	AI::Moving result;
-    AI::FindPathMoving(field, result, piece, AI::gem_beg_x, AI::gem_beg_y, hold, x, y, r);
+    AI::FindPathMoving(field, result, piece, AI::gem_beg_x, AI::gem_beg_y, hold, x, y, r, -1);
     
     std::stringstream out;
     
