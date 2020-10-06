@@ -173,7 +173,7 @@ namespace MisaMinoNET {
         /// <param name="hold">Whether the player needs to hold before starting to move the piece.</param>
         /// <param name="spinUsed">This is set if a twist/spin was used to place the piece.</param>
         /// <param name="success">This is set if it's possible to place the piece in the desired position.</param>
-        public static List<Instruction> FindPath(int[,] field, int height, int piece, int x, int y, int r, bool hold, ref bool spinUsed, out bool success) {
+        public static List<Instruction> FindPath(int[,] field, int height, int piece, int x, int y, int r, bool hold, out bool spinUsed, out bool success) {
             List<Instruction> ret = new List<Instruction>();
 
             if (r == 3) r = 1;
@@ -184,6 +184,8 @@ namespace MisaMinoNET {
                 encodeCurrent(piece),
                 x - 1, y - 3, r, hold
             );
+
+            spinUsed = false;
 
             if (success = !action.Equals("0")) {
                 string[] info = action.Split('|');
