@@ -63,7 +63,7 @@ namespace MisaMinoNET {
         HOLD,
 
         /// <summary>
-        /// Rotate by 180 degrees (unused).
+        /// Rotate by 180 degrees.
         /// </summary>
         SPIN2,
 
