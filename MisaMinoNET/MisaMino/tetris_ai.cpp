@@ -920,6 +920,14 @@ namespace AI {
         }
         // �ۻ���
 
+		int i = gem_add_y + pool.m_h;
+		for (; i >= 0; --i) {
+			if (pool.m_row[i]) break;
+		}
+		if (i < 0) {
+			clearScore -= 1000000;
+		}
+
 		if (TSD_only) {
 			if (cur_num == AI::GEMTYPE_T) {
 				if (wallkick_spin != 0 && clears == 2) clearScore -= 100000000;
@@ -1118,7 +1126,7 @@ namespace AI {
                 t_dis = 0;
             }
             GenMoving(_pool, movs, cur, x, y, 0);
-            for (MovingList::iterator it = movs.begin(); it != movs.end(); ++it) {
+            for (MovingList::iterator it = movs.begin(); it != movs.end() && !Abort(); ++it) {
                 ++search_nodes;
                 MovsState &ms = que.append();
                 ms.pool_last = _pool;
@@ -1181,7 +1189,7 @@ namespace AI {
                 int x = gem_beg_x, y = gem_beg_y;
                 Gem cur = getGem( cur_num, 0 );
                 GenMoving(_pool, movs, cur, x, y, 1);
-                for (MovingList::iterator it = movs.begin(); it != movs.end(); ++it) {
+                for (MovingList::iterator it = movs.begin(); it != movs.end() && !Abort(); ++it) {
                     ++search_nodes;
                     MovsState &ms = que.append();
                     ms.pool_last = _pool;
@@ -1217,56 +1225,12 @@ namespace AI {
         if ( que.empty() ) {
             return MovingSimple();
         }
-        int sw_map1[16][8] = {
-            {999,   4,   2,   2,   2,   2,   2,   2},
-            {999,   4,   4,   2,   2,   2,   2,   2},
-            { 50, 999,   4,   2,   2,   2,   2,   2},
-            { 20,  40, 999,   4,   2,   2,   2,   2},
-            { 15,  30,  20, 999,   2,   2,   2,   2}, // 4
-            { 13,  25,  15,  12, 999,   2,   2,   2},
-            { 14,  27,  17,  14,  20, 999,   3,   2},
-            //{ 15,  27,  17,  15,  20, 999,   3,   2},
-            //{ 20,  30,  20,  20,  20, 100, 999, 999},
-            { 20,  30,  25,  20,  20, 100, 999, 999}, // 7
-            { 25,  60,  50,  40,  40,  40, 500, 999},
-            //{ 30,  50,  40,  30,  30,  25,  25,  20},
-            //{ 30, 150, 130, 130, 110, 100,  100, 80},
-            { 30,  90,  75,  60,  60,  60,  60, 9999}, // 9
-            //{ 50, 720, 720, 480, 480, 480, 480, 480}, // 9 PC
-            //{ 30,  90,  80,  60,  60,  60,  60,  60},
-            { 30, 240, 200, 200, 180, 160, 160, 9999}, // 10
-        };
-        int sw_map2[16][8] = {
-            {999, 999, 999, 999, 999, 999, 999, 999},
-            { 60,  60, 999, 999, 999, 999, 999, 999},
-            { 40,  40,  40, 999, 999, 999, 999, 999},
-            { 30,  60,  60,  60, 999, 999, 999, 999},
-            { 25,  45,  30,  30,  30, 999, 999, 999}, // 4
-            { 25,  35,  35,  30,  30,  30, 999, 999},
-            { 25,  35,  35,  35,  30,  25,  25, 999},
-            { 25,  45,  40,  30,  30,  30,  30,  30}, // 7
-            { 25,  90,  80,  60,  50,  50,  50,  50},
-            //{ 30, 220, 200, 200, 160, 150, 150, 120},
-            { 30, 150, 130, 100,  80,  80,  50,  50}, // 9
-            //{ 30, 150, 130, 130, 130, 130, 130, 130}, // 9 PC
-            { 30, 300, 200, 180, 120, 100,  80,  80}, // 10
-            //{ 30, 400, 400, 300, 300, 300, 300, 200}, // 10
-        };
-        int sw_map3[16][8] = {
-            {999, 999, 999, 999, 999, 999, 999, 999},
-            { 60,  60, 999, 999, 999, 999, 999, 999},
-            { 40,  40,  40, 999, 999, 999, 999, 999},
-            { 30,  60,  60,  60, 999, 999, 999, 999},
-            { 25,  45,  30,  30,  30, 999, 999, 999}, // 4
-            { 25,  35,  35,  30,  30,  30, 999, 999},
-            { 25,  35,  35,  35,  30,  25,  25, 999},
-            { 25,  45,  40,  30,  30,  30,  30,  30}, // 7
-            { 25,  90,  80,  60,  50,  40,  30,  30},
-            //{ 30, 220, 200, 200, 160, 150, 150, 120},
-            { 30, 120, 100,  80,  70,  60,  50,  40}, // 9
-            //{ 30, 150, 130, 130, 130, 130, 130, 130}, // 9 PC
-            { 30, 240, 200, 160, 120,  90,  70,  60}, // 10
-        };
+
+		int sw_map[5] = {40, 300, 200, 150, 100}; // {30, 300, 200, 180, 120, 100, 80, 80}; // Lvl10
+		for (int i = 0; i < 5; i++) {
+			sw_map[i] = sw_map[i] * sw_map_multiplier / 100;
+		}
+
         MovQueue<MovsState> * pq_last = &que2, * pq = &que;
         searchDeep = 1;
 		int final_depth = 65535;
@@ -1276,18 +1240,9 @@ namespace AI {
 			if (Abort()) break;
 
             std::swap(pq_last, pq);
-            
-            int (*sw_map)[8] = sw_map1;
-            if ( ai_settings[player].hash ) {
-                sw_map = sw_map2;
-                //if ( ai_param.strategy_4w > 0 ) {
-                //    sw_map = sw_map3;
-                //}
-            }
-            int search_base_width = sw_map[level][0];// - sw_map[level][0] / 6;
-            int search_wide = 1000;
-            if ( depth > 7 ) search_wide = sw_map[level][7];
-            else search_wide = sw_map[level][depth];
+
+            int search_base_width = sw_map[0];    // - sw_map[level][0] / 6;
+            int search_wide = sw_map[(depth > 4)? 4 : depth];
             
             //int seach_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
             int seach_select_best = std::min(search_wide - search_wide / 4, search_base_width);
@@ -1387,7 +1342,7 @@ namespace AI {
                     continue; // ���־͹ҵĻ�ʹ��hold�����������
                 } else {
                     MovQueue<MovsState> p(movs.size());
-                    for (size_t i = 0; i < movs.size() ; ++i) {
+                    for (size_t i = 0; (i < movs.size()) && !Abort(); ++i) {
                         ++search_nodes;
                         MovsState &ms = p.append();
                         {
@@ -1426,13 +1381,13 @@ namespace AI {
                         }
                         p.push_back();
                     }
-                    for ( int i = 0; i < seach_select_best && ! p.empty(); ++i) {
+                    for ( int i = 0; i < seach_select_best && ! p.empty() && !Abort(); ++i) {
                         pq->push(p.front());
                         p.pop_back();
                         p.dec_size();
                     }
                 }
-                if ( canhold && depth + next_add < next.size())
+                if ( canhold && depth + next_add < next.size() && !Abort())
                 {
                     MovsState ms_last = pq_last->back();
                     //int cur_num = ms_last.pool_last.m_hold;
@@ -1468,7 +1423,7 @@ namespace AI {
                             pq->push(ms);
                         } else {
                             MovQueue<MovsState> p(movs.size());
-                            for (size_t i = 0; i < movs.size() ; ++i) {
+                            for (size_t i = 0; i < movs.size() && !Abort(); ++i) {
                                 ++search_nodes;
                                 MovsState &ms = p.append();
                                 {
@@ -1507,7 +1462,7 @@ namespace AI {
                                 }
                                 p.push_back();
                             }
-                            for ( int i = 0; i < seach_select_best && ! p.empty(); ++i) {
+                            for ( int i = 0; i < seach_select_best && ! p.empty() && !Abort(); ++i) {
                                 pq->push(p.front());
                                 p.pop_back();
                                 p.dec_size();
@@ -1528,13 +1483,8 @@ namespace AI {
             pq->clear();
             int depth = searchDeep - 1;
             
-            int (*sw_map)[8] = sw_map1;
-            if ( ai_settings[player].hash )
-                sw_map = sw_map2;
-            int search_base_width = sw_map[level][0];// - sw_map[level][0] / 6;
-            int search_wide = 1000;
-            if ( depth > 7 ) search_wide = sw_map[level][7];
-            else search_wide = sw_map[level][depth];
+            int search_base_width = sw_map[0];// - sw_map[level][0] / 6;
+			int search_wide = sw_map[(depth > 4)? 4 : depth];
             
             //int seach_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
             int seach_select_best = std::min(search_wide - search_wide / 4, search_base_width);
@@ -1596,7 +1546,7 @@ namespace AI {
                     pq->push(ms);
                 } else {
                     MovQueue<MovsState> p;
-                    for (size_t i = 0; i < movs.size() ; ++i) {
+                    for (size_t i = 0; i < movs.size() && !Abort(); ++i) {
                         ++search_nodes;
                         MovsState &ms = p.append();
                         {
@@ -1634,7 +1584,7 @@ namespace AI {
                         }
                         p.push_back();
                     }
-                    for ( int i = 0; i < seach_select_best && ! p.empty(); ++i) {
+                    for ( int i = 0; i < seach_select_best && ! p.empty() && !Abort(); ++i) {
                         pq->push(p.front());
                         p.pop_back();
                         p.dec_size();
@@ -1646,20 +1596,20 @@ namespace AI {
             }
         }
         {
-            MovsState m, c;
+            MovingSimple* m;
             std::swap(pq_last, pq);
-            pq_last->pop(m);
+            m = &pq_last->queue[0].first;
             if ( ! GAMEMODE_4W ) {
-                while ( ! pq_last->empty() ) {
-                    pq_last->pop(c);
-                    if ( m.first.score > c.first.score ) {
+                for (int i = 1; i < pq_last->size(); i++) {
+					MovingSimple* c = &pq_last->queue[i].first;
+                    if ( m->score > c->score) {
                         m = c;
                     }
                 }
             }
 			last_nodes = search_nodes;
 			last_depth = final_depth;
-            return m.first;
+            return *m;
         }
     }
 	int score_avoid_softdrop(int param, bool sd, int cur, bool wk, double h) {
@@ -1718,50 +1668,12 @@ namespace AI {
             if ( gamefield.m_hold == 0 && ! gemNext.empty()) {
                 hold_num = gemNext[0].num;
             }
-            std::vector<AI::Moving> movs;
             if ( best.hold ) {
                 cur = AI::getGem(hold_num, 0);
-                FindPathMoving(gamefield, movs, cur, AI::gem_beg_x, AI::gem_beg_y, true);
+				FindPathMoving(gamefield, mov, cur, AI::gem_beg_x, AI::gem_beg_y, true, best.x, best.y, best.spin, best.wallkick_spin);
             } else {
                 cur = p->cur;
-                FindPathMoving(gamefield, movs, cur, p->x, p->y, false);
-            }
-            for ( size_t i = 0; i < movs.size(); ++i ) {
-                if ( movs[i].x == best.x && movs[i].y == best.y && movs[i].spin == best.spin ) {
-                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
-                        if ( movs[i].wallkick_spin == best.wallkick_spin ) {
-                            mov = movs[i];
-                            break;
-                        }
-                    } else {
-                        mov = movs[i];
-                        break;
-                    }
-                } else if ( cur.num == GEMTYPE_I || cur.num == GEMTYPE_Z || cur.num == GEMTYPE_S ) {
-                    if ( (best.spin + 2 ) % 4 == movs[i].spin ) {
-                        if ( best.spin == 0 ) {
-                            if ( movs[i].x == best.x && movs[i].y == best.y - 1 ) {
-                                mov = movs[i];
-                                break;
-                            }
-                        } else if ( best.spin == 1 ) {
-                            if ( movs[i].x == best.x - 1 && movs[i].y == best.y ) {
-                                mov = movs[i];
-                                break;
-                            }
-                        } else if ( best.spin == 2 ) {
-                            if ( movs[i].x == best.x && movs[i].y == best.y + 1 ) {
-                                mov = movs[i];
-                                break;
-                            }
-                        } else if ( best.spin == 3 ) {
-                            if ( movs[i].x == best.x + 1 && movs[i].y == best.y ) {
-                                mov = movs[i];
-                                break;
-                            }
-                        }
-                    }
-                }
+				FindPathMoving(gamefield, mov, cur, p->x, p->y, false, best.x, best.y, best.spin, best.wallkick_spin);
             }
         }
         if ( mov.movs.empty() ) {

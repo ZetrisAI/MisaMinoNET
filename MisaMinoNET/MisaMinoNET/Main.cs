@@ -37,8 +37,11 @@ namespace MisaMinoNET {
         /// <param name="hold_allowed">Is holding allowed in the game.</param>
         /// <param name="all_spin">Is the game awarding spins with all pieces.</param>
         /// <param name="tsd_only">Are only TSDs allowed (this parameter should only be used for 20 TSD Sprint mode).</param>
-        public static void Configure(MisaMinoParameters param, bool hold_allowed, bool all_spin, bool tsd_only) {
-            Interface.configure(param.Parameters, hold_allowed, all_spin, tsd_only);
+        /// <param name="search_width">The width multiplier of the AI search per depth. The value 1000 means a regular search.</param>
+        /// <param name="blocking">Controls whether garbage blocking is enabled.</param>
+        /// <param name="allow180">Are we allowed to use 180 rotations?</param>
+        public static void Configure(MisaMinoParameters param, bool hold_allowed, bool all_spin, bool tsd_only, int search_width, bool allow180) {
+            Interface.configure(param.Parameters, hold_allowed, all_spin, tsd_only, search_width, allow180);
             Reset();
         }
 
@@ -172,7 +175,7 @@ namespace MisaMinoNET {
         /// <param name="hold">Whether the player needs to hold before starting to move the piece.</param>
         /// <param name="spinUsed">This is set if a twist/spin was used to place the piece.</param>
         /// <param name="success">This is set if it's possible to place the piece in the desired position.</param>
-        public static List<Instruction> FindPath(int[,] field, int height, int piece, int x, int y, int r, bool hold, ref bool spinUsed, out bool success) {
+        public static List<Instruction> FindPath(int[,] field, int height, int piece, int x, int y, int r, bool hold, out bool spinUsed, out bool success) {
             List<Instruction> ret = new List<Instruction>();
 
             if (r == 3) r = 1;
@@ -183,6 +186,8 @@ namespace MisaMinoNET {
                 encodeCurrent(piece),
                 x - 1, y - 3, r, hold
             );
+
+            spinUsed = false;
 
             if (success = !action.Equals("0")) {
                 string[] info = action.Split('|');

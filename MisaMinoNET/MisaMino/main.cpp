@@ -9,12 +9,14 @@ DLL void set_abort(Callback handler) {
 	Abort = handler;
 }
 
-DLL void configure(AI::AI_Param param, bool holdAllowed, bool allSpin, bool TSDonly) {
+DLL void configure(AI::AI_Param param, bool holdAllowed, bool allSpin, bool TSDonly, int search_width, bool allow180) {
     MisaBot = Bot();
-	MisaBot.updateStyle(param);
-	MisaBot.updateHoldAllowed(holdAllowed);
-	MisaBot.updateAllSpin(allSpin);
-	TSD_only = TSDonly;
+    MisaBot.updateStyle(param);
+    MisaBot.updateHoldAllowed(holdAllowed);
+    MisaBot.updateAllSpin(allSpin);
+    TSD_only = TSDonly;
+    sw_map_multiplier = search_width;
+    AI::setSpin180(allow180);
     MisaBot.setup();
 };
 
@@ -94,41 +96,8 @@ DLL void findpath(const char* _field, const char* _piece, int x, int y, int r, b
     std::string ps = _piece;
     AI::Gem piece = AI::getGem(m_gemMap[ps[0]], 0);
     
-    std::vector<AI::Moving> movs;
-    AI::FindPathMoving(field, movs, piece, AI::gem_beg_x, AI::gem_beg_y, hold);
-    
-    AI::Moving result;
-    
-    for ( size_t i = 0; i < movs.size(); ++i ) {
-        if ( movs[i].x == x && movs[i].y == y && movs[i].spin == r ) {
-            result = movs[i];
-            break;
-        } else if ( piece.num == AI::GEMTYPE_I || piece.num == AI::GEMTYPE_Z || piece.num == AI::GEMTYPE_S ) {
-            if ( (r + 2 ) % 4 == movs[i].spin ) {
-                if ( r == 0 ) {
-                    if ( movs[i].x == x && movs[i].y == y - 1 ) {
-                        result = movs[i];
-                        break;
-                    }
-                } else if ( r == 1 ) {
-                    if ( movs[i].x == x - 1 && movs[i].y == y ) {
-                        result = movs[i];
-                        break;
-                    }
-                } else if ( r == 2 ) {
-                    if ( movs[i].x == x && movs[i].y == y + 1 ) {
-                        result = movs[i];
-                        break;
-                    }
-                } else if ( r == 3 ) {
-                    if ( movs[i].x == x + 1 && movs[i].y == y ) {
-                        result = movs[i];
-                        break;
-                    }
-                }
-            }
-        }
-    }
+	AI::Moving result;
+    AI::FindPathMoving(field, result, piece, AI::gem_beg_x, AI::gem_beg_y, hold, x, y, r, -1);
     
     std::stringstream out;
     
