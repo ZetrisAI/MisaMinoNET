@@ -116,7 +116,14 @@ namespace AI {
             if ( m_state != STATE_MOVING ) return false;
             AI::Gem gem = AI::getGem(m_cur.num, (m_cur.spin + 2) % 4);
             if (m_pool.isCollide(m_cur_x, m_cur_y, gem)) {
-                return false;
+				if (m_pool.wallkickTest(m_cur_x, m_cur_y, gem, 2)) {
+					m_cur = gem;
+					wallkick_spin = 2;
+					return true;
+				}
+				else {
+					return false;
+				}
             }
             m_cur = gem;
             wallkick_spin = 1;

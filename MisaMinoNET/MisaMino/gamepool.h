@@ -183,17 +183,62 @@ namespace AI {
                     },
                 },
             };
-            int (*pdata)[2][4][2] = wallkickdata;
-            if ( gem.num == 1 ) pdata = Iwallkickdata;
-            for ( int itest = 0; itest < 4; ++itest) {
-                int dx = x + pdata[gem.spin][spinclockwise][itest][0];
-                int dy = y + pdata[gem.spin][spinclockwise][itest][1];
-                if ( ! isCollide(dx, dy, gem) ) {
-                    x = dx; y = dy;
-                    return true;
-                }
-            }
-            return false;
+			static int Iwallkick180data[4][5][2] = {
+				{	//North -> South
+					{ 0, 1},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
+				},
+				{	//East -> West
+					{-1, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
+				},
+				{	//South -> North
+					{ 0,-1},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
+				},
+				{	//West -> East
+					{ 1, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
+				}
+			};
+			static int wallkick180data[4][5][2] = {
+				{	//North -> South
+					{ 0, 1},{-1, 1},{ 1, 1},{-1, 0},{ 1, 0}
+				},
+				{	//East -> West
+					{-1, 0},{-1, 2},{-1, 1},{ 0, 2},{ 0, 1}
+				},
+				{	//South -> North
+					{ 0,-1},{ 1,-1},{-1, 1},{ 1, 0},{-1, 0}
+				},
+				{	//West -> East
+					{ 1, 0},{ 1, 2},{ 1, 1},{ 0, 2},{ 0, 1}
+				}
+			};
+
+			if (spinclockwise != 2) {
+				int (*pdata)[2][4][2] = wallkickdata;
+				if ( gem.num == 1 ) pdata = Iwallkickdata;
+				for (int itest = 0; itest < 4; ++itest) {
+					int dx = x + pdata[gem.spin][spinclockwise][itest][0];
+					int dy = y + pdata[gem.spin][spinclockwise][itest][1];
+					if (!isCollide(dx, dy, gem)) {
+						x = dx; y = dy;
+						return true;
+					}
+				}
+				return false;
+			} else {
+				int (*kickdata)[5][2] = wallkick180data;
+				if (gem.num == 1) kickdata = Iwallkick180data;
+
+				for (int i = 0; i < 5; i++) {
+					int dx = x + kickdata[gem.spin][i][0];
+					int dy = y + kickdata[gem.spin][i][1];
+
+					if (!isCollide(dx, dy, gem)) {
+						x = dx; y = dy;
+						return true;
+					}
+				}
+				return false;
+			}
         }
         void paste(int x, int y, const Gem & gem) {
             for ( int h = 0; h < gem.geth(); ++h ) {
