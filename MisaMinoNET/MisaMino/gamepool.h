@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <iostream>
 #include "tetris_gem.h"
+#include "stuff.h"
 #define AI_POOL_MAX_H 50
 
 namespace AI {
@@ -115,7 +116,41 @@ namespace AI {
             return false; //isCollide(y, _gem);
         }
         bool wallkickTest(int& x, int& y, const Gem & gem, int spinclockwise) const {
-            static int Iwallkickdata[4][2][4][2] = {
+            const int Iwallkickdata[4][2][4][2] = {
+                { // O
+                    { // R
+                        { 2, 0},{-1, 0},{ 2,-1},{-1, 2},
+                    },
+                    { // L
+                        { 1, 0},{-2, 0},{ 1, 2},{-2,-1},
+                    },
+                },
+                { // L
+                    { // O
+                        {-1, 0},{ 2, 0},{-1,-2},{ 2, 1},
+                    },
+                    { // 2
+                        { 2, 0},{-1, 0},{ 2,-1},{-1, 2},
+                    },
+                },
+                { // 2
+                    { // L
+                        {-2, 0},{ 1, 0},{-2, 1},{ 1,-2},
+                    },
+                    { // R
+                        {-1, 0},{ 2, 0},{-1,-2},{ 2, 1},
+                    },
+                },
+                { // R
+                    { // 2
+                        { 1, 0},{-2, 0},{ 1, 2},{-2,-1},
+                    },
+                    { // O
+                        {-2, 0},{ 1, 0},{-2, 1},{ 1,-2},
+                    },
+                },
+            };
+            const int srsplusIwallkickdata[4][2][4][2] = {
                 { // O
                     { // R 1
                         {-1, 0},{ 2, 0},{-1, 2},{ 2,-1},
@@ -149,7 +184,7 @@ namespace AI {
                     },
                 },
             };
-            static int wallkickdata[4][2][4][2] = {
+            const int wallkickdata[4][2][4][2] = {
                 { // O
                     { // R
                         { 1, 0},{ 1, 1},{ 0,-2},{ 1,-2},
@@ -183,7 +218,7 @@ namespace AI {
                     },
                 },
             };
-			static int Iwallkick180data[4][5][2] = {
+			const int Iwallkick180data[4][5][2] = {
 				{	//North -> South
 					{ 0, 1},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
 				},
@@ -197,7 +232,7 @@ namespace AI {
 					{ 1, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
 				}
 			};
-			static int wallkick180data[4][5][2] = {
+			const int wallkick180data[4][5][2] = {
 				{	//North -> South
 					{ 0, 1},{-1, 1},{ 1, 1},{-1, 0},{ 1, 0}
 				},
@@ -213,8 +248,8 @@ namespace AI {
 			};
 
 			if (spinclockwise != 2) {
-				int (*pdata)[2][4][2] = wallkickdata;
-				if ( gem.num == 1 ) pdata = Iwallkickdata;
+				const int (*pdata)[2][4][2] = wallkickdata;
+				if ( gem.num == 1 ) pdata = srs_plus? srsplusIwallkickdata : Iwallkickdata;
 				for (int itest = 0; itest < 4; ++itest) {
 					int dx = x + pdata[gem.spin][spinclockwise][itest][0];
 					int dy = y + pdata[gem.spin][spinclockwise][itest][1];
@@ -223,9 +258,8 @@ namespace AI {
 						return true;
 					}
 				}
-				return false;
 			} else {
-				int (*kickdata)[5][2] = wallkick180data;
+                const int (*kickdata)[5][2] = wallkick180data;
 				if (gem.num == 1) kickdata = Iwallkick180data;
 
 				for (int i = 0; i < 5; i++) {
@@ -237,8 +271,8 @@ namespace AI {
 						return true;
 					}
 				}
-				return false;
 			}
+            return false;
         }
         void paste(int x, int y, const Gem & gem) {
             for ( int h = 0; h < gem.geth(); ++h ) {

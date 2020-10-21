@@ -9,7 +9,7 @@ DLL void set_abort(Callback handler) {
 	Abort = handler;
 }
 
-DLL void configure(AI::AI_Param param, bool holdAllowed, bool allSpin, bool TSDonly, int search_width, bool allow180) {
+DLL void configure(AI::AI_Param param, bool holdAllowed, bool allSpin, bool TSDonly, int search_width, bool allow180, bool srsplus) {
     MisaBot = Bot();
     MisaBot.updateStyle(param);
     MisaBot.updateHoldAllowed(holdAllowed);
@@ -17,6 +17,7 @@ DLL void configure(AI::AI_Param param, bool holdAllowed, bool allSpin, bool TSDo
     TSD_only = TSDonly;
     sw_map_multiplier = search_width;
     AI::setSpin180(allow180);
+    srs_plus = srsplus;
     MisaBot.setup();
 };
 

@@ -38,10 +38,10 @@ namespace MisaMinoNET {
         /// <param name="all_spin">Is the game awarding spins with all pieces.</param>
         /// <param name="tsd_only">Are only TSDs allowed (this parameter should only be used for 20 TSD Sprint mode).</param>
         /// <param name="search_width">The width multiplier of the AI search per depth. The value 1000 means a regular search.</param>
-        /// <param name="blocking">Controls whether garbage blocking is enabled.</param>
-        /// <param name="allow180">Are we allowed to use 180 rotations?</param>
-        public static void Configure(MisaMinoParameters param, bool hold_allowed, bool all_spin, bool tsd_only, int search_width, bool allow180) {
-            Interface.configure(param.Parameters, hold_allowed, all_spin, tsd_only, search_width, allow180);
+        /// <param name="allow180">Are we allowed to use 180 rotations? (TETR.IO kicks)</param>
+        /// <param name="srsplus">Enables the SRS+ system as opposed to using regular SRS.</param>
+        public static void Configure(MisaMinoParameters param, bool hold_allowed, bool all_spin, bool tsd_only, int search_width, bool allow180, bool srsplus) {
+            Interface.configure(param.Parameters, hold_allowed, all_spin, tsd_only, search_width, allow180, srsplus);
             Reset();
         }
 
