@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <iostream>
 #include "tetris_gem.h"
+#include "stuff.h"
 #define AI_POOL_MAX_H 50
 
 namespace AI {
@@ -115,7 +116,7 @@ namespace AI {
             return false; //isCollide(y, _gem);
         }
         bool wallkickTest(int& x, int& y, const Gem & gem, int spinclockwise) const {
-            static int Iwallkickdata[4][2][4][2] = {
+            const int Iwallkickdata[4][2][4][2] = {
                 { // O
                     { // R
                         { 2, 0},{-1, 0},{ 2,-1},{-1, 2},
@@ -149,7 +150,41 @@ namespace AI {
                     },
                 },
             };
-            static int wallkickdata[4][2][4][2] = {
+            const int srsplusIwallkickdata[4][2][4][2] = {
+                { // O
+                    { // R 1
+                        {-1, 0},{ 2, 0},{-1, 2},{ 2,-1},
+                    },
+                    { // L 3
+                        { 1, 0},{-2, 0},{ 1, 2},{-2,-1},
+                    },
+                },
+                { // L 3
+                    { // O
+                        {-1, 0},{ 2, 0},{-1,-2},{ 2, 1},
+                    },
+                    { // 2
+						{-1, 0},{ 2, 0},{-1, 2},{ 2,-1},
+                    },
+                },
+                { // 2
+                    { // L 3
+                        {-2, 0},{ 1, 0},{-2, 1},{ 1,-2},
+                    },
+                    { // R 1
+                        { 2, 0},{-1, 0},{ 2, 1},{-1,-2},
+                    },
+                },
+                { // R 1
+                    { // 2
+                        { 1, 0},{-2, 0},{ 1, 2},{-2,-1},
+                    },
+                    { // O
+                        {-2, 0},{ 1, 0},{-2, 1},{ 1,-2},
+                    },
+                },
+            };
+            const int wallkickdata[4][2][4][2] = {
                 { // O
                     { // R
                         { 1, 0},{ 1, 1},{ 0,-2},{ 1,-2},
@@ -183,16 +218,60 @@ namespace AI {
                     },
                 },
             };
-            int (*pdata)[2][4][2] = wallkickdata;
-            if ( gem.num == 1 ) pdata = Iwallkickdata;
-            for ( int itest = 0; itest < 4; ++itest) {
-                int dx = x + pdata[gem.spin][spinclockwise][itest][0];
-                int dy = y + pdata[gem.spin][spinclockwise][itest][1];
-                if ( ! isCollide(dx, dy, gem) ) {
-                    x = dx; y = dy;
-                    return true;
-                }
-            }
+			const int Iwallkick180data[4][5][2] = {
+				{	//North -> South
+					{ 0, 1},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
+				},
+				{	//East -> West
+					{-1, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
+				},
+				{	//South -> North
+					{ 0,-1},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
+				},
+				{	//West -> East
+					{ 1, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
+				}
+			};
+			const int wallkick180data[4][5][2] = {
+				{	//North -> South
+					{ 0, 1},{-1, 1},{ 1, 1},{-1, 0},{ 1, 0}
+				},
+				{	//East -> West
+					{-1, 0},{-1, 2},{-1, 1},{ 0, 2},{ 0, 1}
+				},
+				{	//South -> North
+					{ 0,-1},{ 1,-1},{-1, 1},{ 1, 0},{-1, 0}
+				},
+				{	//West -> East
+					{ 1, 0},{ 1, 2},{ 1, 1},{ 0, 2},{ 0, 1}
+				}
+			};
+
+			if (spinclockwise != 2) {
+				const int (*pdata)[2][4][2] = wallkickdata;
+				if ( gem.num == 1 ) pdata = srs_plus? srsplusIwallkickdata : Iwallkickdata;
+				for (int itest = 0; itest < 4; ++itest) {
+					int dx = x + pdata[gem.spin][spinclockwise][itest][0];
+					int dy = y + pdata[gem.spin][spinclockwise][itest][1];
+					if (!isCollide(dx, dy, gem)) {
+						x = dx; y = dy;
+						return true;
+					}
+				}
+			} else {
+                const int (*kickdata)[5][2] = wallkick180data;
+				if (gem.num == 1) kickdata = Iwallkick180data;
+
+				for (int i = 0; i < 5; i++) {
+					int dx = x + kickdata[gem.spin][i][0];
+					int dy = y + kickdata[gem.spin][i][1];
+
+					if (!isCollide(dx, dy, gem)) {
+						x = dx; y = dy;
+						return true;
+					}
+				}
+			}
             return false;
         }
         void paste(int x, int y, const Gem & gem) {

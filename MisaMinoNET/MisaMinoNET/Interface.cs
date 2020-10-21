@@ -26,7 +26,7 @@ namespace MisaMinoNET {
         }
 
         [DllImport("MisaMino.dll")]
-        public static extern void configure(AI_Param param, bool holdAllowed, bool allSpin, bool TSDonly, int search_width, bool allow180);
+        public static extern void configure(AI_Param param, bool holdAllowed, bool allSpin, bool TSDonly, int search_width, bool allow180, bool srsplus);
 
         [DllImport("MisaMino.dll")]
         public static extern void update_next(string queue);
