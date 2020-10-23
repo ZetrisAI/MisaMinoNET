@@ -168,7 +168,12 @@ namespace MisaMinoNET {
             int[] pieceInfo = info[7].Split(',').Select(s => int.Parse(s)).ToArray();
             FinalX = pieceInfo[0] + 1;
             FinalY = pieceInfo[1] + 3;
-            FinalR = (Instructions.Count(i => i == Instruction.RSPIN) - Instructions.Count(i => i == Instruction.LSPIN) + 100) % 4;
+            FinalR = (
+                Instructions.Count(i => i == Instruction.RSPIN) 
+                - Instructions.Count(i => i == Instruction.LSPIN)
+                + Instructions.Count(i => i == Instruction.SPIN2) * 2
+                + 100
+            ) % 4;
         }
 
         /// <summary>
