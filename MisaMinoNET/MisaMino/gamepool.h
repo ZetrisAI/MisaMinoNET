@@ -357,38 +357,82 @@ namespace AI {
             return m_pc_att;
         }
         int getAttack( int clearfull, signed char wallkick ) {
-            int attack = 0;
-            if ( clearfull > 1 ) {
-                if ( clearfull < 4 ) {
-                    attack = clearfull - 1;
-                } else {
-                    attack = clearfull;
-                    if ( b2b > 0 ) attack += 1;
+            double attack = 0;
+
+            if (!srs_plus) { // PPT garbage logic
+                if (clearfull > 1) {
+                    if (clearfull < 4) {
+                        attack = clearfull - 1;
+                    }
+                    else {
+                        attack = clearfull;
+                        if (b2b > 1) attack += 1;
+                    }
                 }
-            }
-            if ( clearfull > 0 ) {
-                if ( wallkick ) {
-                    if ( b2b > 0 ) attack += 1;
-                    if ( clearfull == 1 ) {
-                        if ( wallkick != 2 ) {
-                            attack += 2;
+                if (clearfull > 0) {
+                    if (wallkick) {
+                        if (b2b > 1) attack += 1;
+                        if (clearfull == 1) {
+                            if (wallkick != 2) {
+                                attack += 2;
+                            }
                         }
-                    } else {
-                        attack += clearfull + 1;
+                        else {
+                            attack += clearfull + 1;
+                        }
                     }
-                }
-                attack += getComboAttack( combo );
-                {
+
+                    attack += getComboAttack(combo);
+
                     int i = gem_add_y + m_h;
-                    for ( ; i >= 0; --i ) {
-                        if ( m_row[i] ) break;
+                    for (; i >= 0; --i) {
+                        if (m_row[i]) break;
                     }
-                    if ( i < 0 ) {
+                    if (i < 0) {
                         attack = m_pc_att; // pc
                     }
                 }
             }
-            return attack;
+            else { // TETR.IO garbage logic
+                if (clearfull > 1) {
+                    if (clearfull < 4) {
+                        attack = clearfull - 1;
+                    }
+                    else {
+                        attack = clearfull;
+                    }
+                }
+                if (clearfull > 0) {
+                    if (wallkick) {
+                        if (clearfull == 1) {
+                            if (wallkick != 2) {
+                                attack += 2;
+                            }
+                        }
+                        else {
+                            attack += clearfull + 1;
+                        }
+                    }
+
+                    if (b2b > 1) {
+                        double ln = log((b2b - 1) * 0.8 + 1);
+                        attack += (int)(1 + ln) + (b2b == 2? 0 : ((1 + fmod(ln, 1)) / 3));
+                    }
+
+                    attack *= 1 + (combo - 1) / 4;
+                    attack = fmax(log((combo - 1) * 1.25 + 1), attack);
+
+                    int i = gem_add_y + m_h;
+                    for (; i >= 0; --i) {
+                        if (m_row[i]) break;
+                    }
+                    if (i < 0) {
+                        attack += m_pc_att; // pc
+                    }
+                }
+            }
+            
+            return (int)attack;
         }
         void addRow( int rowdata ) {
             for ( int h = -gem_add_y + 1; h <= m_h; ++h ) {

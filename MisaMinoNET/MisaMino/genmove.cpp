@@ -43,7 +43,7 @@ namespace AI {
     }
     int getComboAttack( int combo ) {
 		if (g_combo_attack.empty()) return 0;
-		return (int) ((double)((combo >= (int)g_combo_attack.size()) ? g_combo_attack.back() : g_combo_attack[combo]) * MisaBot.tetris.m_ai_param.combo / 30);
+		return (int) ((double)((combo >= (int)g_combo_attack.size()) ? g_combo_attack.back() : g_combo_attack[combo]));
     }
     void setAllSpin(bool allSpin) {
         g_allSpin = allSpin;
