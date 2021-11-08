@@ -587,7 +587,7 @@ namespace AI {
                         else
                             nm.score += MOV_SCORE_LR2;
                         q.push(nm);
-                        if ( m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
+                        if ( !srs_plus && m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
                             && m.movs.back() != Moving::MOV_LL && m.movs.back() != Moving::MOV_RR )
                         {
                             int nx = m.x - 1, ny = m.y, ns = m.spin;
@@ -616,7 +616,7 @@ namespace AI {
                         else
                             nm.score += MOV_SCORE_LR2;
                         q.push(nm);
-                        if ( m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
+                        if ( !srs_plus && m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
                             && m.movs.back() != Moving::MOV_LL && m.movs.back() != Moving::MOV_RR )
                         {
                             int nx = m.x + 1, ny = m.y, ns = m.spin;
