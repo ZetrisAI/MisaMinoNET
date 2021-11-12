@@ -330,19 +330,21 @@ namespace AI {
                         _MACRO_CREATE_MOVINGSIMPLE(MOV_L, 0, m.softdrop);
                         _MACRO_HASH_POS(hash, n) |= 1;
                         q.push(nm);
-                        if ( m.lastmove != MovingSimple::MOV_L && m.lastmove != MovingSimple::MOV_R
-                            && m.lastmove != MovingSimple::MOV_LL && m.lastmove != MovingSimple::MOV_RR )
-                        {
-                            int nx = m.x - 1, ny = m.y, ns = m.spin;
-                            while ( ! field.isCollide(nx - 1, ny, getGem(cur.num, ns) ) ) {
-                                --nx;
+                        #ifdef GENERATE_LL_RR
+                            if ( m.lastmove != MovingSimple::MOV_L && m.lastmove != MovingSimple::MOV_R
+                                && m.lastmove != MovingSimple::MOV_LL && m.lastmove != MovingSimple::MOV_RR )
+                            {
+                                int nx = m.x - 1, ny = m.y, ns = m.spin;
+                                while ( ! field.isCollide(nx - 1, ny, getGem(cur.num, ns) ) ) {
+                                    --nx;
+                                }
+                                if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                                    _MACRO_CREATE_MOVINGSIMPLE(MOV_LL, 0, m.softdrop);
+                                    _MACRO_HASH_POS(hash, n) |= 1;
+                                    q.push(nm);
+                                }
                             }
-                            if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LL, 0, m.softdrop);
-                                _MACRO_HASH_POS(hash, n) |= 1;
-                                q.push(nm);
-                            }
-                        }
+                        #endif
                     }
                 }
             }
@@ -354,19 +356,21 @@ namespace AI {
                         _MACRO_CREATE_MOVINGSIMPLE(MOV_R, 0, m.softdrop);
                         _MACRO_HASH_POS(hash, n) |= 1;
                         q.push(nm);
-                        if ( m.lastmove != MovingSimple::MOV_L && m.lastmove != MovingSimple::MOV_R
-                            && m.lastmove != MovingSimple::MOV_LL && m.lastmove != MovingSimple::MOV_RR )
-                        {
-                            int nx = m.x + 1, ny = m.y, ns = m.spin;
-                            while ( ! field.isCollide(nx + 1, ny, getGem(cur.num, ns) ) ) {
-                                ++nx;
+                        #ifdef GENERATE_LL_RR
+                            if ( m.lastmove != MovingSimple::MOV_L && m.lastmove != MovingSimple::MOV_R
+                                && m.lastmove != MovingSimple::MOV_LL && m.lastmove != MovingSimple::MOV_RR )
+                            {
+                                int nx = m.x + 1, ny = m.y, ns = m.spin;
+                                while ( ! field.isCollide(nx + 1, ny, getGem(cur.num, ns) ) ) {
+                                    ++nx;
+                                }
+                                if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                                    _MACRO_CREATE_MOVINGSIMPLE(MOV_RR, 0, m.softdrop);
+                                    _MACRO_HASH_POS(hash, n) |= 1;
+                                    q.push(nm);
+                                }
                             }
-                            if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RR, 0, m.softdrop);
-                                _MACRO_HASH_POS(hash, n) |= 1;
-                                q.push(nm);
-                            }
-                        }
+                        #endif
                     }
                 }
             }
@@ -587,20 +591,22 @@ namespace AI {
                         else
                             nm.score += MOV_SCORE_LR2;
                         q.push(nm);
-                        if ( !srs_plus && m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
-                            && m.movs.back() != Moving::MOV_LL && m.movs.back() != Moving::MOV_RR )
-                        {
-                            int nx = m.x - 1, ny = m.y, ns = m.spin;
-                            while ( ! field.isCollide(nx - 1, ny, getGem(cur.num, ns) ) ) {
-                                --nx;
+                        #ifdef GENERATE_LL_RR
+                            if (m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
+                                && m.movs.back() != Moving::MOV_LL && m.movs.back() != Moving::MOV_RR )
+                            {
+                                int nx = m.x - 1, ny = m.y, ns = m.spin;
+                                while ( ! field.isCollide(nx - 1, ny, getGem(cur.num, ns) ) ) {
+                                    --nx;
+                                }
+                                if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                                    _MACRO_CREATE_MOVING(MOV_LL, 0);
+                                    //_MACRO_HASH_POS(hash, n) |= 1;
+                                    nm.score += MOV_SCORE_LLRR;
+                                    q.push(nm);
+                                }
                             }
-                            if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
-                                _MACRO_CREATE_MOVING(MOV_LL, 0);
-                                //_MACRO_HASH_POS(hash, n) |= 1;
-                                nm.score += MOV_SCORE_LLRR;
-                                q.push(nm);
-                            }
-                        }
+                        #endif
                     }
                 }
             }
@@ -616,20 +622,22 @@ namespace AI {
                         else
                             nm.score += MOV_SCORE_LR2;
                         q.push(nm);
-                        if ( !srs_plus && m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
-                            && m.movs.back() != Moving::MOV_LL && m.movs.back() != Moving::MOV_RR )
-                        {
-                            int nx = m.x + 1, ny = m.y, ns = m.spin;
-                            while ( ! field.isCollide(nx + 1, ny, getGem(cur.num, ns) ) ) {
-                                ++nx;
+                        #ifdef GENERATE_LL_RR
+                            if (&& m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
+                                && m.movs.back() != Moving::MOV_LL && m.movs.back() != Moving::MOV_RR )
+                            {
+                                int nx = m.x + 1, ny = m.y, ns = m.spin;
+                                while ( ! field.isCollide(nx + 1, ny, getGem(cur.num, ns) ) ) {
+                                    ++nx;
+                                }
+                                if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                                    _MACRO_CREATE_MOVING(MOV_RR, 0);
+                                    //_MACRO_HASH_POS(hash, n) |= 1;
+                                    nm.score += MOV_SCORE_LLRR;
+                                    q.push(nm);
+                                }
                             }
-                            if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
-                                _MACRO_CREATE_MOVING(MOV_RR, 0);
-                                //_MACRO_HASH_POS(hash, n) |= 1;
-                                nm.score += MOV_SCORE_LLRR;
-                                q.push(nm);
-                            }
-                        }
+                        #endif
                     }
                 }
             }
