@@ -587,15 +587,22 @@ namespace AI {
                         else
                             nm.score += MOV_SCORE_LR2;
                         q.push(nm);
-                        if ( !srs_plus && m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
+                        if (m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
                             && m.movs.back() != Moving::MOV_LL && m.movs.back() != Moving::MOV_RR )
                         {
+                            int cnt = 0;
                             int nx = m.x - 1, ny = m.y, ns = m.spin;
                             while ( ! field.isCollide(nx - 1, ny, getGem(cur.num, ns) ) ) {
                                 --nx;
+                                cnt++;
                             }
                             if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
-                                _MACRO_CREATE_MOVING(MOV_LL, 0);
+                                #ifdef GENERATE_LL_RR
+                                    _MACRO_CREATE_MOVING(MOV_LL, 0);
+                                #else
+                                    _MACRO_CREATE_MOVING(MOV_L, 0);
+                                    for (int i = 0; i < cnt; i++) nm.movs.push_back(Moving::MOV_L);
+                                #endif
                                 //_MACRO_HASH_POS(hash, n) |= 1;
                                 nm.score += MOV_SCORE_LLRR;
                                 q.push(nm);
@@ -616,15 +623,22 @@ namespace AI {
                         else
                             nm.score += MOV_SCORE_LR2;
                         q.push(nm);
-                        if ( !srs_plus && m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
+                        if (m.movs.back() != Moving::MOV_L && m.movs.back() != Moving::MOV_R
                             && m.movs.back() != Moving::MOV_LL && m.movs.back() != Moving::MOV_RR )
                         {
+                            int cnt = 0;
                             int nx = m.x + 1, ny = m.y, ns = m.spin;
                             while ( ! field.isCollide(nx + 1, ny, getGem(cur.num, ns) ) ) {
                                 ++nx;
+                                cnt++;
                             }
                             if ( nx != x && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
-                                _MACRO_CREATE_MOVING(MOV_RR, 0);
+                                #ifdef GENERATE_LL_RR
+                                    _MACRO_CREATE_MOVING(MOV_RR, 0);
+                                #else
+                                    _MACRO_CREATE_MOVING(MOV_R, 0);
+                                    for (int i = 0; i < cnt; i++) nm.movs.push_back(Moving::MOV_R);
+                                #endif
                                 //_MACRO_HASH_POS(hash, n) |= 1;
                                 nm.score += MOV_SCORE_LLRR;
                                 q.push(nm);
