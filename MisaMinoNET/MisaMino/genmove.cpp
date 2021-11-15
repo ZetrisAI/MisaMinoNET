@@ -447,15 +447,32 @@ namespace AI {
                     }
                 }
             }
-            if ( spin180Enable() && m.lastmove != MovingSimple::MOV_SPIN2 ) // no 180 wallkick only
+            if ( spin180Enable() ) // no 180 wallkick only
             {
                 int nx = m.x, ny = m.y, ns = (m.spin + 2) % cur.mod;
                 if ( ns != m.spin ) {
-                    if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
-                            _MACRO_CREATE_MOVINGSIMPLE(MOV_SPIN2, 1, m.softdrop);
-                            _MACRO_HASH_POS(hash, n) |= 1;
-                            q.push(nm);
+                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_SPIN2, 1, m.softdrop);
+                                _MACRO_HASH_POS(hash, n) |= 1 << 1;
+                                q.push(nm);
+                            }
+                        } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 2 ) ) {
+                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_SPIN2, 1, m.softdrop); // because it thinks its tmini
+                                _MACRO_HASH_POS(hash, n) |= 1 << 2;
+                                q.push(nm);
+                            }
+                        }
+                    } else {
+                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) )
+                            || field.wallkickTest(nx, ny, getGem(cur.num, ns), 2 ) ) {
+                            if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
+                                _MACRO_CREATE_MOVINGSIMPLE(MOV_SPIN2, 0, m.softdrop);
+                                _MACRO_HASH_POS(hash, n) |= 1;
+                                q.push(nm);
+                            }
                         }
                     }
                 }
@@ -743,19 +760,44 @@ namespace AI {
                     }
                 }
             }
-            if ( spin180Enable() ) //&& m.movs.back() != Moving::MOV_SPIN2 ) // no 180 wallkick only
+            if ( spin180Enable() )
             {
                 int nx = m.x, ny = m.y, ns = (m.spin + 2) % cur.mod;
                 if ( ns != m.spin ) {
-                    if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
+                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
-                            _MACRO_CREATE_MOVING(MOV_SPIN2, 1);
-                            //_MACRO_HASH_POS(hash, n) |= 1;
-                                if ( m.movs.back() != Moving::MOV_SPIN2 )
+                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
+                                _MACRO_CREATE_MOVING(MOV_SPIN2, 1);
+                                //_MACRO_HASH_POS(hash, n) |= 1 << 1;
+                                if ( m.movs.back() != Moving::MOV_SPIN2)
                                     nm.score += MOV_SCORE_LR;
                                 else
                                     nm.score += MOV_SCORE_SPIN;
-                            q.push(nm);
+                                q.push(nm);
+                            }
+                        } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 2 ) ) {
+                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
+                                _MACRO_CREATE_MOVING(MOV_SPIN2, 1);  // because it thinks its tmini
+                                //_MACRO_HASH_POS(hash, n) |= 1 << 2;
+                                if ( m.movs.back() != Moving::MOV_SPIN2)
+                                    nm.score += MOV_SCORE_LR;
+                                else
+                                    nm.score += MOV_SCORE_SPIN;
+                                q.push(nm);
+                            }
+                        }
+                    } else {
+                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) )
+                            || field.wallkickTest(nx, ny, getGem(cur.num, ns), 2 ) ) {
+                            if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
+                                _MACRO_CREATE_MOVING(MOV_SPIN2, 0);
+                                //_MACRO_HASH_POS(hash, n) |= 1;
+                                if ( m.movs.back() != Moving::MOV_SPIN2)
+                                    nm.score += MOV_SCORE_LR;
+                                else
+                                    nm.score += MOV_SCORE_SPIN;
+                                q.push(nm);
+                            }
                         }
                     }
                 }
