@@ -239,20 +239,6 @@ namespace AI {
                     },
                 },
             };
-			const int Iwallkick180data[4][5][2] = {
-				{	//O -> 2
-					{ 0,-1},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
-				},
-				{	//L -> R
-					{-1, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
-				},
-				{	//2 -> O
-					{ 0, 1},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
-				},
-				{	//R -> L
-					{ 1, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0}
-				}
-			};
 			const int wallkick180data[4][5][2] = {
 				{	//O -> 2
 					{ 0, 1},{ 1, 1},{-1, 1},{ 1, 0},{-1, 0}
@@ -280,16 +266,10 @@ namespace AI {
 					}
 				}
 			} else {
-                const int (*kickdata)[5][2] = wallkick180data;
-                int kicks = 5;
-                if (gem.num == 1) {
-                    kickdata = Iwallkick180data;
-                    kicks = 1;
-                }
-
+                int kicks = gem.num == 1? 1 : 5;
 				for (int i = 0; i < kicks; i++) {
-					int dx = x + kickdata[gem.spin][i][0];
-					int dy = y + kickdata[gem.spin][i][1];
+					int dx = x + wallkick180data[gem.spin][i][0];
+					int dy = y + wallkick180data[gem.spin][i][1];
 
 					if (!isCollide(dx, dy, gem)) {
 						x = dx; y = dy;
