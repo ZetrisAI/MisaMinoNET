@@ -115,6 +115,27 @@ namespace AI {
             }
             return false; //isCollide(y, _gem);
         }
+        /* WALLKICK TEST COMPARED TO TETRIO
+            FLIP X VALUE SIGN.
+
+            OR 01 = 30
+            OL 03 = 10
+
+            LO 30 = 01
+            L2 32 = 21
+
+            2L 23 = 12
+            2R 21 = 32
+
+            R2 12 = 23
+            R0 10 = 03
+
+            02 02 = 20
+            LR 31 = 31
+            20 20 = 02
+            RL 13 = 13
+        
+        */
         bool wallkickTest(int& x, int& y, const Gem & gem, int spinclockwise) const {
             const int Iwallkickdata[4][2][4][2] = {
                 { // O
