@@ -83,9 +83,9 @@ void Bot::updateHoldAllowed(bool holdAllowed) {
 	holdallow = holdAllowed;
 }
 
-bool allowedspins = true;
+int allowedspins = 0;
 
-void Bot::updateAllowedSpins(bool allowedSpins) {
+void Bot::updateAllowedSpins(int allowedSpins) {
 	allowedspins = allowedSpins;
 }
 

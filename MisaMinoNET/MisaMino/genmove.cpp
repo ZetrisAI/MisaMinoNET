@@ -27,7 +27,7 @@
 namespace AI {
     bool g_spin180 = false;
     std::vector<int> g_combo_attack;
-    bool g_allowedSpins = false;
+    int g_allowedSpins = 0;
     bool g_softdrop = true;
     //bool g_softdrop = false;
 
@@ -48,10 +48,10 @@ namespace AI {
     // 0 => T-spins without Mini
     // 1 => All-spins with regular T-spins  (TODO: Treated as 0)
     // 2 => Full All-spins
-    void setAllowedSpins(bool allowedSpins) {
+    void setAllowedSpins(int allowedSpins) {
         g_allowedSpins = allowedSpins;
     }
-    bool getAllowedSpins() {
+    int getAllowedSpins() {
         return g_allowedSpins;
     }
     void setSoftdrop( bool softdrop ) {

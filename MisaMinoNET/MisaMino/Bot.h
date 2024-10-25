@@ -21,7 +21,7 @@ public:
     std::string outputAction(char* str, int len);
     void updateStyle(AI::AI_Param param);
 	void updateHoldAllowed(bool holdAllowed);
-	void updateAllowedSpins(bool allowedSpins);
+	void updateAllowedSpins(int allowedSpins);
     void updateQueue(const char* s);
     void updateCurrent(const char* s);
     void updateHold(const char* s);

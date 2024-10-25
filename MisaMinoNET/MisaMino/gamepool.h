@@ -12,8 +12,8 @@ namespace AI {
     struct GameField;
     Gem& getGem( int number, int spin );
     int getComboAttack( int combo );
-    void setAllowedSpins(bool allowedSpins);
-    bool getAllowedSpins();
+    void setAllowedSpins(int allowedSpins);
+    int getAllowedSpins();
     void setSoftdrop( bool softdrop );
     bool softdropEnable();
     typedef uint64_t uint64;
