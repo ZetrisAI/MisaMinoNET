@@ -464,8 +464,13 @@ namespace AI {
                     } else if ( wallkick_spin == 1 ) { // T1
                         cs -= int( warning_factor * (ai_param.tspin * 1 + ai_param.open_hole / 2) );
                     } else if ( wallkick_spin == 2 ) { // Tmini
-						cs -= int(warning_factor * (ai_param.tmini / 2));
-						if (ai_param.tmini == 0) cs += 100000000;
+                        if (tmini_old_behavior) {
+                            // Restore old misa mini behavior without use of tmini AI_Param
+                            cs -= int(warning_factor * (ai_param.tspin / 2));
+                        } else {
+                            cs -= int(warning_factor * (ai_param.tmini / 2));
+                            if (ai_param.tmini == 0) cs += 100000000;
+                        }
                     }
                 }
                 clearScore += cs;
@@ -1613,7 +1618,7 @@ namespace AI {
         }
     }
 	int score_avoid_softdrop(int param, bool sd, int cur, bool wk, double h) {
-		return TSD_only? 0 : (int) ((double)((sd && !((cur == AI::GEMTYPE_T || getAllowedSpins() == 3) && wk))? param * 5 : 0) / (1 + pow(5, h - 6.5)));
+		return TSD_only? 0 : (int) ((double)((sd && !((cur == AI::GEMTYPE_T || getAllowedSpins() == 2) && wk))? param * 5 : 0) / (1 + pow(5, h - 6.5)));
 	}
     struct AI_THREAD_PARAM {
         TetrisAI_t func;

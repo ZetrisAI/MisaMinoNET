@@ -288,7 +288,7 @@ namespace AI {
             }
         }
         signed char isWallKickSpin(int x, int y, const Gem & gem) const {
-            if ( getAllowedSpins() == 3 ) {
+            if ( getAllowedSpins() == 2 ) {
                 if ( isCollide( x - 1, y, gem )
                     && isCollide( x + 1, y, gem )
                     && isCollide( x, y - 1, gem )) {
@@ -310,7 +310,7 @@ namespace AI {
             if ( ! isWallKickSpin( x, y, getGem(gem_num, spin) ) ) {
                 return wallkick_spin = 0;
             }
-            if ( getAllowedSpins() == 3) {
+            if ( getAllowedSpins() == 2) {
                 if ( wallkick_spin == 2) {
                     wallkick_spin = 1;
                     Gem g = getGem(gem_num, spin);

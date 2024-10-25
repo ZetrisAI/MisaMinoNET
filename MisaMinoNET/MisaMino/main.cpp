@@ -9,7 +9,7 @@ DLL void set_abort(Callback handler) {
 	Abort = handler;
 }
 
-DLL void configure(AI::AI_Param param, bool holdAllowed, int allowedSpins, bool TSDonly, int search_width, bool allow180, int tetrisGame) {
+DLL void configure(AI::AI_Param param, bool holdAllowed, int allowedSpins, bool TSDonly, int search_width, bool allow180, int tetrisGame, bool tminioldbehavior) {
     MisaBot = Bot();
     MisaBot.updateStyle(param);
     MisaBot.updateHoldAllowed(holdAllowed);
@@ -18,6 +18,7 @@ DLL void configure(AI::AI_Param param, bool holdAllowed, int allowedSpins, bool 
     sw_map_multiplier = search_width;
     AI::setSpin180(allow180);
     tetris_game = tetrisGame;
+    tmini_old_behavior = tminioldbehavior;
     MisaBot.setup();
 };
 

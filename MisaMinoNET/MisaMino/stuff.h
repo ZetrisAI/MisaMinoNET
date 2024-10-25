@@ -3,6 +3,7 @@
 
 extern bool TSD_only;
 extern int sw_map_multiplier;
-extern bool tetris_game;
+extern int tetris_game;
+extern bool tmini_old_behavior;
 
 #endif

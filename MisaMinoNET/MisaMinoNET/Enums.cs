@@ -1,7 +1,6 @@
 ﻿namespace MisaMinoNET {
     public enum AllowedSpins {
         TSpins,
-        TSpinsWithMini,
         AllSpinsRegularTSpins,
         AllSpins
     }

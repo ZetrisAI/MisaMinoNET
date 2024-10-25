@@ -9,3 +9,5 @@ int sw_map_multiplier = 100;
 // 2 => TETR.IO S2
 //			TODO: additionally enables S2 damage calculation
 int tetris_game = 0;
+
+bool tmini_old_behavior = false;
