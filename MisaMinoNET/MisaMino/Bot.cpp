@@ -83,10 +83,10 @@ void Bot::updateHoldAllowed(bool holdAllowed) {
 	holdallow = holdAllowed;
 }
 
-bool allspin = true;
+bool allowedspins = true;
 
-void Bot::updateAllSpin(bool allSpin) {
-	allspin = allSpin;
+void Bot::updateAllowedSpins(bool allowedSpins) {
+	allowedspins = allowedSpins;
 }
 
 void Bot::updateCurrent(const char* piece) {
@@ -140,7 +140,7 @@ void Bot::setup() {
         AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
     }
 
-	AI::setAllSpin(allspin);
+	AI::setAllowedSpins(allowedspins);
 
     tetris.m_base = AI::point(0, 30);
     tetris.env_change = 1;

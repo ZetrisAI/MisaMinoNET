@@ -35,13 +35,13 @@ namespace MisaMinoNET {
         /// </summary>
         /// <param name="param">The MisaMino parameters to configure MisaMino with.</param>
         /// <param name="hold_allowed">Is holding allowed in the game.</param>
-        /// <param name="all_spin">Is the game awarding spins with all pieces.</param>
+        /// <param name="allowedSpins">What pieces is game awarding spins with?</param>
         /// <param name="tsd_only">Are only TSDs allowed (this parameter should only be used for 20 TSD Sprint mode).</param>
         /// <param name="search_width">The width multiplier of the AI search per depth. The value 1000 means a regular search.</param>
         /// <param name="allow180">Are we allowed to use 180 rotations? (TETR.IO kicks)</param>
-        /// <param name="srsplus">Enables the SRS+ system as opposed to using regular SRS.</param>
-        public static void Configure(MisaMinoParameters param, bool hold_allowed, bool all_spin, bool tsd_only, int search_width, bool allow180, bool srsplus) {
-            Interface.configure(param.Parameters, hold_allowed, all_spin, tsd_only, search_width, allow180, srsplus);
+        /// <param name="tetrisGame">For PPT, uses regular SRS. For TETR.IO, uses SRS+.</param>
+        public static void Configure(MisaMinoParameters param, bool hold_allowed, AllowedSpins allowedSpins, bool tsd_only, int search_width, bool allow180, TetrisGame tetrisGame) {
+            Interface.configure(param.Parameters, hold_allowed, (int)allowedSpins, tsd_only, search_width, allow180, (int)tetrisGame);
             Reset();
         }
 

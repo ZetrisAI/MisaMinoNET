@@ -12,8 +12,8 @@ namespace AI {
     struct GameField;
     Gem& getGem( int number, int spin );
     int getComboAttack( int combo );
-    void setAllSpin(bool allSpin);
-    bool isEnableAllSpin();
+    void setAllowedSpins(bool allowedSpins);
+    bool getAllowedSpins();
     void setSoftdrop( bool softdrop );
     bool softdropEnable();
     typedef uint64_t uint64;
@@ -256,7 +256,7 @@ namespace AI {
 
 			if (spinclockwise != 2) {
 				const int (*pdata)[2][4][2] = wallkickdata;
-				if ( gem.num == 1 ) pdata = srs_plus? srsplusIwallkickdata : Iwallkickdata;
+				if ( gem.num == 1 ) pdata = tetris_game? srsplusIwallkickdata : Iwallkickdata;
 				for (int itest = 0; itest < 4; ++itest) {
 					int dx = x + pdata[gem.spin][spinclockwise][itest][0];
 					int dy = y + pdata[gem.spin][spinclockwise][itest][1];
@@ -288,7 +288,7 @@ namespace AI {
             }
         }
         signed char isWallKickSpin(int x, int y, const Gem & gem) const {
-            if ( isEnableAllSpin() ) {
+            if ( getAllowedSpins() == 3 ) {
                 if ( isCollide( x - 1, y, gem )
                     && isCollide( x + 1, y, gem )
                     && isCollide( x, y - 1, gem )) {
@@ -310,7 +310,7 @@ namespace AI {
             if ( ! isWallKickSpin( x, y, getGem(gem_num, spin) ) ) {
                 return wallkick_spin = 0;
             }
-            if ( isEnableAllSpin() ) {
+            if ( getAllowedSpins() == 3) {
                 if ( wallkick_spin == 2) {
                     wallkick_spin = 1;
                     Gem g = getGem(gem_num, spin);
@@ -364,7 +364,7 @@ namespace AI {
         int getAttack( int clearfull, signed char wallkick ) {
             double attack = 0;
 
-            if (!srs_plus) { // PPT garbage logic
+            if (!tetris_game) { // PPT garbage logic
                 if (clearfull > 1) {
                     if (clearfull < 4) {
                         attack = clearfull - 1;
@@ -399,6 +399,7 @@ namespace AI {
                 }
             }
             else { // TETR.IO garbage logic
+                // TODO: TETR.IO S2
                 if (clearfull > 1) {
                     if (clearfull < 4) {
                         attack = clearfull - 1;

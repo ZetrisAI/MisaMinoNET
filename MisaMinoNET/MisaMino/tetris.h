@@ -233,7 +233,7 @@ namespace AI {
                     special = 1;
                     //if ( m_clear_info.gem_num == 2 )
                     {
-                        if ( wallkick_spin == 2 && (AI::isEnableAllSpin() || m_clear_info.clears == 1) ) {
+                        if ( wallkick_spin == 2 && (AI::getAllowedSpins() == 3 || m_clear_info.clears == 1) ) {
                         //if ( m_clear_info.wallkick_spin == 2 ) {
                             ++m_clear_info.t[0];
                         } else {

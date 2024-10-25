@@ -9,15 +9,15 @@ DLL void set_abort(Callback handler) {
 	Abort = handler;
 }
 
-DLL void configure(AI::AI_Param param, bool holdAllowed, bool allSpin, bool TSDonly, int search_width, bool allow180, bool srsplus) {
+DLL void configure(AI::AI_Param param, bool holdAllowed, int allowedSpins, bool TSDonly, int search_width, bool allow180, int tetrisGame) {
     MisaBot = Bot();
     MisaBot.updateStyle(param);
     MisaBot.updateHoldAllowed(holdAllowed);
-    MisaBot.updateAllSpin(allSpin);
+    MisaBot.updateAllowedSpins(allowedSpins);
     TSD_only = TSDonly;
     sw_map_multiplier = search_width;
     AI::setSpin180(allow180);
-    srs_plus = srsplus;
+    tetris_game = tetrisGame;
     MisaBot.setup();
 };
 

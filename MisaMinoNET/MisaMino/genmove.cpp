@@ -27,7 +27,7 @@
 namespace AI {
     bool g_spin180 = false;
     std::vector<int> g_combo_attack;
-    bool g_allSpin = false;
+    bool g_allowedSpins = false;
     bool g_softdrop = true;
     //bool g_softdrop = false;
 
@@ -45,11 +45,15 @@ namespace AI {
 		if (g_combo_attack.empty()) return 0;
 		return (int) ((double)((combo >= (int)g_combo_attack.size()) ? g_combo_attack.back() : g_combo_attack[combo]));
     }
-    void setAllSpin(bool allSpin) {
-        g_allSpin = allSpin;
+    // 0 => T-spins without Mini
+    // 1 => T-spins with Mini               (TODO: Treated as 0)
+    // 2 => All-spins with regular T-spins  (TODO: Treated as 0)
+    // 3 => Full All-spins
+    void setAllowedSpins(bool allowedSpins) {
+        g_allowedSpins = allowedSpins;
     }
-    bool isEnableAllSpin() {
-        return g_allSpin;
+    bool getAllowedSpins() {
+        return g_allowedSpins;
     }
     void setSoftdrop( bool softdrop ) {
         g_softdrop = softdrop;
@@ -285,7 +289,7 @@ namespace AI {
                 }
 #endif
                 {
-                    int v_spin = (isEnableAllSpin() || cur.num == GEMTYPE_T) ? wallkick_spin : 0;
+                    int v_spin = (getAllowedSpins() == 3 || cur.num == GEMTYPE_T) ? wallkick_spin : 0;
                     if ( (_MACRO_HASH_POS(hash_drop, n) & ( 1 << v_spin)) == 0 )
                     {
 
@@ -392,7 +396,7 @@ namespace AI {
             {
                 int nx = m.x, ny = m.y, ns = (m.spin + 1) % cur.mod;
                 if ( ns != m.spin ) {
-                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
+                    if ( (getAllowedSpins() == 3 || cur.num == GEMTYPE_T) ) {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
                                 _MACRO_CREATE_MOVINGSIMPLE(MOV_LSPIN, 1, m.softdrop);
@@ -421,7 +425,7 @@ namespace AI {
             {
                 int nx = m.x, ny = m.y, ns = (m.spin + 3) % cur.mod;
                 if ( ns != m.spin ) {
-                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
+                    if ( (getAllowedSpins() == 3 || cur.num == GEMTYPE_T) ) {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
                                 _MACRO_CREATE_MOVINGSIMPLE(MOV_RSPIN, 1, m.softdrop);
@@ -451,7 +455,7 @@ namespace AI {
             {
                 int nx = m.x, ny = m.y, ns = (m.spin + 2) % cur.mod;
                 if ( ns != m.spin ) {
-                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
+                    if ( (getAllowedSpins() == 3 || cur.num == GEMTYPE_T) ) {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
                                 _MACRO_CREATE_MOVINGSIMPLE(MOV_SPIN2, 1, m.softdrop);
@@ -544,7 +548,7 @@ namespace AI {
 				continue;
             }
             {
-                if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
+                if ( (getAllowedSpins() == 3 || cur.num == GEMTYPE_T) ) {
                     if ( hash[m.y][m.spin][m.x & GENMOV_W_MASK] & ( 1 << m.wallkick_spin ) )
                         continue;
                     hash[m.y][m.spin][m.x & GENMOV_W_MASK] |= 1 << m.wallkick_spin;
@@ -569,7 +573,7 @@ namespace AI {
                     ++ny; wallkick_spin = 0;
                 }
                 {
-                    int v_spin = (isEnableAllSpin() || cur.num == GEMTYPE_T) ? wallkick_spin : 0;
+                    int v_spin = (getAllowedSpins() == 3 || cur.num == GEMTYPE_T) ? wallkick_spin : 0;
                     if ( (_MACRO_HASH_POS(hash_drop, n) & ( 1 << v_spin )) == 0 )
                     {
                         int _nx = nx, _ny = ny, _ns = ns;
@@ -681,7 +685,7 @@ namespace AI {
             {
                 int nx = m.x, ny = m.y, ns = (m.spin + 1) % cur.mod;
                 if ( ns != m.spin ) {
-                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
+                    if ( (getAllowedSpins() == 3 || cur.num == GEMTYPE_T) ) {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
                                 _MACRO_CREATE_MOVING(MOV_LSPIN, 1);
@@ -722,7 +726,7 @@ namespace AI {
             {
                 int nx = m.x, ny = m.y, ns = (m.spin + 3) % cur.mod;
                 if ( ns != m.spin ) {
-                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
+                    if ( (getAllowedSpins() == 3 || cur.num == GEMTYPE_T) ) {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
                                 _MACRO_CREATE_MOVING(MOV_RSPIN, 1);
@@ -764,7 +768,7 @@ namespace AI {
             {
                 int nx = m.x, ny = m.y, ns = (m.spin + 2) % cur.mod;
                 if ( ns != m.spin ) {
-                    if ( (isEnableAllSpin() || cur.num == GEMTYPE_T) ) {
+                    if ( (getAllowedSpins() == 3 || cur.num == GEMTYPE_T) ) {
                         if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
                                 _MACRO_CREATE_MOVING(MOV_SPIN2, 1);
