@@ -1618,7 +1618,7 @@ namespace AI {
         }
     }
 	int score_avoid_softdrop(int param, bool sd, int cur, bool wk, double h) {
-		return TSD_only? 0 : (int) ((double)((sd && !((cur == AI::GEMTYPE_T || getAllowedSpins() == 2) && wk))? param * 5 : 0) / (1 + pow(5, h - 6.5)));
+        return TSD_only ? 0 : (int)((double)((sd && !((cur == AI::GEMTYPE_T || getAllowedSpins() >= 1) && wk)) ? param * 5 : 0) / (1 + pow(5, h - 6.5)));
 	}
     struct AI_THREAD_PARAM {
         TetrisAI_t func;

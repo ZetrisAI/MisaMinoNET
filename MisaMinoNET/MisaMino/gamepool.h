@@ -288,29 +288,30 @@ namespace AI {
             }
         }
         signed char isWallKickSpin(int x, int y, const Gem & gem) const {
-            if ( getAllowedSpins() == 2 ) {
+            bool allspin = getAllowedSpins() == 2 || (getAllowedSpins() == 1 && gem.num != 2);
+            if (allspin) {
                 if ( isCollide( x - 1, y, gem )
                     && isCollide( x + 1, y, gem )
                     && isCollide( x, y - 1, gem )) {
                         return 1;
                 }
-            } else {
-                if ( gem.num == 2 ) { //T
-                    int cnt = 0;
-                    if ( x < 0 || (row[y] & (1 << x))) ++cnt;
-                    if ( x < 0 || y+2 > m_h || (row[y+2] & (1 << x))) ++cnt;
-                    if ( x+2 >= m_w || (row[y] & (1 << (x+2)))) ++cnt;
-                    if ( x+2 >= m_w || y+2 > m_h || (row[y+2] & (1 << (x+2)))) ++cnt;
-                    if ( cnt >= 3 ) return 1;
-                }
+            } else if ( gem.num == 2 ) { //T
+                int cnt = 0;
+                if ( x < 0 || (row[y] & (1 << x))) ++cnt;
+                if ( x < 0 || y+2 > m_h || (row[y+2] & (1 << x))) ++cnt;
+                if ( x+2 >= m_w || (row[y] & (1 << (x+2)))) ++cnt;
+                if ( x+2 >= m_w || y+2 > m_h || (row[y+2] & (1 << (x+2)))) ++cnt;
+                if ( cnt >= 3 ) return 1;
             }
             return 0;
         }
         signed char WallKickValue(int gem_num, int x, int y, int spin, signed char wallkick_spin) const {
-            if ( ! isWallKickSpin( x, y, getGem(gem_num, spin) ) ) {
+            const Gem & gem = getGem(gem_num, spin);
+            if ( ! isWallKickSpin( x, y, gem ) ) {
                 return wallkick_spin = 0;
             }
-            if ( getAllowedSpins() == 2) {
+            bool allspin = getAllowedSpins() == 2 || (getAllowedSpins() == 1 && gem.num != 2);
+            if (allspin) {
                 if ( wallkick_spin == 2) {
                     wallkick_spin = 1;
                     Gem g = getGem(gem_num, spin);
