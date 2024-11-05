@@ -113,6 +113,63 @@ DLL void findpath(const char* _field, const char* _piece, int x, int y, int r, b
     std::copy(a.c_str(), a.c_str() + a.length() + 1, str);
 }
 
+DLL void findpathfrom(const char* _field, const char* _piece, int _x, int _y, int _r, int x, int y, int r, char* str, int len) {
+    std::string s = _field;
+    std::vector<int> rows;
+    bool solidGarbage = false;
+    int row = 0;
+    int col = 0;
+    for (const auto &c : s) {
+        /* Read comma separated into integer, bitwise. 2 = filled. 1 is useless...? */
+        switch (c) {
+        case '0':
+        case '1':
+            ++col;
+            break;
+        case '2':
+            ++col;
+            row |= (1 << (10 - col));
+            break;
+        case '3':
+            solidGarbage = true;
+            break;
+        default:
+            break;
+        }
+        if (solidGarbage) {
+            break;
+        }
+        if (col == 10) {
+            rows.push_back(row);
+            row = 0;
+            col = 0;
+        }
+    }
+    
+    AI::GameField field;
+    field.reset(10, rows.size());
+    for (auto &row : rows) {
+        field.addRow(row);
+    }
+    
+    std::string ps = _piece;
+    AI::Gem piece = AI::getGem(m_gemMap[ps[0]], _r);
+    
+	AI::Moving result;
+    AI::FindPathMoving(field, result, piece, _x, _y, false, x, y, r, -1);
+    
+    std::stringstream out;
+    
+    for (int i = 0; i < result.movs.size(); i++) {
+        out << result.movs[i] << ((i == result.movs.size() - 1)? "|" : ",");
+    }
+    
+    out << ((int)result.wallkick_spin);
+   
+    std::string a = out.str();
+    std::copy(a.c_str(), a.c_str() + a.length() + 1, str);
+}
+
 BOOL WINAPI DllMain(HANDLE handle, DWORD reason, LPVOID reserved) {
     switch (reason) {
         case DLL_PROCESS_ATTACH:

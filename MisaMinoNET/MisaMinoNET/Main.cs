@@ -162,6 +162,24 @@ namespace MisaMinoNET {
             }
         }
 
+        static List<Instruction> FindPathResult(string action, out bool spinUsed, out bool success) {
+            List<Instruction> ret = new List<Instruction>();
+
+            spinUsed = false;
+
+            if (success = !action.Equals("0")) {
+                string[] info = action.Split('|');
+
+                foreach (string i in info[0].Split(',')) {
+                    ret.Add((Instruction)int.Parse(i));
+                }
+
+                spinUsed = Convert.ToInt32(info[1]) != 0;
+            }
+
+            return ret;
+        }
+
         /// <summary>
         /// <para>Finds the optimal path to a specified piece placement.</para>
         /// <para>Pieces should be formatted with numbers from 0 to 6 in the order of SZJLTOI. Empty state on the field should be formatted with 255.</para>
@@ -177,8 +195,6 @@ namespace MisaMinoNET {
         /// <param name="spinUsed">This is set if a twist/spin was used to place the piece.</param>
         /// <param name="success">This is set if it's possible to place the piece in the desired position.</param>
         public static List<Instruction> FindPath(int[,] field, int height, int piece, int x, int y, int r, bool hold, out bool spinUsed, out bool success) {
-            List<Instruction> ret = new List<Instruction>();
-
             if (r == 3) r = 1;
             else if (r == 1) r = 3;
 
@@ -188,19 +204,42 @@ namespace MisaMinoNET {
                 x - 1, y - 3, r, hold
             );
 
-            spinUsed = false;
+            return FindPathResult(action, out spinUsed, out success);
+        }
 
-            if (success = !action.Equals("0")) {
-                string[] info = action.Split('|');
+        /// <summary>
+        /// <para>Finds the optimal path from any position to a specified piece placement.</para>
+        /// <para>Pieces should be formatted with numbers from 0 to 6 in the order of SZJLTOI. Empty state on the field should be formatted with 255.</para>
+        /// <para>Returns the list of Instructions necessary to correctly place the piece in the desired position.</para>
+        /// </summary>
+        /// <param name="field">A 2D array consisting of the field. Should be no smaller than int[10, height].</param>
+        /// <param name="height">The height of the board, on top of which the piece spawns. If your piece spawns inside row 20, the correct value would be 21.</param>
+        /// <param name="piece">The piece.</param>
+        /// <param name="_x">The starting X position of the piece.</param>
+        /// <param name="_y">The starting Y position of the piece.</param>
+        /// <param name="_r">The starting rotation of the piece.</param>
+        /// <param name="x">The desired X position of the piece.</param>
+        /// <param name="y">The desired Y position of the piece.</param>
+        /// <param name="r">The desired rotation of the piece.</param>
+        /// <param name="spinUsed">This is set if a twist/spin was used to place the piece.</param>
+        /// <param name="success">This is set if it's possible to place the piece in the desired position.</param>
+        public static List<Instruction> FindPathFrom(int[,] field, int height, int piece, int _x, int _y, int _r, int x, int y, int r, out bool spinUsed, out bool success) {
+            List<Instruction> ret = new List<Instruction>();
 
-                foreach (string i in info[0].Split(',')) {
-                    ret.Add((Instruction)int.Parse(i));
-                }
+            if (_r == 3) _r = 1;
+            else if (_r == 1) _r = 3;
 
-                spinUsed = Convert.ToInt32(info[1]) != 0;
-            }
+            if (r == 3) r = 1;
+            else if (r == 1) r = 3;
 
-            return ret;
+            string action = Interface.PathFrom(
+                encodeField(field, height),
+                encodeCurrent(piece),
+                _x -1, _y - 3, _r,
+                x - 1, y - 3, r
+            );
+
+            return FindPathResult(action, out spinUsed, out success);
         }
     }
 }

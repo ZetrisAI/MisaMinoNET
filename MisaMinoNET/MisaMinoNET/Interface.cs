@@ -88,5 +88,13 @@ namespace MisaMinoNET {
             findpath(field, piece, x, y, r, hold, sb, sb.Capacity);
             return sb.ToString();
         }
+
+        [DllImport("MisaMino.dll")]
+        private static extern void findpathfrom(string field, string piece, int _x, int _y, int _r, int x, int y, int r, StringBuilder str, int len);
+        public static string PathFrom(string field, string piece, int _x, int _y, int _r, int x, int y, int r) {
+            StringBuilder sb = new StringBuilder(500);
+            findpathfrom(field, piece, _x, _y, _r, x, y, r, sb, sb.Capacity);
+            return sb.ToString();
+        }
     }
 }
