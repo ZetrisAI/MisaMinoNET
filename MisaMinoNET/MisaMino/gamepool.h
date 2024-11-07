@@ -365,7 +365,7 @@ namespace AI {
         int getAttack( int clearfull, signed char wallkick ) {
             double attack = 0;
 
-            if (!tetris_game) { // PPT garbage logic
+            if (tetris_game_is_PPT() || tetris_game_is_BotrisBattle()) { // PPT garbage logic
                 if (clearfull > 1) {
                     if (clearfull < 4) {
                         attack = clearfull - 1;
@@ -399,7 +399,7 @@ namespace AI {
                     }
                 }
             }
-            else { // TETR.IO garbage logic
+            else if (tetris_game_is_TETRIO()) { // TETR.IO garbage logic
                 // TODO: TETR.IO S2
                 if (clearfull > 1) {
                     if (clearfull < 4) {

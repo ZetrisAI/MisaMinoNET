@@ -8,7 +8,8 @@
     public enum TetrisGame {
         PPT,
         TETRIO,
-        TETRIOS2
+        TETRIOS2,
+        BotrisBattle
     }
 
     public static class EnumExtensions {
