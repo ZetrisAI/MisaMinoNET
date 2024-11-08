@@ -256,7 +256,7 @@ namespace AI {
 
 			if (spinclockwise != 2) {
 				const int (*pdata)[2][4][2] = wallkickdata;
-				if ( gem.num == 1 ) pdata = tetris_game? srsplusIwallkickdata : Iwallkickdata;
+				if ( gem.num == 1 ) pdata = tetris_game_is_TETRIO() ? srsplusIwallkickdata : Iwallkickdata;
 				for (int itest = 0; itest < 4; ++itest) {
 					int dx = x + pdata[gem.spin][spinclockwise][itest][0];
 					int dy = y + pdata[gem.spin][spinclockwise][itest][1];
