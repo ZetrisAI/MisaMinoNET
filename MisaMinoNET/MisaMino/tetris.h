@@ -97,14 +97,15 @@ namespace AI {
         bool trySpin(int dSpin) {
             if ( m_state != STATE_MOVING ) return false;
             AI::Gem gem = AI::getGem(m_cur.num, (m_cur.spin + dSpin + 4) % 4);
-            if (m_pool.isCollide(m_cur_x, m_cur_y, gem)) {
+            bool isBotrisO = (tetris_game_is_BotrisBattle() && gem.num == GEMTYPE_O);
+            if (isBotrisO || m_pool.isCollide(m_cur_x, m_cur_y, gem)) {
                 int spin = 1;
                 if ( dSpin == 1 ) spin = 0;
-                if ( m_pool.wallkickTest(m_cur_x, m_cur_y, gem, spin) ) {
+                if ( m_pool.wallkickTest_unsafe(m_cur_x, m_cur_y, gem, spin) ) {
                     m_cur = gem;
                     wallkick_spin = 2;
                     return true;
-                } else {
+                } else if (!isBotrisO) {
                     return false;
                 }
             }
@@ -116,7 +117,7 @@ namespace AI {
             if ( m_state != STATE_MOVING ) return false;
             AI::Gem gem = AI::getGem(m_cur.num, (m_cur.spin + 2) % 4);
             if (m_pool.isCollide(m_cur_x, m_cur_y, gem)) {
-				if (m_pool.wallkickTest(m_cur_x, m_cur_y, gem, 2)) {
+				if (m_pool.wallkickTest_unsafe(m_cur_x, m_cur_y, gem, 2)) {
 					m_cur = gem;
 					wallkick_spin = 2;
 					return true;

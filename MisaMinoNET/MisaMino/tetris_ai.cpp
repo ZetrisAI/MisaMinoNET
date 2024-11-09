@@ -1085,7 +1085,7 @@ namespace AI {
     };
 #define BEG_ADD_Y 1
     MovingSimple AISearch(AI_Param ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep) {
-		if (cur.num == 0) { // rare race condition, we're dead already if this happens
+		if (cur.num == GEMTYPE_NULL) { // rare race condition, we're dead already if this happens
 			assert(true); // debug break
 			cur = AI::getGem(AI::GEMTYPE_I, 0);
 		}

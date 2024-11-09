@@ -11,8 +11,8 @@
     nm.y = ny; \
     nm.spin = ns; \
     nm.lastmove = Moving::arg_action_name; \
-    nm.wallkick_spin = arg_wkspin; \
-	nm.softdrop = arg_sd;
+    nm.wallkick_spin = (arg_wkspin); \
+	nm.softdrop = (arg_sd);
 
 #define _MACRO_CREATE_MOVING(arg_action_name,arg_wkspin) \
     Moving nm = m; \
@@ -20,9 +20,45 @@
     nm.y = ny; \
     nm.spin = ns; \
     nm.movs.push_back(Moving::arg_action_name); \
-    nm.wallkick_spin = arg_wkspin
+    nm.wallkick_spin = (arg_wkspin)
+
 #define _MACRO_HASH_POS(arg_hash_table,arg_prefix) \
     arg_hash_table[arg_prefix##y][arg_prefix##s][arg_prefix##x & GENMOV_W_MASK]
+
+#define _MACRO_PUSH_MOVINGSIMPLE(movement, hash_bit, wk) \
+    if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << hash_bit ) ) == 0 ) { \
+        _MACRO_CREATE_MOVINGSIMPLE(movement, wk, m.softdrop); \
+        _MACRO_HASH_POS(hash, n) |= 1 << hash_bit; \
+        q.push(nm); \
+    }
+
+#define _MACRO_PUSH_MOVING(movement, hash_bit, wk) \
+    if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << hash_bit ) ) == 0 ) { \
+        _MACRO_CREATE_MOVING(movement, wk); \
+        /*_MACRO_HASH_POS(hash, n) |= 1 << hash_bit;*/ \
+        if ( m.movs.back() != Moving::movement ) \
+            nm.score += MOV_SCORE_LR; \
+        else \
+            nm.score += MOV_SCORE_SPIN; \
+        q.push(nm); \
+    }
+
+#define _MACRO_ROTATION(_MACRO_PUSH, movement, spinclockwise, maxwk) \
+    /*{*/ \
+        int nnx = nx, nny = ny; \
+        bool collide = field.isCollide(nx, ny, getGem(cur.num, ns)); \
+        bool wallkick = field.wallkickTest(nx, ny, nnx, nny, getGem(cur.num, ns), spinclockwise); \
+        bool isattack = (getAllowedSpins() >= 1 || cur.num == GEMTYPE_T); \
+        int pa = 0; \
+        if (tetris_game_is_BotrisBattle() && cur.num == GEMTYPE_O && wallkick) pa = 2; \
+        else if (!collide) pa = 1; \
+        else if (wallkick) pa = 2; \
+        if (pa == 2) { nx = nnx; ny = nny; } \
+        if (pa > 0) { \
+            pa = isattack? pa : 0; \
+            _MACRO_PUSH(movement, pa, (pa < maxwk)? pa : maxwk); \
+        } \
+    //}
 
 namespace AI {
     bool g_spin180 = false;
@@ -81,7 +117,7 @@ namespace AI {
 
     void GenMoving(const GameField& field, std::vector<MovingSimple> & movs, Gem cur, int x, int y, bool hold) {
         movs.clear();
-		if (cur.num == 0) { // rare race condition, we're dead already if this happens
+		if (cur.num == GEMTYPE_NULL) { // rare race condition, we're dead already if this happens
 			assert(true); // debug break
 			cur = AI::getGem(AI::GEMTYPE_I, 0);
 		}
@@ -114,7 +150,7 @@ namespace AI {
             }
         }
 #endif
-		if ( 1 || field.row[y+3] & field.m_w_mask ) // �ǿ����еĻ�
+		// �ǿ����еĻ�
         {
             MovingSimple m;
             m.x = x;
@@ -131,107 +167,6 @@ namespace AI {
             q.push(m);
             hash[m.y][m.spin][m.x & GENMOV_W_MASK] = 1;
         }
-		else
-		{
-			for ( int spin = 0; spin < 4; ++spin )
-			{
-				int ns = (cur.spin + spin) % cur.mod;
-				int dx = 0;
-				for ( ; ; ++dx )
-				{
-					MovingSimple m;
-					int nx = x + dx, ny = y;
-					if ( field.isCollide(nx, ny, getGem(cur.num, ns) ) )
-						break;
-					m.x = nx;
-					m.y = ny;
-					m.spin = ns;
-					m.wallkick_spin = 0;
-					int dist_min = 0x7fffffff;
-					for ( int x = 0; x < 4; ++x ) {
-						if ( getGemColH(cur.num, ns, x) ) { // 0 = empty column
-							int dist_cur_col = min_y[nx + x] - (ny + getGemColH(cur.num, ns, x));
-							if ( dist_cur_col < dist_min ) {
-								dist_min = dist_cur_col;
-							}
-						}
-					}
-					if ( dist_min < 0 ) { // underground
-						while ( ! field.isCollide(nx, ny + 1, getGem(cur.num, ns) ) ) {
-							if ( !USING_MOV_D && (_MACRO_HASH_POS(hash,n) & 1) == 0) {
-								_MACRO_HASH_POS(hash,n) |= 1;
-							}
-							++ny; //wallkick_spin = 0;
-						}
-					} else { // under the sun
-						ny = ny + dist_min;
-						//if ( dist_min > 0 ) wallkick_spin = 0;
-						//for ( int y = m.y + 1; y < ny; ++y ) {
-						//	if ( !USING_MOV_D && (hash[y][ns][nx & GENMOV_W_MASK] & 1) == 0) {
-						//		hash[y][ns][nx & GENMOV_W_MASK] |= 1;
-						//	}
-						//}
-					}
-					m.y = ny;
-					m.lastmove = MovingSimple::MOV_NULL;
-					if ( hold ) {
-						m.hold = true;
-					} else {
-						m.hold = false;
-					}
-					q.push(m);
-					_MACRO_HASH_POS(hash,n) = 1;
-					//hash[ny][ns][nx & GENMOV_W_MASK] |= 1;
-				}
-				if ( dx > 0 )
-				for ( dx = -1; ; --dx )
-				{
-					MovingSimple m;
-					int nx = x + dx, ny = y;
-					if ( field.isCollide(nx, ny, getGem(cur.num, ns) ) )
-						break;
-					m.x = nx;
-					m.y = y;
-					m.spin = ns;
-					m.wallkick_spin = 0;
-					int dist_min = 0x7fffffff;
-					for ( int x = 0; x < 4; ++x ) {
-						if ( getGemColH(cur.num, ns, x) ) { // 0 = empty column
-							int dist_cur_col = min_y[nx + x] - (ny + getGemColH(cur.num, ns, x));
-							if ( dist_cur_col < dist_min ) {
-								dist_min = dist_cur_col;
-							}
-						}
-					}
-					if ( dist_min < 0 ) { // underground
-						while ( ! field.isCollide(nx, ny + 1, getGem(cur.num, ns) ) ) {
-							if ( !USING_MOV_D && (_MACRO_HASH_POS(hash,n) & 1) == 0) {
-								_MACRO_HASH_POS(hash,n) = 1;
-							}
-							++ny; //wallkick_spin = 0;
-						}
-					} else { // under the sun
-						ny = ny + dist_min;
-						//if ( dist_min > 0 ) wallkick_spin = 0;
-						//for ( int y = m.y + 1; y < ny; ++y ) {
-						//	if ( !USING_MOV_D && (hash[y][ns][nx & GENMOV_W_MASK] & 1) == 0) {
-						//		hash[y][ns][nx & GENMOV_W_MASK] |= 1;
-						//	}
-						//}
-					}
-					m.y = ny;
-					m.lastmove = MovingSimple::MOV_NULL;
-					if ( hold ) {
-						m.hold = true;
-					} else {
-						m.hold = false;
-					}
-					q.push(m);
-					_MACRO_HASH_POS(hash,n) = 1;
-					//hash[ny][ns][nx & GENMOV_W_MASK] |= 1;
-				}
-			}
-		}
         while ( ! q.empty() ) {
             MovingSimple m;
             q.pop(m);
@@ -393,91 +328,22 @@ namespace AI {
             }
 #endif
             {
-                int nx = m.x, ny = m.y, ns = (m.spin + 1) % cur.mod;
+                int nx = m.x, ny = m.y, ns = (m.spin + 1) % cur.getActualMod();
                 if ( ns != m.spin ) {
-                    if ( (getAllowedSpins() >= 1 || cur.num == GEMTYPE_T) ) {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LSPIN, 1, m.softdrop);
-                                _MACRO_HASH_POS(hash, n) |= 1 << 1;
-                                q.push(nm);
-                            }
-                        } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 0 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LSPIN, 2, m.softdrop);
-                                _MACRO_HASH_POS(hash, n) |= 1 << 2;
-                                q.push(nm);
-                            }
-                        }
-                    } else {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) 
-                            || field.wallkickTest(nx, ny, getGem(cur.num, ns), 0 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_LSPIN, 0, m.softdrop);
-                                _MACRO_HASH_POS(hash, n) |= 1;
-                                q.push(nm);
-                            }
-                        }
-                    }
+                    _MACRO_ROTATION(_MACRO_PUSH_MOVINGSIMPLE, MOV_LSPIN, 0, 2);
                 }
             }
             {
-                int nx = m.x, ny = m.y, ns = (m.spin + 3) % cur.mod;
+                int nx = m.x, ny = m.y, ns = (m.spin + 3) % cur.getActualMod();
                 if ( ns != m.spin ) {
-                    if ( (getAllowedSpins() >= 1 || cur.num == GEMTYPE_T) ) {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RSPIN, 1, m.softdrop);
-                                _MACRO_HASH_POS(hash, n) |= 1 << 1;
-                                q.push(nm);
-                            }
-                        } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 1 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RSPIN, 2, m.softdrop);
-                                _MACRO_HASH_POS(hash, n) |= 1 << 2;
-                                q.push(nm);
-                            }
-                        }
-                    } else {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) )
-                            || field.wallkickTest(nx, ny, getGem(cur.num, ns), 1 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_RSPIN, 0, m.softdrop);
-                                _MACRO_HASH_POS(hash, n) |= 1;
-                                q.push(nm);
-                            }
-                        }
-                    }
+                    _MACRO_ROTATION(_MACRO_PUSH_MOVINGSIMPLE, MOV_RSPIN, 1, 2);
                 }
             }
             if ( spin180Enable() ) // no 180 wallkick only
             {
-                int nx = m.x, ny = m.y, ns = (m.spin + 2) % cur.mod;
+                int nx = m.x, ny = m.y, ns = (m.spin + 2) % cur.getActualMod();
                 if ( ns != m.spin ) {
-                    if ( (getAllowedSpins() >= 1 || cur.num == GEMTYPE_T) ) {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_SPIN2, 1, m.softdrop);
-                                _MACRO_HASH_POS(hash, n) |= 1 << 1;
-                                q.push(nm);
-                            }
-                        } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 2 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_SPIN2, 1, m.softdrop); // because it thinks its tmini
-                                _MACRO_HASH_POS(hash, n) |= 1 << 2;
-                                q.push(nm);
-                            }
-                        }
-                    } else {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) )
-                            || field.wallkickTest(nx, ny, getGem(cur.num, ns), 2 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_SPIN2, 0, m.softdrop);
-                                _MACRO_HASH_POS(hash, n) |= 1;
-                                q.push(nm);
-                            }
-                        }
-                    }
+                    _MACRO_ROTATION(_MACRO_PUSH_MOVINGSIMPLE, MOV_SPIN2, 2, 1);
                 }
             }
         }
@@ -682,127 +548,22 @@ namespace AI {
                 }
             }
             {
-                int nx = m.x, ny = m.y, ns = (m.spin + 1) % cur.mod;
+                int nx = m.x, ny = m.y, ns = (m.spin + 1) % cur.getActualMod();
                 if ( ns != m.spin ) {
-                    if ( (getAllowedSpins() >= 1 || cur.num == GEMTYPE_T) ) {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVING(MOV_LSPIN, 1);
-                                //_MACRO_HASH_POS(hash, n) |= 1 << 1;
-                                if ( m.movs.back() != Moving::MOV_LSPIN )
-                                    nm.score += MOV_SCORE_LR;
-                                else
-                                    nm.score += MOV_SCORE_SPIN;
-                                q.push(nm);
-                            }
-                        } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 0 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVING(MOV_LSPIN, 2);
-                                //_MACRO_HASH_POS(hash, n) |= 1 << 2;
-                                if ( m.movs.back() != Moving::MOV_LSPIN )
-                                    nm.score += MOV_SCORE_LR;
-                                else
-                                    nm.score += MOV_SCORE_SPIN;
-                                q.push(nm);
-                            }
-                        }
-                    } else {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) )
-                            || field.wallkickTest(nx, ny, getGem(cur.num, ns), 0 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
-                                _MACRO_CREATE_MOVING(MOV_LSPIN, 0);
-                                //_MACRO_HASH_POS(hash, n) |= 1;
-                                if ( m.movs.back() != Moving::MOV_LSPIN )
-                                    nm.score += MOV_SCORE_LR;
-                                else
-                                    nm.score += MOV_SCORE_SPIN;
-                                q.push(nm);
-                            }
-                        }
-                    }
+                    _MACRO_ROTATION(_MACRO_PUSH_MOVING, MOV_LSPIN, 0, 2);
                 }
             }
             {
-                int nx = m.x, ny = m.y, ns = (m.spin + 3) % cur.mod;
+                int nx = m.x, ny = m.y, ns = (m.spin + 3) % cur.getActualMod();
                 if ( ns != m.spin ) {
-                    if ( (getAllowedSpins() >= 1 || cur.num == GEMTYPE_T) ) {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVING(MOV_RSPIN, 1);
-                                //_MACRO_HASH_POS(hash, n) |= 1 << 1;
-                                if ( m.movs.back() != Moving::MOV_RSPIN )
-                                    nm.score += MOV_SCORE_LR;
-                                else
-                                    nm.score += MOV_SCORE_SPIN;
-                                q.push(nm);
-                            }
-                        } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 1 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVING(MOV_RSPIN, 2);
-                                //_MACRO_HASH_POS(hash, n) |= 1 << 2;
-                                if ( m.movs.back() != Moving::MOV_RSPIN )
-                                    nm.score += MOV_SCORE_LR;
-                                else
-                                    nm.score += MOV_SCORE_SPIN;
-                                q.push(nm);
-                            }
-                        }
-                    } else {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) )
-                            || field.wallkickTest(nx, ny, getGem(cur.num, ns), 1 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
-                                _MACRO_CREATE_MOVING(MOV_RSPIN, 0);
-                                //_MACRO_HASH_POS(hash, n) |= 1;
-                                if ( m.movs.back() != Moving::MOV_RSPIN )
-                                    nm.score += MOV_SCORE_LR;
-                                else
-                                    nm.score += MOV_SCORE_SPIN;
-                                q.push(nm);
-                            }
-                        }
-                    }
+                    _MACRO_ROTATION(_MACRO_PUSH_MOVING, MOV_RSPIN, 1, 2);
                 }
             }
             if ( spin180Enable() )
             {
-                int nx = m.x, ny = m.y, ns = (m.spin + 2) % cur.mod;
+                int nx = m.x, ny = m.y, ns = (m.spin + 2) % cur.getActualMod();
                 if ( ns != m.spin ) {
-                    if ( (getAllowedSpins() >= 1 || cur.num == GEMTYPE_T) ) {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 1 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVING(MOV_SPIN2, 1);
-                                //_MACRO_HASH_POS(hash, n) |= 1 << 1;
-                                if ( m.movs.back() != Moving::MOV_SPIN2)
-                                    nm.score += MOV_SCORE_LR;
-                                else
-                                    nm.score += MOV_SCORE_SPIN;
-                                q.push(nm);
-                            }
-                        } else if ( field.wallkickTest(nx, ny, getGem(cur.num, ns), 2 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & ( 1 << 2 ) ) == 0 ) {
-                                _MACRO_CREATE_MOVING(MOV_SPIN2, 1);  // because it thinks its tmini
-                                //_MACRO_HASH_POS(hash, n) |= 1 << 2;
-                                if ( m.movs.back() != Moving::MOV_SPIN2)
-                                    nm.score += MOV_SCORE_LR;
-                                else
-                                    nm.score += MOV_SCORE_SPIN;
-                                q.push(nm);
-                            }
-                        }
-                    } else {
-                        if ( ! field.isCollide(nx, ny, getGem(cur.num, ns) )
-                            || field.wallkickTest(nx, ny, getGem(cur.num, ns), 2 ) ) {
-                            if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0 ) {
-                                _MACRO_CREATE_MOVING(MOV_SPIN2, 0);
-                                //_MACRO_HASH_POS(hash, n) |= 1;
-                                if ( m.movs.back() != Moving::MOV_SPIN2)
-                                    nm.score += MOV_SCORE_LR;
-                                else
-                                    nm.score += MOV_SCORE_SPIN;
-                                q.push(nm);
-                            }
-                        }
-                    }
+                    _MACRO_ROTATION(_MACRO_PUSH_MOVING, MOV_SPIN2, 2, 1);
                 }
             }
         }

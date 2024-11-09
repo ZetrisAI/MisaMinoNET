@@ -136,7 +136,7 @@ namespace AI {
             RL 13 = 13
         
         */
-        bool wallkickTest(int& x, int& y, const Gem & gem, int spinclockwise) const {
+        bool wallkickTest(const int x, const int y, int& x_out, int& y_out, const Gem & gem, int spinclockwise) const {
             const int Iwallkickdata[4][2][4][2] = {
                 { // O
                     { // R
@@ -168,6 +168,41 @@ namespace AI {
                     },
                     { // O
                         {-2, 0},{ 1, 0},{-2, 1},{ 1,-2},
+                    },
+                },
+            };
+            // https://github.com/newclarityex/libtris/blob/0f160eb6a27405c936480bdd75f041b3ebbfca15/src/utils.ts#L95-L106
+            const int botrisOwallkickdata[4][2][4][2] = {
+                { // O
+                    { // R
+                        {-1,-1},{-2,-1},{-1,-2},{ 0,-1},
+                    },
+                    { // L
+                        { 1,-1},{ 2,-1},{ 1,-2},{ 0,-1},
+                    },
+                },
+                { // L
+                    { // O
+                        {-1, 1},{-2, 1},{-1, 2},{ 0, 1},
+                    },
+                    { // 2
+                        {-1,-1},{-2,-1},{-1,-2},{ 0,-1},
+                    },
+                },
+                { // 2
+                    { // L
+                        { 1, 1},{ 2, 1},{ 1, 2},{ 0, 1},
+                    },
+                    { // R
+                        {-1, 1},{-2, 1},{-1, 2},{ 0, 1},
+                    },
+                },
+                { // R
+                    { // 2
+                        { 1,-1},{ 2,-1},{ 1,-2},{ 0,-1},
+                    },
+                    { // O
+                        { 1, 1},{ 2, 1},{ 1, 2},{ 0, 1},
                     },
                 },
             };
@@ -254,30 +289,41 @@ namespace AI {
 				}
 			};
 
-			if (spinclockwise != 2) {
+			if (spinclockwise != 2) { // CW, CCW
 				const int (*pdata)[2][4][2] = wallkickdata;
-				if ( gem.num == 1 ) pdata = tetris_game_is_TETRIO() ? srsplusIwallkickdata : Iwallkickdata;
+
+				if (gem.num == GEMTYPE_I)
+                    pdata = tetris_game_is_TETRIO()
+                        ? srsplusIwallkickdata
+                        : Iwallkickdata;
+
+                if (gem.num == GEMTYPE_O && tetris_game_is_BotrisBattle())
+                    pdata = botrisOwallkickdata;
+
 				for (int itest = 0; itest < 4; ++itest) {
 					int dx = x + pdata[gem.spin][spinclockwise][itest][0];
 					int dy = y + pdata[gem.spin][spinclockwise][itest][1];
 					if (!isCollide(dx, dy, gem)) {
-						x = dx; y = dy;
+						x_out = dx; y_out = dy;
 						return true;
 					}
 				}
-			} else {
-                int kicks = gem.num == 1? 1 : 5;
+			} else { // 180
+                int kicks = gem.num == GEMTYPE_I? 1 : 5;
 				for (int i = 0; i < kicks; i++) {
 					int dx = x + wallkick180data[gem.spin][i][0];
 					int dy = y + wallkick180data[gem.spin][i][1];
 
 					if (!isCollide(dx, dy, gem)) {
-						x = dx; y = dy;
+						x_out = dx; y_out = dy;
 						return true;
 					}
 				}
 			}
             return false;
+        }
+        inline bool wallkickTest_unsafe(int& x, int& y, const Gem& gem, int spinclockwise) const {
+            return wallkickTest(x, y, x, y, gem, spinclockwise);
         }
         void paste(int x, int y, const Gem & gem) {
             for ( int h = 0; h < gem.geth(); ++h ) {
@@ -288,14 +334,14 @@ namespace AI {
             }
         }
         signed char isWallKickSpin(int x, int y, const Gem & gem) const {
-            bool allspin = getAllowedSpins() == 2 || (getAllowedSpins() == 1 && gem.num != 2);
+            bool allspin = getAllowedSpins() == 2 || (getAllowedSpins() == 1 && gem.num != GEMTYPE_T);
             if (allspin) {
                 if ( isCollide( x - 1, y, gem )
                     && isCollide( x + 1, y, gem )
                     && isCollide( x, y - 1, gem )) {
                         return 1;
                 }
-            } else if ( gem.num == 2 ) { //T
+            } else if ( gem.num == GEMTYPE_T ) {
                 int cnt = 0;
                 if ( x < 0 || (row[y] & (1 << x))) ++cnt;
                 if ( x < 0 || y+2 > m_h || (row[y+2] & (1 << x))) ++cnt;
@@ -310,7 +356,7 @@ namespace AI {
             if ( ! isWallKickSpin( x, y, gem ) ) {
                 return wallkick_spin = 0;
             }
-            bool allspin = getAllowedSpins() == 2 || (getAllowedSpins() == 1 && gem.num != 2);
+            bool allspin = getAllowedSpins() == 2 || (getAllowedSpins() == 1 && gem.num != GEMTYPE_T);
             if (allspin) {
                 if ( wallkick_spin == 2) {
                     wallkick_spin = 1;

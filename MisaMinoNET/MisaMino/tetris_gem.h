@@ -1,4 +1,6 @@
 #pragma once
+#include "stuff.h"
+
 #define _ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH
 
 namespace AI {
@@ -15,6 +17,9 @@ namespace AI {
     struct Gem {
         unsigned long bitmap[4];
         int num, spin, mod;
+        int getActualMod() {
+            return (tetris_game_is_BotrisBattle() && num == GEMTYPE_O) ? 4 : mod;
+        }
         int geth() const { return 4; }
         char getLetter() const {
             char map[]="NITLJZSO";
