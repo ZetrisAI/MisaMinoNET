@@ -46,7 +46,7 @@ namespace AI {
 		return (int) ((double)((combo >= (int)g_combo_attack.size()) ? g_combo_attack.back() : g_combo_attack[combo]));
     }
     // 0 => T-spins
-    // 1 => All-spins with regular T-spins (TETR.IO Season 2)
+    // 1 => All-spins with regular T-spins (TETR.IO Season 2 All-Mini)
     // 2 => Full All-spins
     void setAllowedSpins(int allowedSpins) {
         g_allowedSpins = allowedSpins;
