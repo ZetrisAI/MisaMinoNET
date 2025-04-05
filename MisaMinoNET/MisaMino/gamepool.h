@@ -295,7 +295,8 @@ namespace AI {
                     && isCollide( x, y - 1, gem )) {
                         return 1;
                 }
-            } else if ( gem.num == 2 ) { //T
+            }
+            if ( gem.num == 2 ) { //T
                 int cnt = 0;
                 if ( x < 0 || (row[y] & (1 << x))) ++cnt;
                 if ( x < 0 || y+2 > m_h || (row[y+2] & (1 << x))) ++cnt;
