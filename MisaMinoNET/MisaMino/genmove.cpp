@@ -237,7 +237,7 @@ namespace AI {
             q.pop(m);
             //if ( m.y < -1 ) continue;
             if ( m.lastmove == MovingSimple::MOV_DROP ) {
-                if ( getGemMaxH(cur.num, m.spin) + m.y <= 2 ) //lockout
+                if (tetris_game == 0 && getGemMaxH(cur.num, m.spin) + m.y <= 2 ) //lockout (PPT-only)
                     continue;
                 movs.push_back(m);
                 continue;
