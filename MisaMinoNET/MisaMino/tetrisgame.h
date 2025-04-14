@@ -49,7 +49,7 @@ public:
 //  17,  26,  18,   1,   9,  12,  16,   4,  16,  -4,  11,   7,  11,  14
 //  19,  25,  20,   6,  23,  13,  12,   3,  14,   5,  13,  10,  13,  26
 //  11,  27,  21,   3,  28,  10,  17,   5,  20,  -2,  11,  15,  31,  11
-//   8,  26,  16,   5,  23,  12,   7,   5,   8,  -8,  14,  15,   9,  18 // APL ��
+//   8,  26,  16,   5,  23,  12,   7,   5,   8,  -8,  14,  15,   9,  18 // APL 高
 //   8,  26,  21,   7,  21,  12,   5,   5,   1,  -3,  13,  11,  11,   4
 //  13,  28,  21,  14,  25,  11,  21,   6,   8,  -3,  13,  24,  31,  1
 //   8,  26,  21,   7,  21,  12,   5,   5,   1,  -3,  13,  11,  11,   4
@@ -60,7 +60,7 @@ public:
 //  8,  26,  21,   7,  21,  12,   5,   5,  20,  -3,  13,  21,  11,   4
 //   8,  38,  18,  13, -14,  19,   7,   4,  14, -15,   9,  19,  16,  -3
 //   5,  38,  20,   5,   8,  39,   7,   8, -13,  -5,   4,  24,   7, -20
-//  36,  34,  50,   8,  12,  12,   7,  10,   2,   6,  11,   10,   9,   6 // ���ڻ�
+//  36,  34,  50,   8,  12,  12,   7,  10,   2,   6,  11,   10,   9,   6 // 挖挖机 // Digging machine
 //  22,  36,  56,  17,  17,  29,   6,   6,   6,   7,  18,  13,   8,  21
 //   3,  34,  38,  12,  20,  16,  10,   7,  10,  10,  14,  35,  12,   0
 //  26,  35,  45,  14,  -2,  10,   6,   7,   4,   8,  13,  14,   8,  1
@@ -174,9 +174,9 @@ public:
         m_last_hole_x = rowdata;
         rowdata = ~( 1 << rowdata ) & m_pool.m_w_mask;
         for ( ; n > 0; --n ) {
-            if ( ATTACK_MODE == 0 ) addRow( 0 ); // ������
-            if ( ATTACK_MODE == 1 ) addRow( rowdata ); // TOP��
-            if ( ATTACK_MODE == 2 ) addRow( att[n&1] ); // ��ƴ��
+            if ( ATTACK_MODE == 0 ) addRow( 0 ); // 空气行 // Air row (no garbage)
+            if ( ATTACK_MODE == 1 ) addRow( rowdata ); // TOP行 // Garbage row from the top (standard mode)
+            if ( ATTACK_MODE == 2 ) addRow( att[n&1] ); // 火拼行 // PvP garbage row (alternating pattern)
             ++total_accept_atts;
         }
         if ( alive() ) {
@@ -207,7 +207,7 @@ public:
     int total_accept_atts;
     int last_max_combo;
     int m_ko;
-    int m_lr; // 3d��Ч����
+    int m_lr; // 3d音效开启 // Enable 3D sound effects
     int m_piecedelay;
     AI::AI_Param m_ai_param;
     mutable std::string m_att_info;

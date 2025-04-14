@@ -37,12 +37,12 @@ namespace AI {
         int lastCombo, int t_dis, int upcomeAtt
         ) {
         int score = 0;
-        // ��߶�
+        // 测高度 // Measure height
         //int last_min_y[32] = {0};
         int min_y[32] = {0};
         int emptys[32] = {0};
         int maxy_index = 31, maxy_cnt = 0;
-        int maxy_flat_cnt = 0; // �ƽ̨
+        int maxy_flat_cnt = 0; // 最长平台 // Longest flat platform
         int miny_val = 31;
         int total_hole = 0;
         int beg_y = -5;
@@ -52,7 +52,7 @@ namespace AI {
         {
             //while ( last_pool.row[beg_y] == 0 ) ++beg_y;
             //for ( int x = 0; x < pool_w; ++x) {
-            //    for ( int y = beg_y, ey = pool_h + 1; y <= ey; ++y) { // Ҫ�е��б�����pool.h����������
+            //    for ( int y = beg_y, ey = pool_h + 1; y <= ey; ++y) { // 要有底行保护（pool.h），否则会挂 // Must include bottom row protection (pool.h), or it will crash
             //        if ( last_pool.row[y] & ( 1 << x ) ) {
             //            last_min_y[x] = y;
             //            break;
@@ -62,7 +62,7 @@ namespace AI {
             beg_y = -5;
             while ( pool.row[beg_y] == 0 ) ++beg_y;
             for ( int x = 0; x < pool_w; ++x) {
-                for ( int y = beg_y, ey = pool_h + 1; y <= ey; ++y) { // Ҫ�е��б�����pool.h����������
+                for ( int y = beg_y, ey = pool_h + 1; y <= ey; ++y) { // 要有底行保护（pool.h），否则会挂 // Must include bottom row protection (pool.h), or it will crash
                     if ( pool.row[y] & ( 1 << x ) ) {
                         min_y[x] = y;
                         miny_val = std::min(miny_val, y);
@@ -120,17 +120,17 @@ namespace AI {
                 }
             }
         }
-        // ��������
-        int x_holes[32] = {0}; // ˮƽ���򶴵�����
-        int y_holes[32] = {0}; // ��ֱ���򶴵�����
-        int x_op_holes[32] = {0}; // ˮƽ���򶴵�����
+        // 洞的数量 // Number of holes
+        int x_holes[32] = {0}; // 水平方向洞的数量 // Number of holes in the horizontal direction
+        int y_holes[32] = {0}; // 垂直方向洞的数量 // Number of holes in the vertical direction
+        int x_op_holes[32] = {0}; // 水平方向洞的数量 // Number of holes in the horizontal direction
         //int last_pool_hole_score;
         int pool_hole_score;
         int pool_total_cell = 0;
         //{   // last_pool
-        //    int x_holes[32] = {0}; // ˮƽ���򶴵�����
-        //    int x_op_holes[32] = {0}; // ˮƽ���򶴵�����
-        //    int first_hole_y[32] = {0}; // ��ֱ��������Ķ���y
+        //    int x_holes[32] = {0}; // 水平方向洞的数量 // Number of holes in the horizontal direction
+        //    int x_op_holes[32] = {0}; // 水平方向洞的数量 // Number of holes in the horizontal direction
+        //    int first_hole_y[32] = {0}; // 垂直方向最近的洞的y // Y-coordinate of the nearest vertical hole
         //    int hole_score = 0;
         //    const GameField& _pool = last_pool;
         //    for ( int x = 0; x < pool_w; ++x) {
@@ -211,8 +211,8 @@ namespace AI {
         //    last_pool_hole_score = hole_score;
         //}
         {   // pool
-            int first_hole_y[32] = {0}; // ��ֱ��������Ķ���y
-            int x_renholes[32] = {0}; // ��ֱ������������
+            int first_hole_y[32] = {0}; // 垂直方向最近的洞的y // Y-coordinate of the nearest vertical hole
+            int x_renholes[32] = {0}; // 垂直连续洞的数量 // Number of vertically consecutive holes
             double hole_score = 0;
             const GameField& _pool = pool;
             for ( int x = 0; x < pool_w; ++x) {
@@ -357,7 +357,7 @@ namespace AI {
         }
         score += pool_hole_score;
 
-        // �߶Ȳ�
+        // 高度差 // Height difference
         {
             //int n_maxy_index = maxy_index;
             //if ( maxy_cnt != 0 ) n_maxy_index = -9;
@@ -374,7 +374,7 @@ namespace AI {
                 else score += absv * ai_param.h_factor;
             }
         }
-        // ƽ��
+        // 平地 // Flatness
         /*
         {
             int last = -1, len = 0;
@@ -394,10 +394,10 @@ namespace AI {
             }
         }
         */
-        int center = 10; // ��¥������
+        int center = 10; // 摆楼警戒线 // Center warning line (used for tower height caution)
         double warning_factor = 1;
         int h_variance_score = 0;
-        // �㷽��
+        // 算方差 // Calculate variance (height irregularity)
         {
             int avg = 0;
             {
@@ -425,7 +425,7 @@ namespace AI {
                         warning_factor = 0.0 + (double)avg / pool_w / center / 1;
                     }
                 }
-                // ƫ��ֵ
+                // 偏差值 // Deviation value
                 {
                     int dif_sum = 0;
                     for ( int x = 0; x < pool_w; ++x) {
@@ -434,7 +434,7 @@ namespace AI {
                     score += ai_param.dif_factor * dif_sum / pool_w / pool_w;
                 }
             }
-            // ��������
+            // 攻击计算 // Attack calculation
             {
                 int s = 0;
                 int t_att = total_clear_att;
@@ -451,7 +451,8 @@ namespace AI {
                     //}
                 }
                 int cs = 0;
-                if ( cur_num == GEMTYPE_T && wallkick_spin && clears > 0 && ai_param.tspin > 0 ) { // T�����ӷ֣�Ҫ��T1/T2��״�����ִ�һ
+                // T消附加分，要比T1/T2形状基本分大一 // T-spin bonus scoring, should be higher than base score of T1/T2 shapes
+                if ( cur_num == GEMTYPE_T && wallkick_spin && clears > 0 && ai_param.tspin > 0 ) {
                     s -= ai_param.hold_T;
                     if ( clears >= 3 ) {
                         if ( clear_att >= clears * 2 ) { // T3
@@ -492,7 +493,7 @@ namespace AI {
                 score += s;
             }
             //if ( clears ) {
-            //    int center = 10; // ��¥������
+            //    int center = 10; // 摆楼警戒线 // Center warning line (tower height threshold)
             //    double factor = 1;
             //    if ( avg < pool_w * center ) {
             //        factor = (double)avg / pool_w / center;
@@ -558,9 +559,9 @@ namespace AI {
             //}
         }
 
-        // ������״�ж�
+        // 特殊形状判定 // Special shape detection
 
-        // ����ɹ�����Tetris��T2��
+        // 计算可攻击（Tetris和T2）// Evaluate potential attacks (Tetris and T-Spin Double)
         //int t2_x[32] = {0};
         if ( maxy_cnt == 0 )
         {
@@ -568,45 +569,45 @@ namespace AI {
             //    score += ai_param.att_col_sel_side;
             //}
             int ybeg = 0;
-            if ( softdropEnable() && maxy_index > 0 && maxy_index < pool_w - 1 && ai_param.tspin > 0 ) { // T1/T2������״��
+            if ( softdropEnable() && maxy_index > 0 && maxy_index < pool_w - 1 && ai_param.tspin > 0 ) { // T1/T2基本形状分 // Basic shape recognition for T1/T2
                 ybeg = std::max( min_y[maxy_index - 1], min_y[maxy_index + 1] );
                 if ( min_y[maxy_index - 1] == min_y[maxy_index + 1]
                     && x_holes[ybeg] == 0 && (!ybeg || x_holes[ybeg-1] == 0)
                     && x_op_holes[ybeg] == 0 && (!ybeg || x_op_holes[ybeg-1] == 0)
                     )
-                { // T׼��
+                { // T准备 // T-Spin setup detected
                     int cnt = 0;
                     if ( maxy_index > 1 && min_y[maxy_index - 2] >= min_y[maxy_index - 1] - 2 ) ++cnt;
                     if ( maxy_index < pool_w - 2 && min_y[maxy_index + 2] >= min_y[maxy_index + 1] - 2 ) ++cnt;
                     if ( cnt > 0 )
                     {
                         score -= int(warning_factor * ai_param.tspin);
-                        if ( (~pool.row[ybeg] & pool.m_w_mask) == (1 << maxy_index) ) { // T1����
+                        if ( (~pool.row[ybeg] & pool.m_w_mask) == (1 << maxy_index) ) { // T1基础 // Valid T1 setup
                             score -= int(warning_factor * ai_param.tspin);
-                            if ( (~pool.row[ybeg - 1] & pool.m_w_mask) == (7 << (maxy_index-1) ) ) { // ��T2������
+                            if ( (~pool.row[ybeg - 1] & pool.m_w_mask) == (7 << (maxy_index-1) ) ) { // 可T2完美坑 // Perfect T2 pit
                                 score -= int( warning_factor * (ai_param.tspin * cnt) );
                             }
                         }
                     }
                 } else if ( ybeg <= 6 && ybeg - t_dis > 1 || ybeg > 6 ) {
                     int row_data = pool.row[ybeg - 1];
-                    if ( (row_data & ( 1 << (maxy_index-1) ) ) == 0 && (row_data & ( 1 << (maxy_index+1) ) ) == 0 // �ӵ�����Ϊ��
-                         && x_holes[ybeg] == 0 && (!ybeg || x_holes[ybeg-1] == 0) // ����λ���޶�
+                    if ( (row_data & ( 1 << (maxy_index-1) ) ) == 0 && (row_data & ( 1 << (maxy_index+1) ) ) == 0 // 坑的左右为空 // Left and right of the pit are empty
+                         && x_holes[ybeg] == 0 && (!ybeg || x_holes[ybeg-1] == 0) // 其它位置无洞 // No holes in other nearby rows
                          && x_op_holes[ybeg] == 0 && (!ybeg || x_op_holes[ybeg-1] <= 1)
                          )
                     {
-                        // T����״
-                        if ( ( pool.row[ybeg] & (1 << (maxy_index-1)) ) && ( pool.row[ybeg] & (1 << (maxy_index+1)) ) ) { // �ӵ������������
-                            if ( !!( pool.row[ybeg-2] & (1 << (maxy_index-1)) ) + !!( pool.row[ybeg-2] & (1 << (maxy_index+1)) ) == 1 ) { // �ӵ�����Ŀ����
+                        // T坑形状 // T-shaped hole detection
+                        if ( ( pool.row[ybeg] & (1 << (maxy_index-1)) ) && ( pool.row[ybeg] & (1 << (maxy_index+1)) ) ) { // 坑的下面两块存在 // Pit base blocks are present
+                            if ( !!( pool.row[ybeg-2] & (1 << (maxy_index-1)) ) + !!( pool.row[ybeg-2] & (1 << (maxy_index+1)) ) == 1 ) { // 坑的上面的块存在 // One side block above the pit
                                 double s = 0;
                                 //t2_x[maxy_index] = ybeg;
                                 double factor = ybeg > 6 ? 0.5 : 1 - t_dis / 6.0 * 0.5;
                                 if ( warning_factor < 1 )
                                     factor = ybeg > 6 ? 1.0 / 5 : 1 / (1 + t_dis / 3.0);
                                 s += ai_param.open_hole;
-                                if ( (~pool.row[ybeg] & pool.m_w_mask) == (1 << maxy_index) ) { // ��T1
+                                if ( (~pool.row[ybeg] & pool.m_w_mask) == (1 << maxy_index) ) { // 可T1 // Valid T1 setup
                                     s += ai_param.tspin + ai_param.tspin * 1 * factor;
-                                    if ( (~row_data & pool.m_w_mask) == (7 << (maxy_index-1) ) ) { // ��T2������
+                                    if ( (~row_data & pool.m_w_mask) == (7 << (maxy_index-1) ) ) { // 可T2完美坑 // Perfect T2 pit
                                         s += ai_param.tspin * 3 * factor;
                                         // s -= ai_param.tspin * 3 / factor / 1;
                                     }
@@ -637,7 +638,7 @@ namespace AI {
             //score -= readatt * ai_param.readyatt;
 
         }
-        // T3 形状判定 (Shape jugdement/ how to determine tst shape?)
+        // T3 形状判定 // T-Spin Triple shape detection
         //3001	
         //2000	
         // 1101	
@@ -655,16 +656,16 @@ namespace AI {
                 if ( x_holes[y] == 0 ) continue;
                 for ( int x = 1; x < pool_w - 1; ++x ) {
                     if ( ( pool.row[y + 1] & ( 1 << x ) ) == 0 || ( pool.row[y + 1] & ( 1 << x ) ) == 0  ) {
-                        continue; // 上下无洞 (No holes top or bottom)
+                        continue; // 上下无洞 // No hole above and below
                     }
                     int row_y[5];
                     for ( int i = 0; i < 5; ++i ) {
                         row_y[i] = ( (pool.row[y - 3 + i] | (3 << pool_w)) << 2 ) | 3;
                     }
-                    if ( ( (row_y[3] >> (x + 1)) & ( 7 ) ) == 1 /*100*/ ) { // 上图情况 (See above diagram)
+                    if ( ( (row_y[3] >> (x + 1)) & ( 7 ) ) == 1 /*100*/ ) { // 上图情况 // Match the target bit pattern (T3 center)
                         if ( x == pool_w - 2 ) continue;
-                        //if ( t2_x[x+1] == y ) continue; // 排除T2坑 (ignore tsd hole)
-                        // 所有空的地方先匹配 (Match all empty space first)
+                        //if ( t2_x[x+1] == y ) continue; // 排除T2坑 // Exclude T2 pit
+                        // 所有空的地方先匹配 // Check if all empty regions match expected T3 pattern
                         if (   ( (row_y[2] >> (x + 1)) & ( 7 ) ) != 3 /*110*/
                             //|| ( (row_y[4] >> (x + 1)) & ( 15 ) ) != 11 /*1101*/
                             || ( (row_y[4] >> (x + 1)) & ( 13 ) ) != 9 /*1011mask=1001*/
@@ -677,9 +678,9 @@ namespace AI {
                             continue;
                         }
                         if ( ( row_y[0] & ( 1 << (x) ) ) == 0 && ( row_y[1] & ( 1 << (x) ) ) ) {
-                            continue; // 高处转角 (High turning corner -> Overhang for kick?)
+                            continue; // 高处转角 // High-turn corner, not valid
                         }
-                        if ( min_y[x + 1] > y ) { // 洞判定 (find holes)
+                        if ( min_y[x + 1] > y ) { // 洞判定 // Hole detection when right column is taller
                             if ( x_holes[y - 1] > 0 || x_holes[y + 1] > 0 || x_holes[y] > 1
                                 || x_op_holes[y - 1] > 0 || x_op_holes[y + 1] > 0 || x_op_holes[y] > 0)
                             {
@@ -707,7 +708,7 @@ namespace AI {
                         {
                             int e = ~(pool.row[y + 1] | (1<<x) ) & pool.m_w_mask;
                             e &= ( e-1); 
-                            if ( e == 0 ) { // 最底只剩一空 (Bottom only has one space)
+                            if ( e == 0 ) { // 最底只剩一空 // Bottom row (y+1) has only one empty cell left
                                 //++full;
                             } else {
                                 score -= s;
@@ -717,7 +718,7 @@ namespace AI {
                         {
                             int e = ~(pool.row[y] | (1<<(x+2))) & pool.m_w_mask;
                             e &= ( e-1 );
-                            if ( (e & ( e-1)) == 0 ) { // 底二只剩两空 (2nd row only has 2 spaces left)
+                            if ( (e & ( e-1)) == 0 ) { // 底二只剩两空 // Second row from bottom (y) has only two empty cells
                                 //++full;
                             } else {
                                 if ( (pool.row[y] & (1<<(x+2))) == 0 ) {
@@ -731,7 +732,7 @@ namespace AI {
                         {
                             int e = ~pool.row[y - 1] & pool.m_w_mask;
                             e &= ( e-1 );
-                            if ( e == 0 ) { // 底三只剩一空 (3rd row only has 1 space left)
+                            if ( e == 0 ) { // 底三只剩一空 // Third row from bottom (y-1) has only one empty cell left
                                 //++full;
                             } else {
                                 score -= s;
@@ -746,10 +747,10 @@ namespace AI {
                                 score -= int( warning_factor * ai_param.tspin3 * 3 / ( t_dis + 1 ) );
                             }
                         }
-                    } else if ( ( (row_y[3] >> (x+1) ) & ( 7 ) ) == 4 /*001*/ ) { // 镜像情况 (Mirrored)
+                    } else if ( ( (row_y[3] >> (x+1) ) & ( 7 ) ) == 4 /*001*/ ) { // 镜像情况 // Mirrored T3 pattern (horizontal reflection)
                         if ( x == 1 ) continue;
-                        //if ( t2_x[x-1] == y ) continue; // �ų�T2��
-                        // ���пյĵط���ƥ��
+                        //if ( t2_x[x-1] == y ) continue; // 排除T2坑 // Exclude T2 pit at mirrored position
+                        // 所有空的地方先匹配 // Match all empty cells to expected T3 mirrored pattern
                         if (   ( (row_y[2] >> (x+1)) & ( 7 ) ) != 6 /*011*/
                             //|| ( (row_y[4] >> (x)) & ( 15 ) ) != 13 /*1011*/
                             || ( (row_y[4] >> (x)) & ( 11 ) ) != 9 /*1101mask=1001*/
@@ -762,9 +763,9 @@ namespace AI {
                             continue;
                         }
                         if ( ( row_y[0] & ( 1 << (x + 4) ) ) == 0 && ( row_y[1] & ( 1 << (x + 4) ) ) ) {
-                            continue; // �ߴ�ת��
+                            continue; // 高处转角 // High-turn corner present — disqualifies this setup
                         }
-                        if ( min_y[x - 1] > y ) { // ���ж�
+                        if ( min_y[x - 1] > y ) { // 洞判定 // Hole check when left column is taller
                             if ( x_holes[y - 1] > 0 || x_holes[y + 1] > 0 || x_holes[y] > 1
                                 || x_op_holes[y - 1] > 0 || x_op_holes[y + 1] > 0 || x_op_holes[y] > 0)
                             {
@@ -792,7 +793,7 @@ namespace AI {
                         {
                             int e = ~(pool.row[y + 1] | (1<<x) ) & pool.m_w_mask;
                             e &= ( e-1);
-                            if ( e == 0 ) { // ���ֻʣһ��
+                            if ( e == 0 ) { // 最底只剩一空 // Bottom row (y + 1) has only one empty cell
                                 //++full;
                             } else {
                                 score -= s;
@@ -802,7 +803,7 @@ namespace AI {
                         {
                             int e = ~(pool.row[y] | (1<<x-2)) & pool.m_w_mask;
                             e &= ( e-1);
-                            if ( (e & ( e-1)) == 0 ) { // �׶�ֻʣ����
+                            if ( (e & ( e-1)) == 0 ) { // 底二只剩两空 // Second row from bottom (y) has only two empty cells
                                 //++full;
                             } else {
                                 if ( (pool.row[y] & (1<<(x-2))) == 0 ) {
@@ -816,7 +817,7 @@ namespace AI {
                         {
                             int e = ~pool.row[y - 1] & pool.m_w_mask;
                             e &= ( e-1);
-                            if ( e == 0 ) { // ����ֻʣһ��
+                            if ( e == 0 ) { // 底三只剩一空 // Third row from bottom (y - 1) has only one empty cell
                                 //++full;
                             } else {
                                 score -= s;
@@ -835,7 +836,7 @@ namespace AI {
                 }
             }
         }
-        // 4W��״�ж�
+        // 4W形状判定 // 4-wide pattern detection
         if ( USE4W )
         if ( ai_param.strategy_4w > 0 && total_clears < 1 ) //&& lastCombo < 1 && pool.combo < 1 )
         {
@@ -873,10 +874,10 @@ namespace AI {
                 }
                 break;
             }
-            if ( maxy_4w <= pool_h - 4 ) { // ����г���4�����оͲ���
+            if ( maxy_4w <= pool_h - 4 ) { // If there are more than 4 garbage lines, don't build 4-wide
                 maxy_4w = -10;
             }
-            //if ( maxy_4w - maxy_4w_combo > 15 ) { // ����г���10Ԥ���оͲ���
+            //if ( maxy_4w - maxy_4w_combo > 15 ) { // If there are more than 10 setup rows, don't build 4-wide
             //    maxy_4w = -10;
             //}
             if ( maxy_4w - maxy_4w_combo < 9 && pool_hole_score > ai_param.hole * (maxy_4w - maxy_4w_combo) / 2 ) {
@@ -923,7 +924,6 @@ namespace AI {
                 }
             }
         }
-        // �ۻ���
 
 		int i = gem_add_y + pool.m_h;
 		for (; i >= 0; --i) {
@@ -941,8 +941,8 @@ namespace AI {
 			} else if (clears != 0) clearScore += 100000000;
 		}
 
+        // 累积分 // Accumulate score
         score += clearScore;
-
         return score;
     }
     struct MovsState {
@@ -1278,7 +1278,7 @@ namespace AI {
                 if ( pq_size > 1 ) pq_last->pop_back();
 
                 const MovsState &ms_last = pq_last->back();
-                if ( pq_size != pqmax_size && ms_last.first.score > 50000000 ) { // ���߷ּ�֦
+                if ( pq_size != pqmax_size && ms_last.first.score > 50000000 ) { // 超高分剪枝 // Prune extremely high-score paths
                     break;
                 }
                 if (Abort()) {
@@ -1290,7 +1290,7 @@ namespace AI {
                 }
                 max_combo = std::max( max_combo, (int)ms_last.pool_last.combo );
                 if (0)
-                if ( pq_size != pqmax_size ) { // ����combo�����combo��֦
+                if ( pq_size != pqmax_size ) { // 超高combo后的无combo剪枝 // Prune moves with low combos after a very high combo
                     if ( ms_last.pool_last.combo > 0 && max_combo > 5 && ms_last.pool_last.combo < max_combo - 1 ) {
                         break;
                     }
@@ -1344,7 +1344,7 @@ namespace AI {
                     MovsState ms = ms_last;
                     ms.first.score += 100000000;
                     pq->push(ms);
-                    continue; // ���־͹ҵĻ�ʹ��hold�����������
+                    continue; // 出现就挂的话使用hold的情况不能跑 // If it crashes immediately, fallback to using hold (can't proceed directly)
                 } else {
                     MovQueue<MovsState> p(movs.size());
                     for (size_t i = 0; (i < movs.size()) && !Abort(); ++i) {
@@ -1512,7 +1512,7 @@ namespace AI {
                 if ( pq_size > 1 ) pq_last->pop_back();
 
                 const MovsState &ms_last = pq_last->back();
-                if ( pq_size != pqmax_size && ms_last.first.score > 50000000 ) { // ���߷ּ�֦
+                if ( pq_size != pqmax_size && ms_last.first.score > 50000000 ) { // 超高分剪枝 // Prune extremely high-score paths
                     break;
                 }
                 pq->push(ms_last);

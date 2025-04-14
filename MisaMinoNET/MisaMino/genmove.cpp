@@ -114,7 +114,7 @@ namespace AI {
             }
         }
 #endif
-		if ( 1 || field.row[y+3] & field.m_w_mask ) // �ǿ����еĻ�
+		if ( 1 || field.row[y+3] & field.m_w_mask ) // 非空气行的话 // If it's a non-empty (non-air) row
         {
             MovingSimple m;
             m.x = x;
@@ -248,7 +248,7 @@ namespace AI {
                 int nx = m.x, ny = m.y, ns = m.spin;
                 int wallkick_spin = m.wallkick_spin;
 #ifndef SWITCH_USING_HEIGHT_OPT
-                while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) { // �ǿ����в���ʹ�õ��Ż�
+                while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) { // 非空气行才能使用的优化 // Optimization only usable when below is not an empty row
                     ++ny; wallkick_spin = 0;
                 }
                 while ( ! field.isCollide(nx, ny + 1, getGem(cur.num, ns) ) ) {
@@ -379,7 +379,7 @@ namespace AI {
                 int nx = m.x, ny = m.y, ns = m.spin;
                 ++ny;
                 MovingSimple nm = m;
-                while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) { // �ǿ����в���ʹ�õ��Ż�
+                while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) { // 非空气行才能使用的优化 // Optimization only usable when below is not an empty row
                     ++ny;
                     nm.lastmove = MovingSimple::MOV_D;
                 }
@@ -562,7 +562,7 @@ namespace AI {
             {
                 int nx = m.x, ny = m.y, ns = m.spin;
                 int wallkick_spin = m.wallkick_spin;
-                //while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) { // �ǿ����в���ʹ�õ��Ż�
+                //while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) { // 非空气行才能使用的优化 // Optimization only usable when below is not an empty row
                 //    ++ny; wallkick_spin = 0;
                 //}
                 while ( ! field.isCollide(nx, ny + 1, getGem(cur.num, ns) ) ) {

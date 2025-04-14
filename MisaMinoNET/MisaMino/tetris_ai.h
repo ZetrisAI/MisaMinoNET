@@ -215,27 +215,27 @@ namespace AI {
         }
     };
     struct AI_Param {
-        int miny_factor; // ��߸߶ȷ�
-        int hole; // -����
-        int open_hole; // -���Ŷ������ܲ��
-        int v_transitions; // -ˮƽת��ϵ��
-        int tspin3; // T3������
+        int miny_factor; // 最高高度分 // Score based on maximum height
+        int hole; // -洞分 // Hole penalty
+        int open_hole; // -开放洞，可能插块 // Open hole penalty, potential for block insertion
+        int v_transitions; // -水平转换系数 // Horizontal transition coefficient
+        int tspin3; // T3基本分 // Basic score for T-Spin Triple
 
-        int clear_efficient; // ����Ч��ϵ��
-        int upcomeAtt; // -Ԥ����������ϵ��
-        int h_factor; // -�߶Ȳ�ϵ��
-        int hole_dis_factor2; // -������ϵ��
-        int hole_dis; // -���ľ����
-        //int flat_factor; // ƽֱϵ��
+        int clear_efficient; // 消行效率系数 // Line clear efficiency coefficient
+        int upcomeAtt; // -预备攻击基本系数 // Upcoming attack base coefficient
+        int h_factor; // -高度差系数 // Height difference coefficient
+        int hole_dis_factor2; // -洞距离系数 // Hole distance factor 2
+        int hole_dis; // -洞的距离分 // Hole distance score
+        //int flat_factor; // 平直系数 // Flatness coefficient
 
-        int hole_dis_factor; // -������ϵ��
-        int tspin; // tspinϵ��
-        int hold_T; // hold T��Iϵ��
-        int hold_I; // hold T��Iϵ��
-        int clear_useless_factor; // ��Ч��ϵ��
-        //int ready_combo; // ����Ԥ����x
+        int hole_dis_factor; // -洞距离系数 // Hole distance coefficient
+        int tspin; // tspin系数 // T-Spin coefficient
+        int hold_T; // hold T和I系数 // Hold T and I coefficient
+        int hold_I; // hold T和I系数 // Hold T and I coefficient
+        int clear_useless_factor; // 无效行系数 // Useless line clear penalty
+        //int ready_combo; // 连击预备分x // Combo preparation score
 
-        int dif_factor; //ƫ��ֵ
+        int dif_factor; //偏差值 // Deviation factor
 
 		int b2b;
 		int combo;
