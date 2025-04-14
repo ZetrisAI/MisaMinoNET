@@ -706,10 +706,13 @@ namespace AI {
                         }
                         //int full = 0;
                         {
-                            // TODO: There's likely a small modification that can be made here to allow for STSDs
                             int e = ~(pool.row[y + 1] | (1<<x) ) & pool.m_w_mask;
                             e &= ( e-1); 
-                            if ( e == 0 ) { // 最底只剩一空 // Bottom row (y+1) has only one empty cell left
+                            int f = ~(pool.row[y + 1] | (1<<(x+2)) ) & pool.m_w_mask;
+                            f &= ( f-1); 
+                            if ( /*e == 0    // 最底只剩一空 // Bottom row (y+1) has only one empty cell left
+                                ||*/ (f & (f - 1)) == 0     // Bottom row (y+1) has only two empty cells left (STSD case)
+                            ) {
                                 //++full;
                             } else {
                                 score -= s;
@@ -794,7 +797,11 @@ namespace AI {
                         {
                             int e = ~(pool.row[y + 1] | (1<<x) ) & pool.m_w_mask;
                             e &= ( e-1);
-                            if ( e == 0 ) { // 最底只剩一空 // Bottom row (y + 1) has only one empty cell
+                            int f = ~(pool.row[y + 1] | (1<<(x-2)) ) & pool.m_w_mask;
+                            f &= ( f-1);
+                            if ( /*e == 0    // 最底只剩一空 // Bottom row (y + 1) has only one empty cell
+                                ||*/ (f & ( f-1)) == 0      // Bottom row (y + 1) has only two empty cells left (STSD case)  
+                            ) {
                                 //++full;
                             } else {
                                 score -= s;
@@ -802,7 +809,7 @@ namespace AI {
                             }
                         }
                         {
-                            int e = ~(pool.row[y] | (1<<x-2)) & pool.m_w_mask;
+                            int e = ~(pool.row[y] | (1<<(x-2))) & pool.m_w_mask;
                             e &= ( e-1);
                             if ( (e & ( e-1)) == 0 ) { // 底二只剩两空 // Second row from bottom (y) has only two empty cells
                                 //++full;
