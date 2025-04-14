@@ -668,7 +668,7 @@ namespace AI {
                         // 所有空的地方先匹配 // Check if all empty regions match expected T3 pattern
                         if (   ( (row_y[2] >> (x + 1)) & ( 7 ) ) != 3 /*110*/
                             //|| ( (row_y[4] >> (x + 1)) & ( 15 ) ) != 11 /*1101*/
-                            || ( (row_y[4] >> (x + 1)) & ( 13 ) ) != 9 /*1011mask=1001*/
+                            || ( (row_y[4] >> (x + 1)) & ( 15 ) ) != 9 /*1011mask=1001*/ // GPT Change this
                             || ( (row_y[1] >> (x + 1)) & ( 7 ) ) != 0 /*000*/
                             //|| ( (row_y[0] >> (x + 1)) & ( 3 ) ) != 0 /*00*/
                             ) {
@@ -757,7 +757,7 @@ namespace AI {
                         // 所有空的地方先匹配 // Match all empty cells to expected T3 mirrored pattern
                         if (   ( (row_y[2] >> (x+1)) & ( 7 ) ) != 6 /*011*/
                             //|| ( (row_y[4] >> (x)) & ( 15 ) ) != 13 /*1011*/
-                            || ( (row_y[4] >> (x)) & ( 11 ) ) != 9 /*1101mask=1001*/
+                            || ( (row_y[4] >> (x)) & ( 15 ) ) != 9 /*1101mask=1001*/
                             || ( (row_y[1] >> (x + 1)) & ( 7 ) ) != 0 /*000*/
                             //|| ( (row_y[0] >> (x + 1)) & ( 3 ) ) != 0 /*00*/
                             ) {
