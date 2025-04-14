@@ -706,6 +706,7 @@ namespace AI {
                         }
                         //int full = 0;
                         {
+                            // TODO: There's likely a small modification that can be made here to allow for STSDs
                             int e = ~(pool.row[y + 1] | (1<<x) ) & pool.m_w_mask;
                             e &= ( e-1); 
                             if ( e == 0 ) { // 最底只剩一空 // Bottom row (y+1) has only one empty cell left
@@ -927,15 +928,16 @@ namespace AI {
 
         // Perfect Clear scoring (no detection - that's sfinder's job)
         if (tetris_game < 2) { // In TETR.IO Season 2, PCs from misa aren't that great
-		int i = gem_add_y + pool.m_h;
-		for (; i >= 0; --i) {
-			if (pool.m_row[i]) break;
-		}
-		if (i < 0) {
-			clearScore -= 1000000;
-		}
+            int i = gem_add_y + pool.m_h;
+            for (; i >= 0; --i) {
+                if (pool.m_row[i]) break;
+            }
+            if (i < 0) {
+                clearScore -= 1000000;
+            }
         }
 
+        // Force TSD only clears
 		if (TSD_only) {
 			if (cur_num == AI::GEMTYPE_T) {
 				if (wallkick_spin != 0 && clears == 2) clearScore -= 100000000;
@@ -1244,6 +1246,7 @@ namespace AI {
 		int final_depth = 65535;
 
 		int depth = 0;
+        // Main search loop, TODO: Multithread this loop somehow?
         for (; /*search_nodes < max_search_nodes &&*/ depth < maxDeep; searchDeep = ++depth ) { //d < maxDeep
 			if (Abort()) break;
 
@@ -1270,6 +1273,7 @@ namespace AI {
                 max_search_score = (max_search_score * 2 + pq_last->front().first.score) / 3;
             }
             std::set<GameState> gsSet;
+            // TODO: Multithread here.
             for ( int pqmax_size = (int)pq_last->size(),
                 pq_size = (int)pq_last->size(),
                 stop_size = std::max(0, (int)pq_size - search_wide);
