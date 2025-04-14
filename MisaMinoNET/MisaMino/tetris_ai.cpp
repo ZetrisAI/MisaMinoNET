@@ -1135,7 +1135,7 @@ namespace AI {
             } else {
                 t_dis = 0;
             }
-            GenMoving(_pool, movs, cur, x, y, 0);
+            GenMoving(_pool, movs, cur, x, y, 0, false);
             for (MovingList::iterator it = movs.begin(); it != movs.end() && !Abort(); ++it) {
                 ++search_nodes;
                 MovsState &ms = que.append();
@@ -1198,7 +1198,7 @@ namespace AI {
                 }
                 int x = gem_beg_x, y = gem_beg_y;
                 Gem cur = getGem( cur_num, 0 );
-                GenMoving(_pool, movs, cur, x, y, 1);
+                GenMoving(_pool, movs, cur, x, y, 1, false);
                 for (MovingList::iterator it = movs.begin(); it != movs.end() && !Abort(); ++it) {
                     ++search_nodes;
                     MovsState &ms = que.append();
@@ -1344,9 +1344,9 @@ namespace AI {
                     t_dis = 0;
                 }
                 if ( BEG_ADD_Y && ms_last.upcomeAtt < 0 )
-                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y - ms_last.upcomeAtt, 0 );
+                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y - ms_last.upcomeAtt, 0, ms_last.combo > 0);
                 else
-                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y, 0 );
+                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y, 0, ms_last.combo > 0);
                 if ( movs.empty() ) {
                     MovsState ms = ms_last;
                     ms.first.score += 100000000;
@@ -1426,9 +1426,9 @@ namespace AI {
                             t_dis = 0;
                         }
                         if ( BEG_ADD_Y && ms_last.upcomeAtt < 0 )
-                            GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y - ms_last.upcomeAtt, 1 );
+                            GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y - ms_last.upcomeAtt, 1, ms_last.combo > 0);
                         else
-                            GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y, 1 );
+                            GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y, 1, ms_last.combo > 0);
                         if ( movs.empty() ) {
                             MovsState ms = ms_last;
                             ms.first.score += 100000000;
@@ -1549,9 +1549,9 @@ namespace AI {
                     }
                 }
                 if ( BEG_ADD_Y && ms_last.upcomeAtt < 0 )
-                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y - ms_last.upcomeAtt, 0 );
+                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y - ms_last.upcomeAtt, 0, ms_last.combo > 0);
                 else
-                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y, 0 );
+                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y, 0, ms_last.combo > 0);
                 if ( movs.empty() ) {
                     MovsState ms = ms_last;
                     ms.first.score += 100000000;

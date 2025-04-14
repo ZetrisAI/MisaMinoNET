@@ -79,18 +79,29 @@ namespace AI {
         MOV_SCORE_SPIN = 150,
     };
 
-    void GenMoving(const GameField& field, std::vector<MovingSimple> & movs, Gem cur, int x, int y, bool hold) {
+    void GenMoving(const GameField& field, std::vector<MovingSimple> & movs, Gem cur, int x, int y, bool hold, bool wasLineClear) {
         movs.clear();
 		if (cur.num == 0) { // rare race condition, we're dead already if this happens
 			assert(true); // debug break
 			cur = AI::getGem(AI::GEMTYPE_I, 0);
 		}
-        if ( field.isCollide(x, y, getGem(cur.num, cur.spin) ) ) {
-            return ;
+        if (tetris_game == 0) {
+            // PPT doesn't check for stack collision if the piece came out of hold, so we only check if it's not hold
+            if (!hold && field.isCollide(x, y, getGem(cur.num, cur.spin) ) ) {
+                return ;
+            }
+        } else {
+            if (wasLineClear) {
+                // In TETR.IO we can just assume the piece spawns on top of the stack (clutch clears)
+                // If we're dead we should get aborted by the game engine listener
+                while (field.isCollide(x, y, getGem(cur.num, cur.spin))) {
+                    y--;
+                    if (y < -6) return;
+                }
+            } else if (field.isCollide(x, y, getGem(cur.num, cur.spin))) {
+                return;
+            }
         }
-        //if ( field.isCollide(x, y + 1, getGem(cur.num, cur.spin) ) ) {
-        //    return ;
-        //}
         char _hash[64][4][GENMOV_W_MASK+1] = {0};
         char _hash_drop[64][4][GENMOV_W_MASK+1] = {0};
         char (*hash)[4][GENMOV_W_MASK+1] = &_hash[gem_add_y];
@@ -484,8 +495,16 @@ namespace AI {
     }
 	
 	void FindPathMoving(const GameField& field, Moving& mov, Gem cur, int x, int y, bool hold, int goalx, int goaly, int goalr, int goalwk) {
-        if ( field.isCollide(x, y, getGem(cur.num, cur.spin) ) ) {
-            return ;
+        if (tetris_game == 0) {
+            // PPT doesn't check for stack collision if the piece came out of hold, so we only check if it's not hold
+            if (!hold && field.isCollide(x, y, getGem(cur.num, cur.spin) ) ) {
+                return ;
+            }
+        } else {
+            // TETR.IO
+            if (field.isCollide(x, y, getGem(cur.num, cur.spin))) {
+                return;
+            }
         }
         char _hash[64][4][GENMOV_W_MASK+1] = {0};
         char _hash_drop[64][4][GENMOV_W_MASK+1] = {0};
