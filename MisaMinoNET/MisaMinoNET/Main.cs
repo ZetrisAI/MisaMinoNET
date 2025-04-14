@@ -42,6 +42,17 @@ namespace MisaMinoNET {
         /// <param name="tetrisGame">For PPT, uses regular SRS. For TETR.IO, uses SRS+.</param>
         /// <param name="tminioldbehavior">If false, new `tmini` MisaMino parameter is used for Tmini. If true, old `tspin` MisaMino parameter is used for Tmini.</param>
         public static void Configure(MisaMinoParameters param, bool hold_allowed, AllowedSpins allowedSpins, bool tsd_only, int search_width, bool allow180, TetrisGame tetrisGame, bool tminioldbehavior) {
+            if (Interface.Running) {
+                Console.WriteLine("[MisaMinoNET] Tried to configure MisaMino while it was running. Scheduling a re-configure on finish.");
+
+                FinishedEventHandler reconfigure = null;
+                reconfigure = (bool success) => {
+                    Finished -= reconfigure;
+                    Configure(param, hold_allowed, allowedSpins, tsd_only, search_width, allow180, tetrisGame, tminioldbehavior);
+                };
+                Finished += reconfigure;
+            }
+
             Interface.configure(param.Parameters, hold_allowed, (int)allowedSpins, tsd_only, search_width, allow180, (int)tetrisGame, tminioldbehavior);
             Reset();
         }
