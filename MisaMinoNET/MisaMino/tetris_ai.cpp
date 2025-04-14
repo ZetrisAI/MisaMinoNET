@@ -925,6 +925,8 @@ namespace AI {
             }
         }
 
+        // Perfect Clear scoring (no detection - that's sfinder's job)
+        if (tetris_game < 2) { // In TETR.IO Season 2, PCs from misa aren't that great
 		int i = gem_add_y + pool.m_h;
 		for (; i >= 0; --i) {
 			if (pool.m_row[i]) break;
@@ -932,6 +934,7 @@ namespace AI {
 		if (i < 0) {
 			clearScore -= 1000000;
 		}
+        }
 
 		if (TSD_only) {
 			if (cur_num == AI::GEMTYPE_T) {
