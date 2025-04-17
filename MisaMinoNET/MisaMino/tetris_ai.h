@@ -242,6 +242,7 @@ namespace AI {
 		int avoid_softdrop;
 		int tmini;
 
+        int ass_bonus;
 		int strategy_4w;
     };
     typedef char* (*AIName_t)( int level );

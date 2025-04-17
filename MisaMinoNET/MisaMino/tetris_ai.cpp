@@ -926,25 +926,51 @@ namespace AI {
             }
         }
 
+        int i = 0;
+        int highest_row = -1;
+        for (; pool.m_row[i] != -1; i++) {
+            if (highest_row < 0 && pool.m_row[i]) highest_row = i;
+        }
+        int boardheight = highest_row < 0 ? 0 : (i - highest_row);
+
         // Perfect Clear scoring (no detection - that's sfinder's job)
-        if (tetris_game < 2) { // In TETR.IO Season 2, PCs from misa aren't that great
-            int i = gem_add_y + pool.m_h;
-            for (; i >= 0; --i) {
-                if (pool.m_row[i]) break;
-            }
-            if (i < 0) {
-                clearScore -= 1000000;
+        // In TETR.IO Season 2, PCs from misa aren't that great
+        if (tetris_game < 2 && boardheight <= 0) {
+            clearScore -= 1000000;
+        }
+
+        // In TETR.IO Season 2, prioritize All-Spin Singles the lower we are on the board
+        if (ai_param.ass_bonus && tetris_game == 2 && getAllowedSpins() >= 1 &&
+            ((wallkick_spin != 0 && clears == 1) || (cur_num == AI::GEMTYPE_T && wallkick_spin != 0 && clears == 2)) // is ASS or TSD
+        ) {
+            const int ass_bonus_lookup[] = {
+                40, 40, 40, 40,
+                30, 20, 20, 10,
+                10, 10,  9,  8,
+                 7,  6,  4,  2
+            };
+            if (boardheight < (sizeof(ass_bonus_lookup) / sizeof(ass_bonus_lookup[0]))) {
+                if (wallkick_spin != 0 && clears == 1) {
+                    clearScore -= ass_bonus_lookup[boardheight] * ai_param.ass_bonus;
+                }
             }
         }
 
-        // Force TSD only clears
 		if (TSD_only) {
-			if (cur_num == AI::GEMTYPE_T) {
-				if (wallkick_spin != 0 && clears == 2) clearScore -= 100000000;
-				else clearScore += 100000000;
+            // Force ASS only clears
+            if (getAllowedSpins() >= 1) {
+                if (wallkick_spin != 0 && clears == 1) clearScore -= 100000000;
+                else if (clears != 0) clearScore += 100000000;
 
-			} else if (clears != 0) clearScore += 100000000;
-		}
+            // Force TSD only clears
+            } else {
+                if (cur_num == AI::GEMTYPE_T) {
+                    if (wallkick_spin != 0 && clears == 2) clearScore -= 100000000;
+                    else clearScore += 100000000;
+
+                } else if (clears != 0) clearScore += 100000000;
+            }
+        }
 
         // 累积分 // Accumulate score
         score += clearScore;
@@ -1111,7 +1137,7 @@ namespace AI {
 
         //if ( AI_SHOW && GAMEMODE_4W ) max_search_nodes *= 2;
         //if ( level <= 0 ) maxDeep = 0;
-        //else if ( level <= 6 ) maxDeep = std::min(level, 6); // TODO: max deep
+        //else if ( level <= 6 ) maxDeep = std::min(level, 6); // TODO(misakamm): max deep
         //else maxDeep = level;
         
         int next_add = 0;

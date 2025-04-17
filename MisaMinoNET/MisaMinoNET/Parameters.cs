@@ -29,6 +29,7 @@ namespace MisaMinoNET {
         public int avoid_softdrop;
         public int tmini;
 
+        public int ass_bonus;
         public int strategy_4w;
     };
 
@@ -49,7 +50,7 @@ namespace MisaMinoNET {
             int clear_efficient = 25, int upcomeAtt = 39, int h_factor = 2, int hole_dis_factor2 = 12, int hole_dis = 19,
             int hole_dis_factor = 7, int tspin = 24, int hold_T = 18, int hold_I = 7, int clear_useless_factor = 14,
             int dif_factor = 19, int b2b = 99, int combo = 14, int avoid_softdrop = 19, int tmini = 0,
-            int strategy_4w = 0
+            int ass_bonus = 0, int strategy_4w = 0
         ) {
             Parameters.miny_factor = miny_factor;
             Parameters.hole = hole;
@@ -75,6 +76,7 @@ namespace MisaMinoNET {
             Parameters.avoid_softdrop = avoid_softdrop;
             Parameters.tmini = tmini;
 
+            Parameters.ass_bonus = ass_bonus;
             Parameters.strategy_4w = strategy_4w;
         }
 
@@ -84,14 +86,14 @@ namespace MisaMinoNET {
         /// <param name="arr">The array of integers to create MisaMino Parameters from.</param>
         /// <exception cref="ArgumentException">Thrown when the array size doesn't match the number of parameters.</exception>
         public static MisaMinoParameters FromArray(int[] arr) {
-            if (arr.Length != 21) throw new ArgumentException();
+            if (arr.Length != 22) throw new ArgumentException();
 
             return new MisaMinoParameters(
                 arr[0], arr[1], arr[2], arr[3], arr[4],
                 arr[5], arr[6], arr[7], arr[8], arr[9],
                 arr[10], arr[11], arr[12], arr[13], arr[14],
                 arr[15], arr[16], arr[17], arr[18], arr[19],
-                arr[20]
+                arr[20], arr[21]
             );
         }
 
@@ -123,6 +125,7 @@ namespace MisaMinoNET {
             Parameters.avoid_softdrop,
             Parameters.tmini,
 
+            Parameters.ass_bonus,
             Parameters.strategy_4w
         };
     };

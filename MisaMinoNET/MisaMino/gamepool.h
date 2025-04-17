@@ -6,7 +6,7 @@
 #include <iostream>
 #include "tetris_gem.h"
 #include "stuff.h"
-#define AI_POOL_MAX_H 50
+#define AI_POOL_MAX_H 70
 
 namespace AI {
     struct GameField;
@@ -401,7 +401,6 @@ namespace AI {
                 }
             }
             else { // TETR.IO garbage logic
-                // TODO: TETR.IO S2
                 if (clearfull > 1) {
                     if (clearfull < 4) {
                         attack = clearfull - 1;
