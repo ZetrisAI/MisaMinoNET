@@ -352,7 +352,22 @@ namespace AI {
                 } else if ( _wallkick_spin > 0 ) {
                     ++b2b;
                 } else {
-                    b2b = 0;
+                    if (tetris_game == 2) {
+                        int i = 0;
+                        int highest_row = -1;
+                        for (; m_row[i] != -1; i++) {
+                            if (highest_row < 0 && m_row[i]) highest_row = i;
+                        }
+                        int boardheight = highest_row < 0? 0 : (i - highest_row);
+                        bool isPC = boardheight <= 0;
+                        if (isPC) {
+                            ++b2b;
+                        } else {
+                            b2b = 0;
+                        }
+                    } else {
+                        b2b = 0;
+                    }
                 }
             } else {
                 combo = 0;
