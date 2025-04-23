@@ -41,14 +41,15 @@ namespace MisaMinoNET {
         /// <param name="allow180">Are we allowed to use 180 rotations? (TETR.IO kicks)</param>
         /// <param name="tetrisGame">For PPT, uses regular SRS. For TETR.IO, uses SRS+.</param>
         /// <param name="tminioldbehavior">If false, new `tmini` MisaMino parameter is used for Tmini. If true, old `tspin` MisaMino parameter is used for Tmini.</param>
-        public static void Configure(MisaMinoParameters param, bool hold_allowed, AllowedSpins allowedSpins, bool tsd_only, int search_width, bool allow180, TetrisGame tetrisGame, bool tminioldbehavior) {
+        /// <param name="log">Your favorite logging function</param>
+        public static void Configure(MisaMinoParameters param, bool hold_allowed, AllowedSpins allowedSpins, bool tsd_only, int search_width, bool allow180, TetrisGame tetrisGame, bool tminioldbehavior, Action<string> log = null) {
             if (Interface.Running) {
-                Console.WriteLine("[MisaMinoNET] Tried to configure MisaMino while it was running. Scheduling a re-configure on finish.");
+                (log?? Console.WriteLine)("[MisaMinoNET] Tried to configure MisaMino while it was running. Scheduling a re-configure on finish.");
 
                 FinishedEventHandler reconfigure = null;
                 reconfigure = (bool success) => {
                     Finished -= reconfigure;
-                    Configure(param, hold_allowed, allowedSpins, tsd_only, search_width, allow180, tetrisGame, tminioldbehavior);
+                    Configure(param, hold_allowed, allowedSpins, tsd_only, search_width, allow180, tetrisGame, tminioldbehavior, log);
                 };
                 Finished += reconfigure;
             }
@@ -113,19 +114,17 @@ namespace MisaMinoNET {
         /// </summary>
         public static bool Running => Interface.Running;
 
-        static ManualResetEvent abortWait;
-
         /// <summary>
         /// Aborts the currently running search, if there is one.
         /// </summary>
         public static void Abort() {
-            if (Interface.Running) {
-                abortWait = new ManualResetEvent(false);
+            if (!Interface.Running) return;
 
-                Interface.SetAbort();
+            var abortWait = AbortCoordinator.CreateWaiter();
 
-                abortWait.WaitOne();
-            }
+            Interface.SetAbort();
+
+            abortWait();
         }
 
         /// <summary>
@@ -168,7 +167,7 @@ namespace MisaMinoNET {
 
                     Finished?.Invoke(solved);
 
-                    abortWait?.Set();
+                    AbortCoordinator.WakeWaiters();
                 });
             }
         }
