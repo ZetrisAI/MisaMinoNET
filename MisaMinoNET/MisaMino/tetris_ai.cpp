@@ -1690,7 +1690,7 @@ namespace AI {
         }
     };
     AI::Gem AI_Thread( void* lpParam ) {
-        AI::Gem cur;
+		AI::Gem cur = AI::getGem(AI::GEMTYPE_NULL, 0);
         
         AI_THREAD_PARAM* p = (AI_THREAD_PARAM*)lpParam;
         int searchDeep = 0;
