@@ -100,11 +100,6 @@ public:
   26,   0,  20,  17,  45,  41,  -8,   9,  10,  27,  15,  20,  19,  11,  44,   4,   300//,1183
 
         };
-        if ( GAMEMODE_4W ) {
-            //param.h_variance = 0;
-            param.tspin = 0;
-            param.tspin3 = 0;
-        }
         m_ai_param = param;
     }
     void reset ( unsigned seed, unsigned pass = 0 ) {

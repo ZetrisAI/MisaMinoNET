@@ -53,8 +53,8 @@ namespace MisaMinoNET {
         public static extern void update_reset();
 
         [DllImport("MisaMino.dll")]
-        private static extern void action(StringBuilder str, int len);
-        public static string Move(out long time) {
+        private static extern void action(bool second_choice, StringBuilder str, int len);
+        public static string Move(bool second_choice, out long time) {
             StringBuilder sb = new StringBuilder(500);
 
             abort = true;
@@ -67,7 +67,7 @@ namespace MisaMinoNET {
 
                 Running = true;
 
-                action(sb, sb.Capacity);
+                action(second_choice, sb, sb.Capacity);
 
                 Running = false;
 

@@ -48,8 +48,8 @@ DLL void update_reset() {
     MisaBot.setup();
 }
 
-DLL void action(char* str, int len) {
-    std::string a = MisaBot.outputAction(str, len);
+DLL void action(bool second_choice, char* str, int len) {
+    std::string a = MisaBot.outputAction(second_choice, str, len);
     std::copy(a.c_str(), a.c_str() + a.length() + 1, str);
 }
 DLL bool alive() {

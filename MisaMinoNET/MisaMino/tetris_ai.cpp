@@ -1115,7 +1115,7 @@ namespace AI {
         };
     };
 #define BEG_ADD_Y 1
-    MovingSimple AISearch(AI_Param ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep) {
+    MovingSimple AISearch(AI_Param ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, bool second_choice) {
 		if (cur.num == 0) { // rare race condition, we're dead already if this happens
 			assert(true); // debug break
 			cur = AI::getGem(AI::GEMTYPE_I, 0);
@@ -1135,7 +1135,6 @@ namespace AI {
         if ( ai_param.hole < 0 ) ai_param.hole = 0;
         ai_param.hole += ai_param.open_hole;
 
-        //if ( AI_SHOW && GAMEMODE_4W ) max_search_nodes *= 2;
         //if ( level <= 0 ) maxDeep = 0;
         //else if ( level <= 6 ) maxDeep = std::min(level, 6); // TODO(misakamm): max deep
         //else maxDeep = level;
@@ -1637,14 +1636,38 @@ namespace AI {
             MovingSimple* m;
             std::swap(pq_last, pq);
             m = &pq_last->queue[0].first;
-            if ( ! GAMEMODE_4W ) {
-                for (int i = 1; i < pq_last->size(); i++) {
-					MovingSimple* c = &pq_last->queue[i].first;
-                    if ( m->score > c->score) {
-                        m = c;
-                    }
+
+            for (int i = 1; i < pq_last->size(); i++) {
+                MovingSimple* c = &pq_last->queue[i].first;
+                if (m->score > c->score) {
+                    m = c;
                 }
             }
+
+            if (second_choice) {
+                MovingSimple* m2 = nullptr;
+
+                for (int i = 0; i < pq_last->size(); i++) {
+                    MovingSimple* c = &pq_last->queue[i].first;
+					if (*c == *m) continue;
+
+                    // prevent AI from just swapping piece order lol
+                    if (c->hold != m->hold) continue;
+
+                    if (m2 == nullptr || m2->score > c->score) {
+                        m2 = c;
+                    }
+                }
+
+				if (m2 != nullptr) {
+					m = m2;
+                } else {
+                    // All other first moves had been pruned. Just move the piece its whatever
+                    if (m->x < 5) m->x++;
+                    else m->x--;
+                }
+            }
+
 			last_nodes = search_nodes;
 			last_depth = final_depth;
             return *m;
@@ -1668,8 +1691,9 @@ namespace AI {
         int upcomeAtt;
         int maxDeep;
         int *searchDeep;
+        bool second_choice;
         int player;
-        AI_THREAD_PARAM(TetrisAI_t _func, Moving& _ret_mov, int& _flag, const AI_Param& _ai_param, const GameField& _pool, int _hold, Gem _cur, int _x, int _y, const std::vector<Gem>& _next, bool _canhold, int _upcomeAtt, int _maxDeep, int & _searchDeep, int _player) {
+        AI_THREAD_PARAM(TetrisAI_t _func, Moving& _ret_mov, int& _flag, const AI_Param& _ai_param, const GameField& _pool, int _hold, Gem _cur, int _x, int _y, const std::vector<Gem>& _next, bool _canhold, int _upcomeAtt, int _maxDeep, int & _searchDeep, bool _second_choice, int _player) {
             func = _func;
             ret_mov = &_ret_mov;
             flag = &_flag;
@@ -1684,6 +1708,7 @@ namespace AI {
             upcomeAtt = _upcomeAtt;
             maxDeep = _maxDeep;
             searchDeep = &_searchDeep;
+            second_choice = _second_choice;
             player = _player;
         }
         ~AI_THREAD_PARAM() {
@@ -1696,7 +1721,7 @@ namespace AI {
         int searchDeep = 0;
         *p->flag = 1;
 
-        AI::MovingSimple best = AISearch(p->ai_param, p->pool, p->hold, p->cur, p->x, p->y, p->next, p->canhold, p->upcomeAtt, p->maxDeep, searchDeep);
+        AI::MovingSimple best = AISearch(p->ai_param, p->pool, p->hold, p->cur, p->x, p->y, p->next, p->canhold, p->upcomeAtt, p->maxDeep, searchDeep, p->second_choice);
         AI::Moving mov;
         const AI::GameField &gamefield = p->pool;
         std::vector<AI::Gem> &gemNext = p->next;
@@ -1728,9 +1753,8 @@ namespace AI {
         
         return cur;
     }
-    AI::Gem RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep) {
+    AI::Gem RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, bool second_choice) {
         flag = 0;
-        //_beginthread(AI_Thread, 0, new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, level, player) );
-        return AI_Thread(new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, 0));
+        return AI_Thread(new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, second_choice, 0));
     }
 }

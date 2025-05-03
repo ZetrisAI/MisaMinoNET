@@ -18,7 +18,7 @@ public:
     
     //void startParser();
     void setup();
-    std::string outputAction(char* str, int len);
+    std::string outputAction(bool second_choice, char* str, int len);
     void updateStyle(AI::AI_Param param);
 	void updateHoldAllowed(bool holdAllowed);
 	void updateAllowedSpins(int allowedSpins);

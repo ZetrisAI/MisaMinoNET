@@ -177,26 +177,17 @@ void Bot::processMoves() {
     tetris.clearLines();
 }
 
-std::string Bot::outputAction(char* str, int len) {
+std::string Bot::outputAction(bool second_choice, char* str, int len) {
     std::vector<AI::Gem> next;
     for (int j = 0; j < tetris.m_next_num; ++j)
         next.push_back(tetris.m_next[j]);
     int deep = tetris.m_next_num + 1;
     bool canhold = tetris.hold;
-
-    #if DEBUG_LEVEL>=5
-    cerr << "[debug] RunAI: movs:" << tetris.ai_movs.movs.size() << ", flag:" << tetris.ai_movs_flag << ", combo:" <<tetris.m_pool.combo <<endl;
-    cerr << "hold:" << tetris.m_pool.m_hold << ", cur:"<< tetris.m_cur.getLetter() << " x:"<< tetris.m_cur_x<< " y:"<<tetris.m_cur_y << endl << "Next:";
-    for(auto &n : next){
-        cerr << " " << n.getLetter();
-    }
-    cerr<< " " <<((canhold)?"canhold":"NOThold")<<", Deep:"<<deep<<",last:"<<tetris.ai_last_deep<<",level:"<<ai.level<<endl;
-    #endif
     
     AI::Gem piece = AI::RunAI(tetris.ai_movs, tetris.ai_movs_flag, tetris.m_ai_param, tetris.m_pool, tetris.m_hold,
             tetris.m_cur,
             tetris.m_cur_x, tetris.m_cur_y, next, canhold, m_upcomeAtt,
-            deep, tetris.ai_last_deep);
+            deep, tetris.ai_last_deep, second_choice);
 
     std::stringstream out;
     

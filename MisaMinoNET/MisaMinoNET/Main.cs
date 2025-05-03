@@ -142,7 +142,8 @@ namespace MisaMinoNET {
         /// <param name="combo">The combo count.</param>
         /// <param name="b2b">The current number of consecutive back-to-back valid attacks. If you're lazy, you can pass 1 if the player has back-to-back, and 0 if they don't.</param>
         /// <param name="garbage">The amount of incoming garbage which will spawn after the piece is placed.</param>
-        public static async void FindMove(int[] queue, int current, int? hold, int height, int[,] field, int combo, int b2b, int garbage) {
+        /// <param name="second_choice">Return the second best move rather than first. Useful to desync two near-identical bots playing each other.</param>
+        public static async void FindMove(int[] queue, int current, int? hold, int height, int[,] field, int combo, int b2b, int garbage, bool second_choice) {
             if (Interface.alive()) {
                 updateQueue(queue);
                 Interface.update_current(encodeCurrent(current));
@@ -155,7 +156,7 @@ namespace MisaMinoNET {
                 string action;
 
                 await Task.Run(() => {
-                    action = Interface.Move(out long time);
+                    action = Interface.Move(second_choice, out long time);
 
                     LastSolution = new Solution(time);
 
