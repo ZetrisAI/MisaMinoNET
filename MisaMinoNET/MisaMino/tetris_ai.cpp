@@ -440,7 +440,15 @@ namespace AI {
                 int t_att = total_clear_att;
                 double t_clear = total_clears; //+ total_clears / 4.0;
                 avg_height = pool_h + 1 - (double)avg / pool_w;
-                if ( pool.b2b ) s -= (int) ((double)(ai_param.b2b * 5) / (1 + (TSD_only? 0 : pow(5, avg_height - 6.5)))) + 2; // b2b score
+                if ( pool.b2b ) {
+                    double b2b_score = (double)ai_param.b2b * 5;
+                    // Don't drop off b2b_score if TSD_only because there is no opponent, there is no danger
+                    if (!TSD_only) {
+                        b2b_score /= 1 + pow(5, avg_height - 6.5); // z
+                    }
+                    b2b_score += 2; // b
+                    s -= (int)b2b_score;
+                }
                 if ( t_clear > 0 ) {
                     s -= int( ((ai_param.clear_efficient) * ( t_att ) ) );
                 }
