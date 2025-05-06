@@ -102,6 +102,7 @@ namespace AI {
         inline
         bool isCollide(int x, int y, const Gem & gem) const {
             Gem _gem = gem;
+            if (_gem.num == AI::GEMTYPE_NULL) return true;
             for ( int h = 0; h < 4; ++h ) {
                 if ( x < 0 ) {
                     if (gem.bitmap[h] & ( ( 1 << (-x) ) - 1 ) ) return true;
