@@ -1288,13 +1288,13 @@ namespace AI {
             int search_base_width = sw_map[0];    // - sw_map[level][0] / 6;
             int search_wide = sw_map[(depth > 4)? 4 : depth];
             
-            //int seach_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
-            int seach_select_best = std::min(search_wide - search_wide / 4, search_base_width);
+            //int search_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
+            int search_select_best = std::min(search_wide - search_wide / 4, search_base_width);
             if ( level <= 3 ) {
-                seach_select_best = search_wide - search_wide / 4;
+                search_select_best = search_wide - search_wide / 4;
             }
-            if ( seach_select_best < search_base_width ) {
-                seach_select_best = std::min(search_base_width, std::max(15, search_wide) );
+            if ( search_select_best < search_base_width ) {
+                search_select_best = std::min(search_base_width, std::max(15, search_wide) );
             }
             pq->clear();
             int max_combo = 3;
@@ -1426,7 +1426,7 @@ namespace AI {
                         }
                         p.push_back();
                     }
-                    for ( int i = 0; i < seach_select_best && ! p.empty() && !Abort(); ++i) {
+                    for ( int i = 0; i < search_select_best && ! p.empty(); ++i) {
                         pq->push(p.front());
                         p.pop_back();
                         p.dec_size();
@@ -1507,7 +1507,7 @@ namespace AI {
                                 }
                                 p.push_back();
                             }
-                            for ( int i = 0; i < seach_select_best && ! p.empty() && !Abort(); ++i) {
+                            for ( int i = 0; i < search_select_best && ! p.empty(); ++i) {
                                 pq->push(p.front());
                                 p.pop_back();
                                 p.dec_size();
@@ -1531,13 +1531,13 @@ namespace AI {
             int search_base_width = sw_map[0];// - sw_map[level][0] / 6;
 			int search_wide = sw_map[(depth > 4)? 4 : depth];
             
-            //int seach_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
-            int seach_select_best = std::min(search_wide - search_wide / 4, search_base_width);
+            //int search_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
+            int search_select_best = std::min(search_wide - search_wide / 4, search_base_width);
             if ( level <= 3 ) {
-                seach_select_best = search_wide - search_wide / 4;
+                search_select_best = search_wide - search_wide / 4;
             }
-            if ( seach_select_best < search_base_width ) {
-                seach_select_best = std::min(search_base_width, std::max(15, search_wide) );
+            if ( search_select_best < search_base_width ) {
+                search_select_best = std::min(search_base_width, std::max(15, search_wide) );
             }
 
             std::set<GameState> gsSet;
@@ -1629,7 +1629,7 @@ namespace AI {
                         }
                         p.push_back();
                     }
-                    for ( int i = 0; i < seach_select_best && ! p.empty() && !Abort(); ++i) {
+                    for ( int i = 0; i < search_select_best && ! p.empty(); ++i) {
                         pq->push(p.front());
                         p.pop_back();
                         p.dec_size();

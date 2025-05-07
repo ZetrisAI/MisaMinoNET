@@ -10,6 +10,8 @@
 #include "lastnodes.h"
 #include "tetrisgame.h"
 
+extern std::map<char, int> m_gemMap;
+
 class Bot {
 public:
     Bot();
@@ -56,7 +58,6 @@ private:
     int *m_field;
     int m_queueLen;
     int m_upcomeAtt;
-    std::map<char, int> m_gemMap;
     
     tetris_rule rule;
 };

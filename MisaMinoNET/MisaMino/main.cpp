@@ -1,8 +1,5 @@
 #include "main.h"
 
-#pragma unmanaged
-
-std::map<char, int> m_gemMap;
 Bot MisaBot;
 
 DLL void set_abort(Callback handler) {
@@ -170,18 +167,12 @@ DLL void findpathfrom(const char* _field, const char* _piece, int _x, int _y, in
     std::copy(a.c_str(), a.c_str() + a.length() + 1, str);
 }
 
+// Managed code may not be run under loader lock,
+// including the DLL entrypoint and calls reached from the DLL entrypoint
+#pragma managed(push, off)
 BOOL WINAPI DllMain(HANDLE handle, DWORD reason, LPVOID reserved) {
     switch (reason) {
         case DLL_PROCESS_ATTACH:
-            m_gemMap[' '] = AI::GEMTYPE_NULL;
-            m_gemMap['I'] = AI::GEMTYPE_I;
-            m_gemMap['T'] = AI::GEMTYPE_T;
-            m_gemMap['L'] = AI::GEMTYPE_L;
-            m_gemMap['J'] = AI::GEMTYPE_J;
-            m_gemMap['Z'] = AI::GEMTYPE_Z;
-            m_gemMap['S'] = AI::GEMTYPE_S;
-            m_gemMap['O'] = AI::GEMTYPE_O;
-    
             MisaBot.setup();
             break;
 
@@ -197,3 +188,4 @@ BOOL WINAPI DllMain(HANDLE handle, DWORD reason, LPVOID reserved) {
     
     return TRUE;
 }
+#pragma managed(pop)

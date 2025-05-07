@@ -2,17 +2,20 @@
 #include <cassert>
 #include <vector>
 
+std::map<char, int> m_gemMap = {
+    { ' ', AI::GEMTYPE_NULL },
+    { 'I', AI::GEMTYPE_I    },
+    { 'T', AI::GEMTYPE_T    },
+    { 'L', AI::GEMTYPE_L    },
+    { 'J', AI::GEMTYPE_J    },
+    { 'Z', AI::GEMTYPE_Z    },
+    { 'S', AI::GEMTYPE_S    },
+    { 'O', AI::GEMTYPE_O    },
+};
+
 using namespace std;
 
 Bot::Bot():m_hold(' '){
-    m_gemMap[' '] = AI::GEMTYPE_NULL;
-    m_gemMap['I'] = AI::GEMTYPE_I;
-    m_gemMap['T'] = AI::GEMTYPE_T;
-    m_gemMap['L'] = AI::GEMTYPE_L;
-    m_gemMap['J'] = AI::GEMTYPE_J;
-    m_gemMap['Z'] = AI::GEMTYPE_Z;
-    m_gemMap['S'] = AI::GEMTYPE_S;
-    m_gemMap['O'] = AI::GEMTYPE_O;
 }
 
 Bot::Bot(const Bot& orig) {
@@ -116,6 +119,9 @@ void Bot::updateReset() {
     m_upcomeAtt = 0;
 }
 
+// Managed code may not be run under loader lock,
+// including the DLL entrypoint and calls reached from the DLL entrypoint
+#pragma managed(push, off)
 void Bot::setup() {
 	tetris.m_ai_param = globalparam;
 	tetris.hold = holdallow;
@@ -149,6 +155,7 @@ void Bot::setup() {
     tetris.m_clearLines = 0;
     tetris.m_attack = 0;
 }
+#pragma managed(pop)
 
 void Bot::processMoves() {
     tetris.m_state = AI::Tetris::STATE_MOVING;
