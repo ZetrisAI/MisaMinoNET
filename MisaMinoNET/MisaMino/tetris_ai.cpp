@@ -282,6 +282,10 @@ namespace AI {
                         if (b2b_height < 6) {
                             b2b_score *= (66 - b2b_height) / 60;
                         }
+						// lower score for too small b2b (doesn't hold surge - better to run away and get large b2b later)
+                        if (pool.b2b < 4) {
+							b2b_score /= pow(1.5, 4 - pool.b2b);
+                        }
                     }
                     b2b_score += 2; // b
                     s -= (int)b2b_score;
