@@ -271,9 +271,17 @@ namespace AI {
                 if (upcomeAtt < 0) avg_height -= upcomeAtt;
                 if ( pool.b2b ) {
                     double b2b_score = (double)ai_param.b2b * 5;
+                    double b2b_height = avg_height;
                     // Don't drop off b2b_score if TSD_only because there is no opponent, there is no danger
                     if (!TSD_only) {
-                        b2b_score /= 1 + pow(5, avg_height - 6.5); // z
+                        b2b_score /= 1 + pow(5, b2b_height - 6.5); // z
+                    }
+                    if (tetris_game == 2) {
+                        // https://www.desmos.com/calculator/enes1mgnoo
+                        // small extra bonus if we're low on the board
+                        if (b2b_height < 6) {
+                            b2b_score *= (66 - b2b_height) / 60;
+                        }
                     }
                     b2b_score += 2; // b
                     s -= (int)b2b_score;
