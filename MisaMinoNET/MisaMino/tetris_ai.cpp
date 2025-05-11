@@ -277,10 +277,11 @@ namespace AI {
                         b2b_score /= 1 + pow(5, b2b_height - 6.5); // z
                     }
                     if (tetris_game == 2) {
-                        // https://www.desmos.com/calculator/enes1mgnoo
+                        // https://www.desmos.com/calculator/gfyngrmwlv
                         // small extra bonus if we're low on the board
                         if (b2b_height < 6) {
-                            b2b_score *= (66 - b2b_height) / 60;
+                            const double p = 1.2;
+                            b2b_score *= p - (b2b_height * (p - 1) / 6);
                         }
 						// lower score for too small b2b (doesn't hold surge - better to run away and get large b2b later)
                         if (pool.b2b < 4) {
