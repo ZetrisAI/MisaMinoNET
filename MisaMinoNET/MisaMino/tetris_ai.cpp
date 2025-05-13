@@ -3,11 +3,7 @@
 #include <map>
 #include <set>
 
-#include "tetris_setting.h"
 #include <assert.h>
-
-#define GENMOV_W_MASK   15
-#define GEN_MOV_NO_PUSH 0
 
 namespace AI {
     struct _ai_settings {
@@ -19,15 +15,15 @@ namespace AI {
             combo = true;
             strategy_4w = false;
         }
-    } ai_settings[2];
+    } ai_settings;
 
-    void setAIsettings(int player, const char* key, int val) {
+    void setAIsettings(const char* key, int val) {
         if ( strcmp(key, "hash") == 0 ) {
-            ai_settings[player].hash = val;
+            ai_settings.hash = val;
         } else if ( strcmp(key, "combo") == 0 ) {
-            ai_settings[player].combo = val;
+            ai_settings.combo = val;
         } else if ( strcmp(key, "4w") == 0 ) {
-            ai_settings[player].strategy_4w = val;
+            ai_settings.strategy_4w = val;
         }
     }
 
@@ -38,7 +34,6 @@ namespace AI {
         ) {
         int score = 0;
         // 测高度 // Measure height
-        //int last_min_y[32] = {0};
         int min_y[32] = {0};
         int emptys[32] = {0};
         int maxy_index = 31, maxy_cnt = 0;
@@ -47,18 +42,8 @@ namespace AI {
         int total_hole = 0;
         int beg_y = -5;
         const int pool_w = pool.width(), pool_h = pool.height();
-        //last_min_y[31] = -1;
         min_y[31] = -1;
         {
-            //while ( last_pool.row[beg_y] == 0 ) ++beg_y;
-            //for ( int x = 0; x < pool_w; ++x) {
-            //    for ( int y = beg_y, ey = pool_h + 1; y <= ey; ++y) { // 要有底行保护（pool.h），否则会挂 // Must include bottom row protection (pool.h), or it will crash
-            //        if ( last_pool.row[y] & ( 1 << x ) ) {
-            //            last_min_y[x] = y;
-            //            break;
-            //        }
-            //    }
-            //}
             beg_y = -5;
             while ( pool.row[beg_y] == 0 ) ++beg_y;
             for ( int x = 0; x < pool_w; ++x) {
@@ -78,7 +63,7 @@ namespace AI {
             }
             int transitions = 0;
             for ( int y = beg_y; y <= pool_h; ++y) {
-                int last = 1; //pool.row[y] & 1;
+                int last = 1;
                 if ( pool.row[y] > 0 ) {
                     for ( int x = 0; x < pool_w; ++x) {
                         if ( pool.row[y] & ( 1 << x ) ) {
@@ -98,7 +83,6 @@ namespace AI {
             score += ai_param.v_transitions * transitions / 10;
         }
         min_y[pool_w] = min_y[pool_w-2];
-        //last_min_y[pool_w] = last_min_y[pool_w-2];
 
         if ( pool.m_hold == GEMTYPE_I ) {
             score -= ai_param.hold_I;
@@ -124,92 +108,8 @@ namespace AI {
         int x_holes[32] = {0}; // 水平方向洞的数量 // Number of holes in the horizontal direction
         int y_holes[32] = {0}; // 垂直方向洞的数量 // Number of holes in the vertical direction
         int x_op_holes[32] = {0}; // 水平方向洞的数量 // Number of holes in the horizontal direction
-        //int last_pool_hole_score;
         int pool_hole_score;
         int pool_total_cell = 0;
-        //{   // last_pool
-        //    int x_holes[32] = {0}; // 水平方向洞的数量 // Number of holes in the horizontal direction
-        //    int x_op_holes[32] = {0}; // 水平方向洞的数量 // Number of holes in the horizontal direction
-        //    int first_hole_y[32] = {0}; // 垂直方向最近的洞的y // Y-coordinate of the nearest vertical hole
-        //    int hole_score = 0;
-        //    const GameField& _pool = last_pool;
-        //    for ( int x = 0; x < pool_w; ++x) {
-        //        int last = 0, next;
-        //        first_hole_y[x] = pool_h + 1;
-        //        for ( int y = last_min_y[x] + 1; y <= pool_h; ++y, last = next) {
-        //            if ( ( _pool.row[y] & ( 1 << x ) ) == 0) {
-        //                next = 1;
-        //                if ( x > 1 ) {
-        //                    if (last_min_y[x-1] > y && last_min_y[x-2] > y) {
-        //                        if ( last == 0) {
-        //                            hole_score += ai_param.open_hole;
-        //                            if ( y >= 0 ) ++x_op_holes[y];
-        //                            continue;
-        //                        }
-        //                    }
-        //                }
-        //                if ( x < pool_w - 2 ) {
-        //                    if (last_min_y[x+1] > y && last_min_y[x+2] > y) {
-        //                        if ( last == 0) {
-        //                            hole_score += ai_param.open_hole;
-        //                            if ( y >= 0 ) ++x_op_holes[y];
-        //                            continue;
-        //                        }
-        //                    }
-        //                }
-        //                if ( y >= 0 ) ++x_holes[y];
-        //                if ( first_hole_y[x] > pool_h ) {
-        //                    first_hole_y[x] = y;
-        //                }
-        //                if ( last ) {
-        //                    hole_score += ai_param.hole / 4;
-        //                } else {
-        //                    //score += (y - min_y[x]) * ai_param.hole_dis;
-        //                    //if ( x_holes[y] > 2 ) {
-        //                    //    hole_score += ai_param.hole / 4;
-        //                    //} else
-        //                    if ( x_holes[y] >= 2 ) {
-        //                        hole_score += ai_param.hole * x_holes[y];
-        //                    } else {
-        //                        hole_score += ai_param.hole * 2;
-        //                    }
-        //                }
-        //            } else {
-        //                next = 0;
-        //            }
-        //        }
-        //    }
-        //    //if(1)
-        //    for ( int y = 0; y <= pool_h; ++y) {
-        //        if ( x_holes[y] > 0 ) {
-        //            hole_score += ai_param.hole_dis * (pool_h - y + 1);
-        //            //int min_dis = pool_h;
-        //            //for ( int x = 0; x < pool_w; ++x) {
-        //            //    if ( first_hole_y[x] == y ) {
-        //            //        min_dis = std::min(min_dis, y - min_y[x]);
-        //            //    }
-        //            //}
-        //            //if ( min_dis == 1 ) {
-        //            //    bool fill = true;
-        //            //    for ( int i = y - min_dis; i < y ; ++i ) {
-        //            //        int empty = ~pool.row[i] & pool.m_w_mask;
-        //            //        if ( empty & ( empty - 1) ) {
-        //            //            fill = false;
-        //            //            break;
-        //            //        }
-        //            //    }
-        //            //    if ( fill ) {
-        //            //        score -= ai_param.hole_dis;
-        //            //    }
-        //            //}
-        //            break;
-        //        }
-        //    }
-        //    //for ( int y = 0; y <= pool_h; ++y) {
-        //    //    if ( x_holes[y] ) score += ai_param.has_hole_row;
-        //    //}
-        //    last_pool_hole_score = hole_score;
-        //}
         {   // pool
             int first_hole_y[32] = {0}; // 垂直方向最近的洞的y // Y-coordinate of the nearest vertical hole
             int x_renholes[32] = {0}; // 垂直连续洞的数量 // Number of vertically consecutive holes
@@ -227,28 +127,22 @@ namespace AI {
                 first_hole_y[x] = pool_h + 1;
                 int y = (x>0) ? std::min(min_y[x] + 1, std::max(min_y[x-1] + 6, min_y[x+1] + 6)) : min_y[x] + 1;
                 for ( ; y <= pool_h; ++y, last = next) {
-                    if ( ( _pool.row[y] & ( 1 << x ) ) == 0 ) { //_pool.row[y] && 
+                    if ( ( _pool.row[y] & ( 1 << x ) ) == 0 ) {
                         double factor = ( y < 20 ? ( 1 + (20 - y) / 20.0 * 2 ) : 1.0);
                         y_holes[x]++;
                         next = 1;
-                        if ( softdropEnable() ) {
-                            if ( x > 1 ) {
-                                if (min_y[x-1] > y && min_y[x-2] > y) {
-                                    //if ( last == 0) {
-                                    hole_score += ai_param.open_hole * factor;
-                                    if ( y >= 0 ) ++x_op_holes[y];
-                                    continue;
-                                    //}
-                                }
+                        if ( x > 1 ) {
+                            if (min_y[x-1] > y && min_y[x-2] > y) {
+                                hole_score += ai_param.open_hole * factor;
+                                if ( y >= 0 ) ++x_op_holes[y];
+                                continue;
                             }
-                            if ( x < pool_w - 2 ) {
-                                if (min_y[x+1] > y && min_y[x+2] > y) {
-                                    //if ( last == 0) {
-                                    hole_score += ai_param.open_hole * factor;
-                                    if ( y >= 0 ) ++x_op_holes[y];
-                                    continue;
-                                    //}
-                                }
+                        }
+                        if ( x < pool_w - 2 ) {
+                            if (min_y[x+1] > y && min_y[x+2] > y) {
+                                hole_score += ai_param.open_hole * factor;
+                                if ( y >= 0 ) ++x_op_holes[y];
+                                continue;
                             }
                         }
                         if ( y >= 0 ) ++x_holes[y];
@@ -263,11 +157,6 @@ namespace AI {
                             hs += ai_param.hole * 2;
                         }
                         {
-                            //if ( x_holes[y] == 2 ) {
-                            //    hs -= ai_param.hole;
-                            //} else if ( x_holes[y] >= 3 ){
-                            //    hs -= ai_param.hole * 2;
-                            //}
                             ++total_hole;
                         }
                         hole_score += hs * factor;
@@ -276,25 +165,12 @@ namespace AI {
                     }
                 }
             }
-            //for ( int y = 0; y <= pool_h; ++y) {
-            //    if ( x_holes[y] > 1 ) {
-            //        int n = x_holes[y] - x_renholes[y];
-            //        int hs = 0;
-            //        if ( n == 2 )
-            //            hs = ai_param.hole + x_renholes[y] * ai_param.hole / 2;
-            //        else if ( n > 2 )
-            //            hs = (n - 2) * ai_param.hole * 2 + x_renholes[y] * ai_param.hole / 2;
-            //        hole_score -= hs * ( y < 10 ? ( 1 + (10 - y) / 10.0 * 2 ) : 1.0);
-            //        score -= ai_param.v_transitions * x_holes[y] / 10;
-            //    }
-            //}
             for ( int y = 0; y <= pool_h; ++y) {
                 if ( x_holes[y] > 0 ) {
                     score += ai_param.hole_dis * (pool_h - y + 1);
                     break;
                 }
             }
-            if(1)
             if ( ai_param.hole_dis_factor ) {
                 for ( int y = 0, cnt = 5, index = -1; y <= pool_h; ++y) {
                     if ( x_holes[y] > 0 ) {
@@ -304,7 +180,6 @@ namespace AI {
                             if ( ( _pool.row[y] & ( 1 << x ) ) == 0) {
                                 int h = y - min_y[x];
                                 if ( h > 4 - index ) h = 4 + (h - (4 - index)) * cnt / 4;
-                                //if ( h > 4 ) h = 4;
                                 if ( h > 0 ) {
                                     if ( ( _pool.row[y - 1] & ( 1 << x ) ) != 0) {
                                         score += ai_param.hole_dis_factor * h * cnt / 5 / 2;
@@ -315,7 +190,6 @@ namespace AI {
                     }
                 }
             }
-            if(1)
             if ( ai_param.hole_dis_factor2 ) {
                 int miny = pool_h;
                 for ( int y = 0, cnt = 0; y <= pool_h; ++y) {
@@ -339,29 +213,13 @@ namespace AI {
                     total_emptys += emptys[y] * ( y < 10 ? (10 + 10 - y ) / 10.0 : 1);
                 }
                 score += ai_param.hole_dis_factor2 * total_emptys / 4;
-                //score += ai_param.hole_dis_factor2 * (pool_h - miny);
-                //int h = 0;
-                //h = min_y[maxy_index] - miny - 1;
-                //if ( h > 0 )
-                //    score += ai_param.hole_dis_factor2 * h;
-                //for ( int x = 0; x <= pool_w; ++x) {
-                //    h += min_y[x] - miny;
-                //}
-                //if ( h > 0 )
-                //    score += ai_param.hole_dis_factor2 * h * 2 / pool_w;
             }
-            //for ( int y = 0; y <= pool_h; ++y) {
-            //    if ( x_holes[y] ) score += ai_param.has_hole_row;
-            //}
             pool_hole_score = hole_score;
         }
         score += pool_hole_score;
 
         // 高度差 // Height difference
         {
-            //int n_maxy_index = maxy_index;
-            //if ( maxy_cnt != 0 ) n_maxy_index = -9;
-
             int last = min_y[1];
             for ( int x = 0; x <= pool_w; last = min_y[x], ++x) {
                 int v = min_y[x] - last;
@@ -374,26 +232,6 @@ namespace AI {
                 else score += absv * ai_param.h_factor;
             }
         }
-        // 平地 // Flatness
-        /*
-        {
-            int last = -1, len = 0;
-            for ( int x = 0; x <= pool_w; ++x) {
-                if ( last == min_y[x] ) {
-                    ++len;
-                } else {
-                    if ( len > 0 && len < 4) {
-                        score -= ((len - 1) / 3 + 1) * ai_param.flat_factor;
-                    }
-                    len = 0;
-                    last = min_y[x];
-                }
-            }
-            if ( len > 0 && len < 4) {
-                score -= ((len - 1) / 3 + 1) * ai_param.flat_factor;
-            }
-        }
-        */
         int center = 10; // 摆楼警戒线 // Center warning line (used for tower height caution)
         double warning_factor = 1;
         int h_variance_score = 0;
@@ -406,24 +244,13 @@ namespace AI {
                 for ( int x = 0; x < pool_w; ++x) {
                     avg += min_y[x];
                 }
-                if (0)
+                int h = std::min(std::min(min_y[gem_beg_x], min_y[gem_beg_x+1]), std::min(min_y[gem_beg_x+2], min_y[gem_beg_x+3]));
+                if ( h < 8 )
                 {
-                    double h = pool_h - (double)avg / pool_w;
-                    score += int(ai_param.miny_factor * h * h / pool_h);
+                    score += int(ai_param.miny_factor * ( 8 - h ) * 2);
                 }
-                else
-                {
-                    int h = std::min(std::min(min_y[gem_beg_x], min_y[gem_beg_x+1]), std::min(min_y[gem_beg_x+2], min_y[gem_beg_x+3]));
-                    if ( h < 8 )
-                    {
-                        score += int(ai_param.miny_factor * ( 8 - h ) * 2);
-                    }
-                }
-                if (1)
-                {
-                    if ( avg < pool_w * center ) {
-                        warning_factor = 0.0 + (double)avg / pool_w / center / 1;
-                    }
+                if ( avg < pool_w * center ) {
+                    warning_factor = 0.0 + (double)avg / pool_w / center / 1;
                 }
                 // 偏差值 // Deviation value
                 {
@@ -486,100 +313,25 @@ namespace AI {
                 }
                 clearScore += cs;
 
-                if (1)
                 if ( clears > 0 && upcomeAtt >= 4 && ai_param.upcomeAtt > 0 ) {
                     int cur_s = 0;
                     cur_s -= int( ((ai_param.clear_efficient) * ( clear_att ) ) )
                         - int( warning_factor * clears * ai_param.clear_useless_factor);
                     if ( avg - (12 + upcomeAtt) * pool_w > 0 && cur_s + cs < 0 )
                         s -= (cur_s + cs) * ( avg - (12 + upcomeAtt) * pool_w ) * ai_param.upcomeAtt / pool_w / 10 / 20;
-                    //if ( upcomeAtt >= 4 ) {
-                    //    if ( total_hole < 4 && avg - upcomeAtt * pool_w >= 8 * pool_w ) {
-                    //        s = s - s * ( 4 - total_hole ) * ai_param.upcomeAtt / 40;
-                    //    }
-                    //}
                 }
 
                 score += s;
             }
-            //if ( clears ) {
-            //    int center = 10; // 摆楼警戒线 // Center warning line (tower height threshold)
-            //    double factor = 1;
-            //    if ( avg < pool_w * center ) {
-            //        factor = (double)avg / pool_w / center;
-            //    }
-            //    int s = 0;
-            //    if ( pool_hole_score < last_pool_hole_score ) {
-            //        s -= int( factor * (ai_param.clear_efficient * ( clear_att ) * ( clear_att ) / clears) );
-            //        //s -= ai_param.open_hole;
-            //        if ( clear_att >= 4 ) {
-            //            if ( clear_att >= clears * 2 ) { // T2/T3
-            //                clearScore -= int( factor * (ai_param.tspin * 4 + ai_param.open_hole + ai_param.clear_efficient * ( clear_att ) ) );
-            //                s -= ai_param.hold_T;
-            //            }
-            //        }
-            //        if ( clears > clear_att ) {
-            //            s += int( factor * (ai_param.clear_efficient * ( clears - clear_att ) / 2 ) );
-            //        }
-            //    } else if ( pool_hole_score == last_pool_hole_score ) {
-            //        s -= int( factor * (ai_param.clear_efficient * ( clear_att ) * ( clear_att ) / clears) );
-            //        if ( clear_att >= 4 ) {
-            //            if ( clear_att >= clears * 2 ) { // T2/T3
-            //                clearScore -= int( factor * (ai_param.tspin * 4 + ai_param.open_hole + ai_param.clear_efficient * ( clear_att ) ) );
-            //                s -= ai_param.hold_T;
-            //            }
-            //        } else if ( clear_att >= clears ) {
-            //            if ( clear_att >= clears * 2 ) {
-            //                if ( clears == 1 ) { // T1
-            //                    //s += int( factor * (ai_param.clear_efficient * ( clear_att ) / clears) );
-            //                }
-            //            }
-            //        } else if ( avg < 8 * pool_w ) {
-            //            //s += int(ai_param.hole * ( clears - clear_att ) * factor / 2 );
-            //            if ( clears > clear_att ) {
-            //                s += int( factor * (ai_param.clear_efficient * ( clears - clear_att ) / 2 ) );
-            //            }
-            //        } else if ( total_hole >= 1 || min_y[maxy_index] < pool_h - 4 ) {
-            //            if ( clears > clear_att ) {
-            //                s += int( factor * (ai_param.clear_efficient * ( clears - clear_att ) * 2 ) );
-            //            }
-            //            //if ( clear_att == 0 ) {
-            //            //    s += int( factor * (ai_param.hole * ( clears - clear_att ) ) / 3 );
-            //            //}
-            //        } else {
-            //            if ( clears > clear_att ) {
-            //                s += int( factor * (ai_param.clear_efficient * ( clears - clear_att ) * 4) );
-            //            }
-            //            //if ( clear_att == 0 ) {
-            //            //    s += int( factor * (ai_param.hole * ( clears - clear_att ) ) / 3 );
-            //            //}
-            //        }
-            //    } else {
-            //        s -= int( factor * (ai_param.clear_efficient * ( clear_att ) / clears) );
-            //        if ( clears > clear_att ) {
-            //            s += int( factor * (ai_param.clear_efficient * ( clears - clear_att ) * 4 ) );
-            //        }
-            //    }
-            //    if ( pool.combo > 2 )
-            //    {
-            //        int combo = pool.combo - 2;
-            //        //clearScore -= combo * combo * ai_param.combo_factor;
-            //    }
-            //    score += s;
-            //}
         }
 
         // 特殊形状判定 // Special shape detection
 
         // 计算可攻击（Tetris和T2）// Evaluate potential attacks (Tetris and T-Spin Double)
-        //int t2_x[32] = {0};
         if ( maxy_cnt == 0 )
         {
-            //if ( maxy_index == 0 || maxy_index == pool_w - 1 ) {
-            //    score += ai_param.att_col_sel_side;
-            //}
             int ybeg = 0;
-            if ( softdropEnable() && maxy_index > 0 && maxy_index < pool_w - 1 && ai_param.tspin > 0 ) { // T1/T2基本形状分 // Basic shape recognition for T1/T2
+            if ( maxy_index > 0 && maxy_index < pool_w - 1 && ai_param.tspin > 0 ) { // T1/T2基本形状分 // Basic shape recognition for T1/T2
                 ybeg = std::max( min_y[maxy_index - 1], min_y[maxy_index + 1] );
                 if ( min_y[maxy_index - 1] == min_y[maxy_index + 1]
                     && x_holes[ybeg] == 0 && (!ybeg || x_holes[ybeg-1] == 0)
@@ -610,7 +362,6 @@ namespace AI {
                         if ( ( pool.row[ybeg] & (1 << (maxy_index-1)) ) && ( pool.row[ybeg] & (1 << (maxy_index+1)) ) ) { // 坑的下面两块存在 // Pit base blocks are present
                             if ( !!( pool.row[ybeg-2] & (1 << (maxy_index-1)) ) + !!( pool.row[ybeg-2] & (1 << (maxy_index+1)) ) == 1 ) { // 坑的上面的块存在 // One side block above the pit
                                 double s = 0;
-                                //t2_x[maxy_index] = ybeg;
                                 double factor = ybeg > 6 ? 0.5 : 1 - t_dis / 6.0 * 0.5;
                                 if ( warning_factor < 1 )
                                     factor = ybeg > 6 ? 1.0 / 5 : 1 / (1 + t_dis / 3.0);
@@ -619,7 +370,6 @@ namespace AI {
                                     s += ai_param.tspin + ai_param.tspin * 1 * factor;
                                     if ( (~row_data & pool.m_w_mask) == (7 << (maxy_index-1) ) ) { // 可T2完美坑 // Perfect T2 pit
                                         s += ai_param.tspin * 3 * factor;
-                                        // s -= ai_param.tspin * 3 / factor / 1;
                                     }
                                 } else {
                                     s += ai_param.tspin * 1 + ai_param.tspin * 2 * factor / 2 ;
@@ -645,8 +395,6 @@ namespace AI {
                 ++readatt;
             }
             if ( readatt > 4 ) readatt = 4;
-            //score -= readatt * ai_param.readyatt;
-
         }
         // T3 形状判定 // T-Spin Triple shape detection
         //3001	
@@ -660,7 +408,7 @@ namespace AI {
         //1011 
         //10x1
         //1011
-        if ( softdropEnable() && ai_param.tspin3 > 0 )
+        if ( ai_param.tspin3 > 0 )
         {
             for ( int y = 3; y < pool_h; ++y ) {
                 if ( x_holes[y] == 0 ) continue;
@@ -674,7 +422,6 @@ namespace AI {
                     }
                     if ( ( (row_y[3] >> (x + 1)) & ( 7 ) ) == 1 /*100*/ ) { // 上图情况 // Match the target bit pattern (T3 center)
                         if ( x == pool_w - 2 ) continue;
-                        //if ( t2_x[x+1] == y ) continue; // 排除T2坑 // Exclude T2 pit
                         // 所有空的地方先匹配 // Check if all empty regions match expected T3 pattern
                         if (   ( (row_y[2] >> (x + 1)) & ( 7 ) ) != 3 /*110*/
                             //|| ( (row_y[4] >> (x + 1)) & ( 15 ) ) != 11 /*1101*/
@@ -705,8 +452,7 @@ namespace AI {
                         }
                         if ( ( (row_y[0] >> (x + 3)) & ( 1 ) ) == 0 && y - min_y[x + 2] > 3 ) continue;
                         int s = 0;
-                        //tp3 * 1
-                        s -= int( warning_factor * ai_param.tspin3 );// + int( warning_factor * ( ai_param.tspin * 4 + ai_param.open_hole ) );
+                        s -= int( warning_factor * ai_param.tspin3 );
                         score += s;
                         if ( y <= pool_h - 3 && ( pool.row[y + 3] & ( 1 << x ) ) == 0 ) {
                             int r = ~pool.row[y + 3] & pool.m_w_mask;
@@ -760,7 +506,6 @@ namespace AI {
                         }
                     } else if ( ( (row_y[3] >> (x+1) ) & ( 7 ) ) == 4 /*001*/ ) { // 镜像情况 // Mirrored T3 pattern (horizontal reflection)
                         if ( x == 1 ) continue;
-                        //if ( t2_x[x-1] == y ) continue; // 排除T2坑 // Exclude T2 pit at mirrored position
                         // 所有空的地方先匹配 // Match all empty cells to expected T3 mirrored pattern
                         if (   ( (row_y[2] >> (x+1)) & ( 7 ) ) != 6 /*011*/
                             //|| ( (row_y[4] >> (x)) & ( 15 ) ) != 13 /*1011*/
@@ -791,8 +536,7 @@ namespace AI {
                         }
                         if ( ( (row_y[0] >> (x + 1)) & ( 1 ) ) == 0 && y - min_y[x - 2] > 3 ) continue;
                         int s = 0;
-                        // tp3 * 1
-                        s -= int( warning_factor * ai_param.tspin3 );// + int( warning_factor * ( ai_param.tspin * 4 + ai_param.open_hole ) );
+                        s -= int( warning_factor * ai_param.tspin3 );
                         score += s;
                         if ( y <= pool_h - 3 && ( pool.row[y + 3] & ( 1 << x ) ) == 0 ) {
                             int r = ~pool.row[y + 3] & pool.m_w_mask;
@@ -812,7 +556,7 @@ namespace AI {
                             }
                         }
                         {
-                            int e = ~(pool.row[y] | (1<<x-2)) & pool.m_w_mask;
+                            int e = ~(pool.row[y] | (1<<(x-2))) & pool.m_w_mask;
                             e &= ( e-1);
                             if ( (e & ( e-1)) == 0 ) { // 底二只剩两空 // Second row from bottom (y) has only two empty cells
                                 //++full;
@@ -848,8 +592,7 @@ namespace AI {
             }
         }
         // 4W形状判定 // 4-wide pattern detection
-        if ( USE4W )
-        if ( ai_param.strategy_4w > 0 && total_clears < 1 ) //&& lastCombo < 1 && pool.combo < 1 )
+        if ( ai_param.strategy_4w > 0 && total_clears < 1 )
         {
             int maxy_4w = min_y[3];
             maxy_4w = std::max(maxy_4w, min_y[4] );
@@ -873,12 +616,6 @@ namespace AI {
                 }
             }
             while ( maxy_4w > 0 ) {
-                //if ( abs( min_y[0] - min_y[1] ) > 4 ) { maxy_4w = -10; break; }
-                //if ( abs( min_y[1] - min_y[2] ) > 4 ) { maxy_4w = -10; break; }
-                //if ( abs( min_y[pool_w-1] - min_y[pool_w-2] ) > 4 ) { maxy_4w = -10; break; }
-                //if ( abs( min_y[pool_w-2] - min_y[pool_w-3] ) > 4 ) { maxy_4w = -10; break; }
-                //if ( abs( min_y[2] - min_y[pool_w-3] ) > 7 ) { maxy_4w = -10; break; }
-                //int avg = (min_y[0] + min_y[1] + min_y[2] + min_y[pool_w-1] + min_y[pool_w-2] + min_y[pool_w-3]) / 6;
                 if ( (pool_h - maxy_4w) * 2 >= maxy_4w - maxy_4w_combo ) {
                     maxy_4w = -10;
                     break;
@@ -888,9 +625,6 @@ namespace AI {
             if ( maxy_4w <= pool_h - 4 ) { // If there are more than 4 garbage lines, don't build 4-wide
                 maxy_4w = -10;
             }
-            //if ( maxy_4w - maxy_4w_combo > 15 ) { // If there are more than 10 setup rows, don't build 4-wide
-            //    maxy_4w = -10;
-            //}
             if ( maxy_4w - maxy_4w_combo < 9 && pool_hole_score > ai_param.hole * (maxy_4w - maxy_4w_combo) / 2 ) {
                 maxy_4w = -10;
             }
@@ -916,7 +650,7 @@ namespace AI {
                     sum += maxy_4w - min_y[5];
                     sum += maxy_4w - min_y[6];
                     int s = 0;
-                    if ( sum == 3 || sum == 0 || sum == 4 ) //{ // - (pool_h - maxy_4w) - clears * lastCombo * 2
+                    if ( sum == 3 || sum == 0 || sum == 4 )
                     {
                         int hv = (maxy_4w - maxy_4w_combo + 1) * 1 + pool.combo;
                         s += ai_param.strategy_4w * ( hv ) + (ai_param.hole * 2 + ai_param.tspin * 4);
@@ -927,11 +661,6 @@ namespace AI {
                     if ( s > 0 ) {
                         score -= s;
                     }
-                    //if ( pool_h * 4 + 4 + x_holes[pool_h] + x_op_holes[pool_h] - min_y[0] - min_y[1] - min_y[2] - min_y[3] <= 4 ) {
-                    //    score -= 800 + (ai_param.hole * 2 + ai_param.tspin * 4);
-                    //} else if ( pool_h * 4 + 4 + x_holes[pool_h] + x_op_holes[pool_h] - min_y[pool_w - 4] - min_y[pool_w - 3] - min_y[pool_w - 2] - min_y[pool_w - 1] <= 4 ) {
-                    //    score -= 800 + (ai_param.hole * 2 + ai_param.tspin * 4);
-                    //}
                 }
             }
         }
@@ -991,46 +720,10 @@ namespace AI {
         GameField pool_last;
         int att, clear;
         signed short max_combo, max_att, combo;
-        signed short player, upcomeAtt;
+        signed short upcomeAtt;
         MovsState() { upcomeAtt = max_combo = combo = att = clear = 0; }
         bool operator < (const MovsState& m) const {
-#if 0
-            {
-                if ( max_combo > (combo - 1) * 32 && m.max_combo > (m.combo - 1) * 32 ) {
-                    if ( att > 8 || m.att > 8 ) {
-                        if ( abs(first.score - m.first.score) < 400 ) {
-                            if ( att != m.att )
-                                return att < m.att;
-                        } else {
-                            return first < m.first;
-                        }
-                    }
-                }
-                if ( ( max_combo > 6 * 32 || m.max_combo > 6 * 32 ) ) {
-                    if ( max_combo != m.max_combo ) {
-                        return max_combo < m.max_combo;
-                    }
-                }
-                if ( ai_settings[player].strategy_4w )
-                    if ( ( combo > 3 * 32 || m.combo > 3 * 32 ) ) {
-                        if ( combo != m.combo ) {
-                            return combo < m.combo;
-                        }
-                    }
-            }
-            //if (0)
-            if ( (pool_last.combo > 3 * 32 || m.pool_last.combo > 3 * 32) && pool_last.combo != m.pool_last.combo) {
-                return pool_last.combo < m.pool_last.combo;
-            }
-#else
-            //if ( abs(first.score - m.first.score) >= 900 ) {
-            //    return first < m.first;
-            //}
-            //if ( (max_att >= 6 || m.max_att >= 6) && abs(max_att - m.max_att) >= 2 ) {
-            //    return max_att < m.max_att;
-            //}
-            //else
-			if ( ai_settings[player].strategy_4w )
+			if ( ai_settings.strategy_4w )
 			{
 				if ( ( max_combo > 6 * 32 || m.max_combo > 6 * 32 ) ) {
 					if ( max_combo != m.max_combo ) {
@@ -1043,7 +736,7 @@ namespace AI {
 			}
 			else
 			{
-				if ( ai_settings[player].combo ) {
+				if ( ai_settings.combo ) {
 					if ( ( max_combo > 6 * 32 || m.max_combo > 6 * 32 ) ) {
 						if ( max_combo != m.max_combo ) {
 							return max_combo < m.max_combo;
@@ -1060,31 +753,11 @@ namespace AI {
 							}
 						}
 					}
-					////if ( ai_settings[player].strategy_4w ) {
-					//    if ( ( combo > 3 * 32 || m.combo > 3 * 32 ) ) {
-					//        if ( combo != m.combo ) {
-					//            return combo < m.combo;
-					//        }
-					//    }
-					//}
 				}
-				//if (0)
-				//if ( (pool_last.combo > 32 || m.pool_last.combo > 32 ) )
-				//{
-				//    int m1 = (max_combo!=pool_last.combo ? std::max(max_combo - 32 * 2, 0) * 2 : 0 ) + pool_last.combo;
-				//    int m2 = (m.max_combo!=m.pool_last.combo ? std::max(m.max_combo - 32 * 2, 0) * 2 : 0 ) + m.pool_last.combo;
-				//    if ( m1 != m2 ) {
-				//        return m1 < m2;
-				//    }
-				//}
 				if ( (combo > 32 * 2 || m.combo > 32 * 2) && combo != m.combo) {
 					return combo < m.combo;
 				}
 			}
-            //if ( (pool_last.combo > 1 || m.pool_last.combo > 1) && pool_last.combo != m.pool_last.combo) {
-            //    return pool_last.combo < m.pool_last.combo;
-            //}
-#endif
             return first < m.first;
         }
     };
@@ -1124,13 +797,11 @@ namespace AI {
             return true;
         };
     };
-#define BEG_ADD_Y 1
-    MovingSimple AISearch(AI_Param ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, bool second_choice) {
+    MovingSimple AISearch(AI_Param ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<int>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, bool second_choice) {
 		if (cur.num == 0) { // rare race condition, we're dead already if this happens
 			assert(true); // debug break
 			cur = AI::getGem(AI::GEMTYPE_I, 0);
 		}
-		int player = 0;
 		int level = 10;
         typedef std::vector<MovingSimple> MovingList;
         MovingList movs;
@@ -1144,10 +815,6 @@ namespace AI {
         if ( pool.combo > 0 && (pool.row[10] || pool.combo > 1) ) ai_param.strategy_4w = 0;
         if ( ai_param.hole < 0 ) ai_param.hole = 0;
         ai_param.hole += ai_param.open_hole;
-
-        //if ( level <= 0 ) maxDeep = 0;
-        //else if ( level <= 6 ) maxDeep = std::min(level, 6); // TODO(misakamm): max deep
-        //else maxDeep = level;
         
         int next_add = 0;
         if ( pool.m_hold == 0 ) {
@@ -1162,7 +829,7 @@ namespace AI {
             int t_dis = 14;
             if ( _pool.m_hold != GEMTYPE_T ) {
                 for ( size_t i = 0; i < next.size(); ++i ) {
-                    if ( next[i].num == GEMTYPE_T ) {
+                    if ( next[i] == GEMTYPE_T ) {
                         t_dis = i;
                         break;
                     }
@@ -1180,7 +847,6 @@ namespace AI {
                 ms.pool_last.paste((*it).x, (*it).y, getGem(cur.num, (*it).spin));
                 int clear = ms.pool_last.clearLines( wallkick_spin );
                 int att = ms.pool_last.getAttack( clear, wallkick_spin );
-                ms.player = player;
                 ms.clear = clear;
                 ms.att = att;
                 if ( clear > 0 ) {
@@ -1189,10 +855,9 @@ namespace AI {
                 } else {
                     ms.combo = 0;
                     ms.upcomeAtt = -upcomeAtt;
-                    ms.pool_last.minusRow(upcomeAtt);
                 }
                 ms.max_att = att;
-                ms.max_combo = ms.combo; //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
+                ms.max_combo = ms.combo;
                 ms.first = *it;
                 ms.first.score2 = 0;
 				double h = 0;
@@ -1206,7 +871,7 @@ namespace AI {
         if ( canhold && ! hold &&
             (
                 pool.m_hold == 0
-                && !next.empty() && ! pool.isCollide(gem_beg_x, gem_beg_y, getGem( next[0].num, 0 ) )
+                && !next.empty() && ! pool.isCollide(gem_beg_x, gem_beg_y, getGem( next[0], 0 ) )
                 || ! pool.isCollide(gem_beg_x, gem_beg_y, getGem( pool.m_hold, 0 ) )
             )
             )
@@ -1215,7 +880,7 @@ namespace AI {
             if ( pool.m_hold ) {
                 cur_num = pool.m_hold;
             } else {
-                cur_num = next[0].num;
+                cur_num = next[0];
             }
             if ( cur_num != cur.num ) {
                 GameField _pool = pool;
@@ -1223,7 +888,7 @@ namespace AI {
                 int t_dis = 14;
                 if ( _pool.m_hold != GEMTYPE_T ) {
                     for ( size_t i = 0; i + next_add < next.size(); ++i ) {
-                        if ( next[i + next_add].num == GEMTYPE_T ) {
+                        if ( next[i + next_add] == GEMTYPE_T ) {
                             t_dis = i;
                             break;
                         }
@@ -1243,7 +908,6 @@ namespace AI {
                     ms.pool_last.paste((*it).x, (*it).y, getGem(cur_num, (*it).spin));
                     int clear = ms.pool_last.clearLines( wallkick_spin );
                     int att = ms.pool_last.getAttack( clear, wallkick_spin );
-                    ms.player = player;
                     ms.clear = clear;
                     ms.att = att;
                     if ( clear > 0 ) {
@@ -1252,17 +916,16 @@ namespace AI {
                     } else {
                         ms.combo = 0;
                         ms.upcomeAtt = -upcomeAtt;
-                        ms.pool_last.minusRow(upcomeAtt);
                     }
                     ms.max_att = att;
-                    ms.max_combo = ms.combo; //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
+                    ms.max_combo = ms.combo;
                     ms.first = *it;
                     ms.first.score2 = 0;
                     double h = 0;
-                    ms.first.score = Evaluate(ms.first.score2, h, ai_param, pool, ms.pool_last, cur.num, 0, ms.att, ms.clear, att, clear, wallkick_spin, _pool.combo, t_dis, upcomeAtt);
+                    ms.first.score = Evaluate(ms.first.score2, h, ai_param, pool, ms.pool_last, cur_num, 0, ms.att, ms.clear, att, clear, wallkick_spin, _pool.combo, t_dis, upcomeAtt);
                     if ( wallkick_spin == 0 && it->wallkick_spin ) ms.first.score += 1;
 
-					ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, it->softdrop, cur.num, it->wallkick_spin, h);
+					ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, it->softdrop, cur_num, it->wallkick_spin, h);
                     que.push_back();
                 }
             }
@@ -1271,7 +934,7 @@ namespace AI {
             return MovingSimple();
         }
 
-		int sw_map[5] = {40, 300, 200, 150, 100}; // {30, 300, 200, 180, 120, 100, 80, 80}; // Lvl10
+		int sw_map[5] = {40, 300, 200, 150, 100};
 		for (int i = 0; i < 5; i++) {
 			sw_map[i] = sw_map[i] * sw_map_multiplier / 100;
 		}
@@ -1281,16 +944,14 @@ namespace AI {
 		int final_depth = 65535;
 
 		int depth = 0;
-        // Main search loop, TODO: Multithread this loop somehow?
-        for (; /*search_nodes < max_search_nodes &&*/ depth < maxDeep; searchDeep = ++depth ) { //d < maxDeep
+        for (; depth < maxDeep; searchDeep = ++depth ) {
 			if (Abort()) break;
 
             std::swap(pq_last, pq);
 
-            int search_base_width = sw_map[0];    // - sw_map[level][0] / 6;
+            int search_base_width = sw_map[0];
             int search_wide = sw_map[(depth > 4)? 4 : depth];
             
-            //int search_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
             int search_select_best = std::min(search_wide - search_wide / 4, search_base_width);
             if ( level <= 3 ) {
                 search_select_best = search_wide - search_wide / 4;
@@ -1326,29 +987,11 @@ namespace AI {
                 if (Abort()) {
 					if (final_depth > depth) final_depth = depth;
 
-                    //MovsState ms_last = pq_last->back();
                     pq->push(ms_last);
                     break;
                 }
                 max_combo = std::max( max_combo, (int)ms_last.pool_last.combo );
-                if (0)
-                if ( pq_size != pqmax_size ) { // 超高combo后的无combo剪枝 // Prune moves with low combos after a very high combo
-                    if ( ms_last.pool_last.combo > 0 && max_combo > 5 && ms_last.pool_last.combo < max_combo - 1 ) {
-                        break;
-                    }
-                    //if ( ms_last.pool_last.combo > 0 && max_combo > 3 ) {
-                    //    if ( max_combo - ms_last.pool_last.combo != 0 && max_combo - ms_last.pool_last.combo <= 1 ) {
-                    //        break;
-                    //    }
-                    //}
-                }
-                if (0)
-                if ( depth > 0 && maxDeep > 2 && ms_last.first.score > max_search_score ) {
-                    if ( pq_size + 2 < pqmax_size ) {
-                        break;
-                    }
-                }
-                if ( ai_settings[player].hash )
+                if ( ai_settings.hash )
                 {
                     GameState gs(ms_last.pool_last.hashval, ms_last.pool_last.m_hold, ms_last.att, ms_last.clear, ms_last.combo, ms_last.pool_last.b2b);
                     if ( gsSet.find(gs) == gsSet.end() ) {
@@ -1357,9 +1000,6 @@ namespace AI {
                         continue;
                     }
                 }
-                int hold = 0;
-                //if ( !ms_last.first.movs.empty() && ms_last.first.movs[0] == Moving::MOV_HOLD ) hold = 1;
-                if ( !ms_last.first.hold ) hold = 1;
                 int t_dis = 14;
                 int d_pos = depth;
                 if ( next_add && ms_last.pool_last.m_hold ) d_pos = depth + 1;
@@ -1367,10 +1007,10 @@ namespace AI {
                     pq->push(ms_last);
                     continue;
                 }
-                int cur_num = next[d_pos].num;
+                int cur_num = next[d_pos];
                 if ( ms_last.pool_last.m_hold != GEMTYPE_T ) {
                     for ( size_t i = 0; d_pos + 1 + i < next.size(); ++i ) {
-                        if ( next[d_pos + 1 + i].num == GEMTYPE_T ) {
+                        if ( next[d_pos + 1 + i] == GEMTYPE_T ) {
                             t_dis = i;
                             break;
                         }
@@ -1378,7 +1018,7 @@ namespace AI {
                 } else {
                     t_dis = 0;
                 }
-                if ( BEG_ADD_Y && ms_last.upcomeAtt < 0 )
+                if ( ms_last.upcomeAtt < 0 )
                     GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y - ms_last.upcomeAtt, 0, ms_last.combo > 0);
                 else
                     GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y, 0, ms_last.combo > 0);
@@ -1400,7 +1040,6 @@ namespace AI {
                             ms.pool_last.paste(movs[i].x, movs[i].y, getGem(cur_num, movs[i].spin));
                             int clear = ms.pool_last.clearLines( wallkick_spin );
                             int att = ms.pool_last.getAttack( clear, wallkick_spin );
-                            ms.player = player;
                             ms.clear = clear + ms_last.clear;
                             ms.att = att + ms_last.att;
                             ms.upcomeAtt = ms_last.upcomeAtt;
@@ -1412,11 +1051,10 @@ namespace AI {
                                 ms.combo = 0;
                                 if ( ms_last.upcomeAtt > 0 ) {
                                     ms.upcomeAtt = -ms_last.upcomeAtt;
-                                    ms.pool_last.minusRow(ms_last.upcomeAtt);
                                 }
                             }
                             ms.max_att = std::max((int)ms_last.max_att, ms_last.att + att);
-                            ms.max_combo = std::max(ms_last.max_combo, ms.combo); //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
+                            ms.max_combo = std::max(ms_last.max_combo, ms.combo);
                             ms.first.score2 = ms_last.first.score2;
                             double h = 0;
                             ms.first.score = Evaluate(ms.first.score2, h, ai_param,
@@ -1424,7 +1062,7 @@ namespace AI {
                                 ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
                             if ( wallkick_spin == 0 && movs[i].wallkick_spin ) ms.first.score += 1;
 
-							ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur.num, movs[i].wallkick_spin, h);
+							ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur_num, movs[i].wallkick_spin, h);
                         }
                         p.push_back();
                     }
@@ -1437,21 +1075,20 @@ namespace AI {
                 if ( canhold && depth + next_add < next.size() && !Abort())
                 {
                     MovsState ms_last = pq_last->back();
-                    //int cur_num = ms_last.pool_last.m_hold;
                     int cur_num;
                     int d_pos = depth + next_add;
-                    if ( ms_last.pool_last.m_hold != next[d_pos].num ) {
+                    if ( ms_last.pool_last.m_hold != next[d_pos] ) {
                         if ( ms_last.pool_last.m_hold ) {
                             cur_num = ms_last.pool_last.m_hold;
                         } else {
-                            cur_num = next[d_pos].num;
+                            cur_num = next[d_pos];
                         }
-                        ms_last.pool_last.m_hold = next[d_pos].num;
+                        ms_last.pool_last.m_hold = next[d_pos];
                         if ( ms_last.pool_last.m_hold != GEMTYPE_T ) {
                             t_dis -= next_add;
                             if ( t_dis < 0 ) {
                                 for ( size_t i = 0; d_pos + 1 + i < next.size(); ++i ) {
-                                    if ( next[i + 1 + d_pos].num == GEMTYPE_T ) {
+                                    if ( next[i + 1 + d_pos] == GEMTYPE_T ) {
                                         t_dis = i;
                                         break;
                                     }
@@ -1460,7 +1097,7 @@ namespace AI {
                         } else {
                             t_dis = 0;
                         }
-                        if ( BEG_ADD_Y && ms_last.upcomeAtt < 0 )
+                        if ( ms_last.upcomeAtt < 0 )
                             GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y - ms_last.upcomeAtt, 1, ms_last.combo > 0);
                         else
                             GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y, 1, ms_last.combo > 0);
@@ -1481,7 +1118,6 @@ namespace AI {
                                     ms.pool_last.paste(movs[i].x, movs[i].y, getGem(cur_num, movs[i].spin));
                                     int clear = ms.pool_last.clearLines( wallkick_spin );
                                     int att = ms.pool_last.getAttack( clear, wallkick_spin );
-                                    ms.player = player;
                                     ms.clear = clear + ms_last.clear;
                                     ms.att = att + ms_last.att;
                                     ms.upcomeAtt = ms_last.upcomeAtt;
@@ -1493,18 +1129,17 @@ namespace AI {
                                         ms.combo = 0;
                                         if ( ms_last.upcomeAtt > 0 ) {
                                             ms.upcomeAtt = -ms_last.upcomeAtt;
-                                            ms.pool_last.minusRow(ms_last.upcomeAtt);
                                         }
                                     }
                                     ms.max_att = std::max((int)ms_last.max_att, ms_last.att + att);
-                                    ms.max_combo = std::max(ms_last.max_combo, ms.combo); //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
+                                    ms.max_combo = std::max(ms_last.max_combo, ms.combo);
                                     ms.first.score2 = ms_last.first.score2;
                                     double h = 0;
                                     ms.first.score = Evaluate(ms.first.score2, h, ai_param,
                                         pool,
                                         ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
 
-									ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur.num, movs[i].wallkick_spin, h);
+									ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur_num, movs[i].wallkick_spin, h);
                                     if ( wallkick_spin == 0 && movs[i].wallkick_spin ) ms.first.score += 1;
                                 }
                                 p.push_back();
@@ -1524,16 +1159,14 @@ namespace AI {
         }
 		if (final_depth > depth) final_depth = depth;
 
-        //if (0)
-        if ( ai_settings[player].hash && canhold && !Abort() ) { // extra search
+        if ( ai_settings.hash && canhold && !Abort() ) { // extra search the leftover held piece
             std::swap(pq_last, pq);
             pq->clear();
             int depth = searchDeep - 1;
             
-            int search_base_width = sw_map[0];// - sw_map[level][0] / 6;
+            int search_base_width = sw_map[0];
 			int search_wide = sw_map[(depth > 4)? 4 : depth];
             
-            //int search_select_best = (level <= 3 ? 1000 : (std::min(search_wide, 30) ) );
             int search_select_best = std::min(search_wide - search_wide / 4, search_base_width);
             if ( level <= 3 ) {
                 search_select_best = search_wide - search_wide / 4;
@@ -1543,6 +1176,7 @@ namespace AI {
             }
 
             std::set<GameState> gsSet;
+            // TODO: Is this ever reachable?
             for ( int pqmax_size = (int)pq_last->size(),
                 pq_size = (int)pq_last->size(),
                 stop_size = std::max(0, (int)pq_size - search_wide);
@@ -1561,7 +1195,6 @@ namespace AI {
                 if ( Abort() ) {
 					break;
                 }
-                //max_combo = std::max( max_combo, (int)ms_last.pool_last.combo );
                 {
                     GameState gs(ms_last.pool_last.hashval, ms_last.pool_last.m_hold, ms_last.att, ms_last.clear, ms_last.combo, ms_last.pool_last.b2b);
                     if ( gsSet.find(gs) == gsSet.end() ) {
@@ -1570,7 +1203,6 @@ namespace AI {
                         continue;
                     }
                 }
-                //if ( !ms_last.first.movs.empty() && ms_last.first.movs[0] == Moving::MOV_HOLD ) hold = 1;
                 if ( !ms_last.first.hold ) {
                     continue;
                 }
@@ -1578,15 +1210,15 @@ namespace AI {
                 int d_pos = depth + next_add;
                 int cur_num = ms_last.pool_last.m_hold;
                 for ( size_t i = 0; d_pos + 1 + i < next.size(); ++i ) {
-                    if ( next[d_pos + 1 + i].num == GEMTYPE_T ) {
+                    if ( next[d_pos + 1 + i] == GEMTYPE_T ) {
                         t_dis = i;
                         break;
                     }
                 }
-                if ( BEG_ADD_Y && ms_last.upcomeAtt < 0 )
-                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y - ms_last.upcomeAtt, 0, ms_last.combo > 0);
+                if ( ms_last.upcomeAtt < 0 )
+                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y - ms_last.upcomeAtt, 1, ms_last.combo > 0);
                 else
-                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y, 0, ms_last.combo > 0);
+                    GenMoving(ms_last.pool_last, movs, getGem( cur_num, 0 ), AI::gem_beg_x, AI::gem_beg_y, 1, ms_last.combo > 0);
                 if ( movs.empty() ) {
                     MovsState ms = ms_last;
                     ms.first.score += 100000000;
@@ -1604,7 +1236,6 @@ namespace AI {
                             ms.pool_last.paste(movs[i].x, movs[i].y, getGem(cur_num, movs[i].spin));
                             int clear = ms.pool_last.clearLines( wallkick_spin );
                             int att = ms.pool_last.getAttack( clear, wallkick_spin );
-                            ms.player = player;
                             ms.clear = clear + ms_last.clear;
                             ms.att = att + ms_last.att;
                             ms.upcomeAtt = ms_last.upcomeAtt;
@@ -1616,18 +1247,17 @@ namespace AI {
                                 ms.combo = 0;
                                 if ( ms_last.upcomeAtt > 0 ) {
                                     ms.upcomeAtt = -ms_last.upcomeAtt;
-                                    ms.pool_last.minusRow(ms_last.upcomeAtt);
                                 }
                             }
                             ms.max_att = std::max((int)ms_last.max_att, ms_last.att + att);
-                            ms.max_combo = std::max(ms_last.max_combo, ms.combo); //ms_last.max_combo + getComboAttack( ms.pool_last.combo );
+                            ms.max_combo = std::max(ms_last.max_combo, ms.combo);
                             ms.first.score2 = ms_last.first.score2;
                             double h = 0;
                             ms.first.score = Evaluate(ms.first.score2, h, ai_param,
                                 pool,
                                 ms.pool_last, cur_num, depth + 1, ms.att, ms.clear, att, clear, wallkick_spin, ms_last.pool_last.combo, t_dis, ms_last.upcomeAtt);
 
-							ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur.num, movs[i].wallkick_spin, h);
+							ms.first.score += score_avoid_softdrop(ai_param.avoid_softdrop, movs[i].softdrop, cur_num, movs[i].wallkick_spin, h);
                         }
                         p.push_back();
                     }
@@ -1642,6 +1272,7 @@ namespace AI {
                 return MovingSimple();
             }
         }
+        // Return best result
         {
             MovingSimple* m;
             std::swap(pq_last, pq);
@@ -1687,7 +1318,6 @@ namespace AI {
         return TSD_only ? 0 : (int)((double)((sd && !((cur == AI::GEMTYPE_T || getAllowedSpins() >= 1) && wk)) ? param * 5 : 0) / (1 + pow(5, h - 6.5)));
 	}
     struct AI_THREAD_PARAM {
-        TetrisAI_t func;
         Moving* ret_mov;
         int* flag;
         AI_Param ai_param;
@@ -1696,15 +1326,13 @@ namespace AI {
         Gem cur;
         int x;
         int y;
-        std::vector<Gem> next;
+        std::vector<int> next;
         bool canhold;
         int upcomeAtt;
         int maxDeep;
         int *searchDeep;
         bool second_choice;
-        int player;
-        AI_THREAD_PARAM(TetrisAI_t _func, Moving& _ret_mov, int& _flag, const AI_Param& _ai_param, const GameField& _pool, int _hold, Gem _cur, int _x, int _y, const std::vector<Gem>& _next, bool _canhold, int _upcomeAtt, int _maxDeep, int & _searchDeep, bool _second_choice, int _player) {
-            func = _func;
+        AI_THREAD_PARAM(Moving& _ret_mov, int& _flag, const AI_Param& _ai_param, const GameField& _pool, int _hold, Gem _cur, int _x, int _y, const std::vector<int>& _next, bool _canhold, int _upcomeAtt, int _maxDeep, int & _searchDeep, bool _second_choice) {
             ret_mov = &_ret_mov;
             flag = &_flag;
             ai_param = _ai_param;
@@ -1719,7 +1347,6 @@ namespace AI {
             maxDeep = _maxDeep;
             searchDeep = &_searchDeep;
             second_choice = _second_choice;
-            player = _player;
         }
         ~AI_THREAD_PARAM() {
         }
@@ -1734,12 +1361,12 @@ namespace AI {
         AI::MovingSimple best = AISearch(p->ai_param, p->pool, p->hold, p->cur, p->x, p->y, p->next, p->canhold, p->upcomeAtt, p->maxDeep, searchDeep, p->second_choice);
         AI::Moving mov;
         const AI::GameField &gamefield = p->pool;
-        std::vector<AI::Gem> &gemNext = p->next;
+        std::vector<int> &gemNext = p->next;
         mov.movs.push_back(Moving::MOV_DROP);
         if ( best.x != AI::MovingSimple::INVALID_POS ) { // find path
             int hold_num = gamefield.m_hold;
             if ( gamefield.m_hold == 0 && ! gemNext.empty()) {
-                hold_num = gemNext[0].num;
+                hold_num = gemNext[0];
             }
             if ( best.hold ) {
                 cur = AI::getGem(hold_num, 0);
@@ -1759,12 +1386,11 @@ namespace AI {
         *p->searchDeep = searchDeep;
         *p->flag = -1;
         delete p;
-        //_endthread();
         
         return cur;
     }
-    AI::Gem RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, bool second_choice) {
+    AI::Gem RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<int>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, bool second_choice) {
         flag = 0;
-        return AI_Thread(new AI_THREAD_PARAM(NULL, ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, second_choice, 0));
+        return AI_Thread(new AI_THREAD_PARAM(ret_mov, flag, ai_param, pool, hold, cur, x, y, next, canhold, upcomeAtt, maxDeep, searchDeep, second_choice));
     }
 }

@@ -25,7 +25,6 @@ namespace AI {
             MOV_DROP,
             MOV_HOLD,
             MOV_SPIN2,
-            MOV_REFRESH,
         };
         std::vector<int> movs;
         int x, y;
@@ -73,7 +72,6 @@ namespace AI {
             MOV_DROP,
             MOV_HOLD,
             MOV_SPIN2,
-            MOV_REFRESH,
         };
         enum {
             INVALID_POS = -64,
@@ -131,14 +129,12 @@ namespace AI {
     struct MovList
     {
         std::vector<T> queue;
-        //T queue[1024];
         int beg, end;
         MovList() {
             beg = end = 0;
         }
         MovList( size_t size ) {
             beg = end = 0;
-            //queue.resize( size );
             queue.reserve( size );
         }
         void clear() {
@@ -153,7 +149,6 @@ namespace AI {
         }
         void push(const T& mov) {
             queue.push_back(mov);
-            //queue[end] = mov;
             ++end;
         }
         bool empty () const {
@@ -167,7 +162,6 @@ namespace AI {
     struct MovQueue
     {
         std::vector<T> queue;
-        //GameField pool;
         MovQueue() {
         }
         MovQueue( size_t size ) {
@@ -226,17 +220,14 @@ namespace AI {
         int h_factor; // -高度差系数 // Height difference coefficient
         int hole_dis_factor2; // -洞距离系数 // Hole distance factor 2
         int hole_dis; // -洞的距离分 // Hole distance score
-        //int flat_factor; // 平直系数 // Flatness coefficient
 
         int hole_dis_factor; // -洞距离系数 // Hole distance coefficient
         int tspin; // tspin系数 // T-Spin coefficient
         int hold_T; // hold T和I系数 // Hold T and I coefficient
         int hold_I; // hold T和I系数 // Hold T and I coefficient
         int clear_useless_factor; // 无效行系数 // Useless line clear penalty
-        //int ready_combo; // 连击预备分x // Combo preparation score
 
         int dif_factor; //偏差值 // Deviation factor
-
 		int b2b;
 		int combo;
 		int avoid_softdrop;
@@ -245,19 +236,15 @@ namespace AI {
         int ass_bonus;
 		int strategy_4w;
     };
-    typedef char* (*AIName_t)( int level );
-    typedef char* (*TetrisAI_t)(int overfield[], int field[], int field_w, int field_h, int b2b, int combo,
-               char next[], char hold, bool curCanHold, char active, int x, int y, int spin,
-               bool canhold, bool can180spin, int upcomeAtt, int comboTable[], int maxDepth, int level, int player);
     void setComboList( std::vector<int> combolist );
     int getComboAttack( int combo );
     void setSpin180( bool enable );
     bool spin180Enable();
-    void setAIsettings(int player, const char* key, int val);
+    void setAIsettings(const char* key, int val);
 
     void GenMoving(const GameField& field, std::vector<MovingSimple> & movs, Gem cur, int x, int y, bool hold, bool wasLineClear);
 	void FindPathMoving(const GameField& field, Moving& mov, Gem cur, int x, int y, bool hold, int goalx, int goaly, int goalr, int goalwk);
-    MovingSimple AISearch(AI_Param ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, bool second_choice);
+    MovingSimple AISearch(AI_Param ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<int>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, bool second_choice);
 	int score_avoid_softdrop(int param, bool sd, int cur, bool wk, double h);
-    Gem RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<Gem>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, bool second_choice);
+    Gem RunAI(Moving& ret_mov, int& flag, const AI_Param& ai_param, const GameField& pool, int hold, Gem cur, int x, int y, const std::vector<int>& next, bool canhold, int upcomeAtt, int maxDeep, int & searchDeep, bool second_choice);
 }

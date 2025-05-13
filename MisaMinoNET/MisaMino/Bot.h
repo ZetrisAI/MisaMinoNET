@@ -18,7 +18,6 @@ public:
     Bot(const Bot& orig);
     virtual ~Bot();
     
-    //void startParser();
     void setup();
     std::string outputAction(bool second_choice, char* str, int len);
     void updateStyle(AI::AI_Param param);
@@ -34,32 +33,11 @@ public:
     void updateReset();
     
     TetrisGame tetris;
-
-    struct tetris_rule {
-        int spin180;
-        int GarbageCancel;
-        int GarbageBuffer;
-        int GarbageBlocking;
-        int combo_table_style;
-        tetris_rule() {
-            spin180 = 0;
-            GarbageCancel = 1;
-            GarbageBuffer = 0;
-            GarbageBlocking = 0;
-            combo_table_style = 3; //1=TOJ, 2=TF, 3=PPT
-        }
-    };
     
 private:
     void processMoves();
     
-    char m_hold;
-    char m_queue[8];
-    int *m_field;
-    int m_queueLen;
     int m_upcomeAtt;
-    
-    tetris_rule rule;
 };
 
 #endif	/* BOT_H */

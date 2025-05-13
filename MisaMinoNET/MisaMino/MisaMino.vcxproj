@@ -31,7 +31,6 @@
     <ClInclude Include="tetrisgame.h" />
     <ClInclude Include="tetris_ai.h" />
     <ClInclude Include="tetris_gem.h" />
-    <ClInclude Include="tetris_setting.h" />
     <ClInclude Include="stuff.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

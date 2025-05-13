@@ -173,6 +173,7 @@ DLL void findpathfrom(const char* _field, const char* _piece, int _x, int _y, in
 BOOL WINAPI DllMain(HANDLE handle, DWORD reason, LPVOID reserved) {
     switch (reason) {
         case DLL_PROCESS_ATTACH:
+            AI::InitHashTable();
             MisaBot.setup();
             break;
 

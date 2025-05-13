@@ -14,8 +14,6 @@ namespace AI {
     int getComboAttack( int combo );
     void setAllowedSpins(int allowedSpins);
     int getAllowedSpins();
-    void setSoftdrop( bool softdrop );
-    bool softdropEnable();
     typedef uint64_t uint64;
     void InitHashTable();
     uint64 hash(const GameField & pool);
@@ -30,7 +28,6 @@ namespace AI {
         unsigned long m_w_mask;
         unsigned long m_row[AI_POOL_MAX_H];
         int m_hold;
-        int m_pc_att;
         uint64 hashval;
         unsigned long *row;
         GameField () {
@@ -44,27 +41,11 @@ namespace AI {
             row = &m_row[gem_add_y];
             reset(w, h);
         }
-        friend std::ostream& operator<<(std::ostream &os, const GameField &obj){
-            os<<"\n";
-            for (int i = AI::gem_add_y + 1; i < AI_POOL_MAX_H-5; ++i) {
-            //for (int i = 0; i < AI_POOL_MAX_H; ++i) {
-                os<<i<<"|";
-                for (int k = obj.width()-1; k >=0; --k) {
-                    if((obj.m_row[i] & (1<<k)) == 1<<k){
-                        os<<"1";
-                    }else{
-                        os<<"0";
-                    }
-                }
-                os<<"\n";
-            }
-        }
         int width() const { return m_w; }
         int height() const { return m_h; }
         void reset (signed char w, signed char h) {
             m_w = w;
             m_h = h;
-            m_pc_att = 10;
             m_w_mask = ( 1 << w ) - 1;
             for (int i = 0; i < AI_POOL_MAX_H; ++i) {
                 m_row[i] = 0;
@@ -376,9 +357,6 @@ namespace AI {
             hashval = hash(*this);
             return clearnum;
         }
-        int getPCAttack() const {
-            return m_pc_att;
-        }
         int getAttack( int clearfull, signed char wallkick ) {
             double attack = 0;
 
@@ -412,7 +390,7 @@ namespace AI {
                         if (m_row[i]) break;
                     }
                     if (i < 0) {
-                        attack = m_pc_att; // pc
+                        attack = 10; // pc
                     }
                 }
             }
@@ -450,7 +428,7 @@ namespace AI {
                         if (m_row[i]) break;
                     }
                     if (i < 0) {
-                        attack += m_pc_att; // pc
+                        attack += tetris_game == 2? 5 : 10; // pc
                     }
                 }
             }
@@ -462,10 +440,6 @@ namespace AI {
                 row[h-1] = row[h];
             }
             row[m_h] = rowdata;
-        }
-        void minusRow( int lines ) {
-            //row += lines;
-            //m_h -= lines;
         }
     };
 }

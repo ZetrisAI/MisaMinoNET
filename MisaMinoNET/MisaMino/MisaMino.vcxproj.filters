@@ -59,9 +59,6 @@
     <ClInclude Include="tetris_gem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tetris_setting.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="tetrisgame.h">
       <Filter>Header Files</Filter>
     </ClInclude>

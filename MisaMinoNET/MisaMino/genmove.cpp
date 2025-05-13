@@ -3,7 +3,6 @@
 #include <assert.h>
 #define USING_MOV_D     0
 #define GENMOV_W_MASK   15
-#define SWITCH_USING_HEIGHT_OPT
 
 #define _MACRO_CREATE_MOVINGSIMPLE(arg_action_name,arg_wkspin,arg_sd) \
     MovingSimple nm = m; \
@@ -28,8 +27,6 @@ namespace AI {
     bool g_spin180 = false;
     std::vector<int> g_combo_attack;
     int g_allowedSpins = 0;
-    bool g_softdrop = true;
-    //bool g_softdrop = false;
 
     void setSpin180( bool enable ) {
         g_spin180 = enable;
@@ -54,21 +51,6 @@ namespace AI {
     int getAllowedSpins() {
         return g_allowedSpins;
     }
-    void setSoftdrop( bool softdrop ) {
-        g_softdrop = softdrop;
-    }
-    bool softdropEnable() {
-        return g_softdrop;
-    }
-    //enum {
-    //    MOV_SCORE_DROP = 1,
-    //    MOV_SCORE_LR = 10,
-    //    MOV_SCORE_LR2 = 19,
-    //    MOV_SCORE_LLRR = 100,
-    //    MOV_SCORE_D = 1000,
-    //    MOV_SCORE_DD = 3000,
-    //    MOV_SCORE_SPIN = 20,
-    //};
     enum {
         MOV_SCORE_DROP = 1,
         MOV_SCORE_LR = 80,
@@ -108,7 +90,6 @@ namespace AI {
         char (*hash_drop)[4][GENMOV_W_MASK+1] = &_hash_drop[gem_add_y];
         MovList<MovingSimple> q(1024);
 
-#ifdef SWITCH_USING_HEIGHT_OPT
         // height of every column
         int field_w = field.width(), field_h = field.height();
         int min_y[32] = {0};
@@ -124,7 +105,6 @@ namespace AI {
                 }
             }
         }
-#endif
 		if ( 1 || field.row[y+3] & field.m_w_mask ) // 非空气行的话 // If it's a non-empty (non-air) row
         {
             MovingSimple m;
@@ -176,12 +156,6 @@ namespace AI {
 						}
 					} else { // under the sun
 						ny = ny + dist_min;
-						//if ( dist_min > 0 ) wallkick_spin = 0;
-						//for ( int y = m.y + 1; y < ny; ++y ) {
-						//	if ( !USING_MOV_D && (hash[y][ns][nx & GENMOV_W_MASK] & 1) == 0) {
-						//		hash[y][ns][nx & GENMOV_W_MASK] |= 1;
-						//	}
-						//}
 					}
 					m.y = ny;
 					m.lastmove = MovingSimple::MOV_NULL;
@@ -223,12 +197,6 @@ namespace AI {
 						}
 					} else { // under the sun
 						ny = ny + dist_min;
-						//if ( dist_min > 0 ) wallkick_spin = 0;
-						//for ( int y = m.y + 1; y < ny; ++y ) {
-						//	if ( !USING_MOV_D && (hash[y][ns][nx & GENMOV_W_MASK] & 1) == 0) {
-						//		hash[y][ns][nx & GENMOV_W_MASK] |= 1;
-						//	}
-						//}
 					}
 					m.y = ny;
 					m.lastmove = MovingSimple::MOV_NULL;
@@ -239,7 +207,6 @@ namespace AI {
 					}
 					q.push(m);
 					_MACRO_HASH_POS(hash,n) = 1;
-					//hash[ny][ns][nx & GENMOV_W_MASK] |= 1;
 				}
 			}
 		}
@@ -258,18 +225,6 @@ namespace AI {
             {
                 int nx = m.x, ny = m.y, ns = m.spin;
                 int wallkick_spin = m.wallkick_spin;
-#ifndef SWITCH_USING_HEIGHT_OPT
-                while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) { // 非空气行才能使用的优化 // Optimization only usable when below is not an empty row
-                    ++ny; wallkick_spin = 0;
-                }
-                while ( ! field.isCollide(nx, ny + 1, getGem(cur.num, ns) ) ) {
-                    if ( !USING_MOV_D && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
-                        _MACRO_HASH_POS(hash, n) |= 1;
-                    }
-                    ++ny; wallkick_spin = 0;
-                }
-#endif
-#ifdef SWITCH_USING_HEIGHT_OPT
                 {
                     int dist_min = 0x7fffffff;
                     for ( int x = 0; x < 4; ++x ) {
@@ -297,34 +252,18 @@ namespace AI {
                         }
                     }
                 }
-#endif
                 {
                     int v_spin = (getAllowedSpins() >= 1 || cur.num == GEMTYPE_T) ? wallkick_spin : 0;
                     if ( (_MACRO_HASH_POS(hash_drop, n) & ( 1 << v_spin)) == 0 )
                     {
-
                         int _nx = nx, _ny = ny, _ns = ns;
-
-                        //if ( cur.num == GEMTYPE_I || cur.num == GEMTYPE_Z || cur.num == GEMTYPE_S ) {
-                        //    if ( ns == 2 ) {
-                        //        _ny = ny + 1;
-                        //        _ns = 0;
-                        //    }
-                        //    if ( ns == 3 ) {
-                        //        _nx = nx + 1;
-                        //        _ns = 1;
-                        //    }
-                        //}
-
-                        //if ( (_MACRO_HASH_POS(hash_drop, _n) & ( 1 << v_spin)) == 0 )
                         {
-                                _MACRO_CREATE_MOVINGSIMPLE(MOV_DROP, v_spin, m.softdrop);
-                                _MACRO_HASH_POS(hash_drop, _n) |= 1 << v_spin;
-                                q.push(nm);
+                            _MACRO_CREATE_MOVINGSIMPLE(MOV_DROP, v_spin, m.softdrop);
+                            _MACRO_HASH_POS(hash_drop, _n) |= 1 << v_spin;
+                            q.push(nm);
                         }
                     }
-                    if ( softdropEnable() ) // DD
-                    {
+                    { // DD
                         if ( ny != y ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
                                 _MACRO_CREATE_MOVINGSIMPLE(MOV_DD, 0, m.softdrop);
@@ -525,7 +464,6 @@ namespace AI {
             }
             m.score = 0;
             q.push(m);
-            //hash[m.y][m.spin][m.x & GENMOV_W_MASK] = 1;
         }
         while ( ! q.empty() ) {
             Moving m;
@@ -581,13 +519,7 @@ namespace AI {
             {
                 int nx = m.x, ny = m.y, ns = m.spin;
                 int wallkick_spin = m.wallkick_spin;
-                //while ( field.row[ny + cur.geth()] == 0 && ny + cur.geth() <= field.height() ) { // 非空气行才能使用的优化 // Optimization only usable when below is not an empty row
-                //    ++ny; wallkick_spin = 0;
-                //}
                 while ( ! field.isCollide(nx, ny + 1, getGem(cur.num, ns) ) ) {
-                    //if ( !USING_MOV_D && ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
-                    //    _MACRO_HASH_POS(hash, n) |= 1;
-                    //}
                     ++ny; wallkick_spin = 0;
                 }
                 {
@@ -595,14 +527,13 @@ namespace AI {
                     if ( (_MACRO_HASH_POS(hash_drop, n) & ( 1 << v_spin )) == 0 )
                     {
                         int _nx = nx, _ny = ny, _ns = ns;
-                        //if ( (_MACRO_HASH_POS(hash_drop, _n) & ( 1 << v_spin)) == 0 )
                         {
-                                _MACRO_CREATE_MOVING(MOV_DROP, v_spin);
-                                _MACRO_HASH_POS(hash_drop, _n) |= 1 << v_spin;
-                                q.push(nm);
+                            _MACRO_CREATE_MOVING(MOV_DROP, v_spin);
+                            _MACRO_HASH_POS(hash_drop, _n) |= 1 << v_spin;
+                            q.push(nm);
                         }
                     }
-                    if ( softdropEnable() ) {
+                    {
                         if ( ny != y ) {
                             if ( ( _MACRO_HASH_POS(hash, n) & 1 ) == 0) {
                                 _MACRO_CREATE_MOVING(MOV_DD, 0);
@@ -686,7 +617,6 @@ namespace AI {
                     }
                 }
             }
-            //if (USING_MOV_D)
             if ( m.movs.back() != Moving::MOV_DD )
             {
                 int nx = m.x, ny = m.y, ns = m.spin;

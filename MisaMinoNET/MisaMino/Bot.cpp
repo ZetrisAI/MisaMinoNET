@@ -15,12 +15,8 @@ std::map<char, int> m_gemMap = {
 
 using namespace std;
 
-Bot::Bot():m_hold(' '){
-}
-
-Bot::Bot(const Bot& orig) {
-}
-
+Bot::Bot(){}
+Bot::Bot(const Bot& orig) {}
 Bot::~Bot() {}
 
 void Bot::updateField(const char* q) {
@@ -63,12 +59,11 @@ void Bot::updateField(const char* q) {
 
 void Bot::updateQueue(const char* q) {
     std::string s = q;
-    int i=1;
-    for(const auto &c : s){
-        if(c==',')continue;
-        tetris.m_next[i++] = AI::getGem(m_gemMap[c], 0);
+    tetris.m_next.clear();
+    for (const auto &c : s){
+        if (c==',') continue;
+        tetris.m_next.push_back(m_gemMap[c]);
     }
-    tetris.m_next_num=i;
     tetris.newpiece();
 }
 
@@ -115,7 +110,7 @@ void Bot::updateB2B(int b2b) {
 }
 
 void Bot::updateReset() {
-    tetris.reset(0);
+    tetris.reset();
     m_upcomeAtt = 0;
 }
 
@@ -125,34 +120,14 @@ void Bot::updateReset() {
 void Bot::setup() {
 	tetris.m_ai_param = globalparam;
 	tetris.hold = holdallow;
-	AI::setAIsettings(0, "4w", tetris.m_ai_param.strategy_4w > 0? 1 : 0);
+	AI::setAIsettings("4w", tetris.m_ai_param.strategy_4w > 0? 1 : 0);
 
-    if (rule.combo_table_style == 0) {
-        int a[] = {0, 0, 0, 1, 1, 2};
-        AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
-        tetris.m_ai_param.strategy_4w = 0;
-        AI::setAIsettings(0, "4w", 0);
-    } else if (rule.combo_table_style == 1) {
-        int a[] = {0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5};
-        AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
-    } else if (rule.combo_table_style == 2) {
-        int a[] = {0, 0, 0, 1, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5};
-        AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
-    } else if (rule.combo_table_style == 3) {
-        int a[] = {0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5};
-        AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
-    } else {
-        int a[] = {0, 0, 0, 1, 1, 2};
-        AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
-    }
+    // PPT combo table
+    int a[] = {0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5};
+    AI::setComboList(std::vector<int>(a, a + sizeof (a) / sizeof (*a)));
 
 	AI::setAllowedSpins(allowedspins);
 
-    tetris.m_base = AI::point(0, 30);
-    tetris.env_change = 1;
-    tetris.n_pieces += 1;
-    tetris.total_clears += tetris.m_clearLines;
-    tetris.m_clearLines = 0;
     tetris.m_attack = 0;
 }
 #pragma managed(pop)
@@ -167,8 +142,8 @@ void Bot::processMoves() {
         else if (mov == AI::Moving::MOV_D) tetris.tryYMove( 1);
         else if (mov == AI::Moving::MOV_LSPIN) tetris.trySpin(1);
         else if (mov == AI::Moving::MOV_RSPIN) tetris.trySpin(3);
-        else if (mov == AI::Moving::MOV_LL) { tetris.tryXXMove(-1); } //{ tetris.mov_llrr = AI::Moving::MOV_LL; }
-        else if (mov == AI::Moving::MOV_RR) { tetris.tryXXMove( 1); } //{ tetris.mov_llrr = AI::Moving::MOV_RR; }
+        else if (mov == AI::Moving::MOV_LL) { tetris.tryXXMove(-1); }
+        else if (mov == AI::Moving::MOV_RR) { tetris.tryXXMove( 1); }
         else if (mov == AI::Moving::MOV_DD) tetris.tryYYMove( 1) ;
         else if (mov == AI::Moving::MOV_DROP) tetris.drop();
         else if (mov == AI::Moving::MOV_HOLD) {
@@ -177,23 +152,18 @@ void Bot::processMoves() {
             if ( AI::spin180Enable() ) {
                 tetris.trySpin180();
             }
-        } else if (mov == AI::Moving::MOV_REFRESH) {
-            tetris.env_change = 1;
         }
     }
     tetris.clearLines();
 }
 
 std::string Bot::outputAction(bool second_choice, char* str, int len) {
-    std::vector<AI::Gem> next;
-    for (int j = 0; j < tetris.m_next_num; ++j)
-        next.push_back(tetris.m_next[j]);
-    int deep = tetris.m_next_num + 1;
+    int deep = tetris.m_next.size() + 1;
     bool canhold = tetris.hold;
     
     AI::Gem piece = AI::RunAI(tetris.ai_movs, tetris.ai_movs_flag, tetris.m_ai_param, tetris.m_pool, tetris.m_hold,
             tetris.m_cur,
-            tetris.m_cur_x, tetris.m_cur_y, next, canhold, m_upcomeAtt,
+            tetris.m_cur_x, tetris.m_cur_y, tetris.m_next, canhold, m_upcomeAtt,
             deep, tetris.ai_last_deep, second_choice);
 
     std::stringstream out;

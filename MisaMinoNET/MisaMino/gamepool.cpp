@@ -5,12 +5,6 @@ namespace AI {
     uint64 hashmap[AI_POOL_MAX_H][32];
     uint64 qhashmap[AI_POOL_MAX_H][2][32];
 
-    struct initobj {
-        initobj() {
-            void InitHashTable();
-            InitHashTable();
-        }
-    } _init_obj;
     void InitHashTable() {
         std::random_device rd;
         std::mt19937 gen(rd());
@@ -40,5 +34,4 @@ namespace AI {
         }
         return ret;
     }
-
 }
